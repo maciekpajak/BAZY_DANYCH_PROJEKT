@@ -11,36 +11,174 @@
 \usepackage{hyperref}
 \usepackage{subcaption}
 \usepackage{caption}
-
+\usepackage{mdwlist}
 \newgeometry{tmargin=2cm, bmargin=2cm, lmargin=3cm, rmargin=3cm}
-
-\title{Bazy Danych 
-        \\Projekt
-        \\ Dokumentacja}
         
-\author{}
-\date{}
-
 \begin{document}
 
-\maketitle
-\newpage
+%==================================================================================
+% STRONA TYTU£OWA
+%----------------------------------------------------------------------------------
+\begin{titlepage}
+\center
 
+
+%--------------  NAG£ÓWKI ---------------------------------------------------------
+
+\textsc{\Large Politechnika Wroc³awska}\\[0.5cm] % Name of your university/college
+\textsc{\large Wydzia³ Elektroniki}\\[5cm] % Major heading such as course name
+
+%--------------  TYTU£Y   ---------------------------------------------------------
+
+\textsc{\LARGE PROJEKT Z BAZ DANYCH}\\[2cm] % Minor heading such as course title
+{ \Large \bfseries Dziennik szkolny}\\[5cm] % Title of your document
+%--------------  TERMIN ZAJÊÆ -----------------------------------------------------
+\begin{minipage}{0.83\textwidth}
+\begin{flushleft} \large
+Termin zajêæ: Œroda, 9-11 \\[2cm]
+\end{flushleft}
+\end{minipage}
+\\[2cm]
+
+%--------------  AUTORZY  ---------------------------------------------------------
+
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Autorzy:}\\
+Adam \textsc{Mielniczek}\\
+Micha³ \textsc{Kowalski}\\
+Maciej \textsc{Paj¹k}\\
+\end{flushleft}
+\end{minipage}
+~
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Prowadz¹cy zajêciar:} \\
+dr in¿. Roman \textsc{PTAK} 
+\end{flushright}
+\end{minipage}\\[2cm]
+
+%--------------  DATA     ----------------------------------------------------------
+
+{\large Wroc³aw, 2020}\\[1cm] % Date, change the \today to a set date if you want to be precise
+
+\vfill 
+\end{titlepage}
+%^^^^=================================^^^^^===================================^^^^^^^^
+
+%=====================================================================================
+% SPIS TREŒCI
+%-------------------------------------------------------------------------------------
 \tableofcontents
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+%^^^^=================================^^^^^===================================^^^^^^^^
+
+
+
+%=====================================================================================
+% ROZDZIA£ 1
+%-------------------------------------------------------------------------------------
 \section{Wstêp}
 \subsection{Cel projektu}
 \subsection{Zakres projektu}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%^^^^=================================^^^^^===================================^^^^^^^^
+
+
+%=====================================================================================
+% ROZDZIA£ 2
+%-------------------------------------------------------------------------------------
 \section{Analiza wymagañ}
+%-------------------------------------------------------------------------------------
 \subsection{Opis dzia³ania i schemat logiczny systemu}
+\hspace{0.5cm} Dziennik szkolny bêdzie zestawem bazy danych oraz aplikacji dostêpowej, która umo¿liwi podstawowe zarz¹dzanie szko³¹. Docelowym klientem jest szko³a licealna œredniej wielkoœci (oko³o 360 uczniów).
+%-------------------------------------------------------------------------------------
+\subsection{Rodzaje kont u¿ytkownika}
+
+\hspace{0.5cm} Docelowy projekt bêdzie pozwala³ na zalogowanie siê na wymienione ni¿ej rodzaje kont:
+\begin{itemize*}
+    \item Dyrektor (Administrator),
+    \item Nauczyciel,
+    \item Rodzic,
+    \item Wychowawca,
+    \item Uczeñ,
+    \item Kasa szkolna.
+\end{itemize*}
+%-------------------------------------------------------------------------------------
 \subsection{Wymagania funkcjonalne}
+\subsubsection{Administrator}
+\begin{itemize*}
+    \item Zarz¹dzanie uczniami,
+    \item Zarz¹dzanie nauczycielami,
+    \item Zarz¹dzanie klasami,
+    \item Zarz¹dzanie kontami u¿ytkowników,
+    \item Wprowadzanie nagan dyrektorskich uczniom,
+    \item Generowanie œwiadectwa dla ucznia na zakoñczenie roku szkolnego.
+\end{itemize*}
+\subsubsection{Nauczyciel}
+\begin{itemize*}
+    \item Wpisywanie tematu zajêæ i sprawdzanie listy obecnoœci,
+    \item Podgl¹d obecnoœci danego ucznia danej klasy z prowadzonych zajêæ,
+    \item Podgl¹d oraz wpisywanie uczniom ocen cz¹stkowych i ich wag,
+    \item Wystawianie ocen semestralnych i koñcowych,
+    \item Dodawanie terminów kartkówek, sprawdzianów itp. dla danej klasy,
+    \item Wpisywanie uczniom uwag,
+    \item Poczta do korespondencji z rodzicami, innymi nauczycielami, administratorem.
+\end{itemize*}
+\subsubsection{Wychowawca}
+\begin{itemize*}
+    \item Dostêp do terminarza klasy wychowawczej,
+    \item Usprawiedliwianie nieobecnoœci uczniów,
+    \item Wystawianie ocen z zachowania,
+    \item Dostêp do statystyk ka¿dego ucznia z klasy wychowawczej oraz ca³ej klasy wychowawczej,
+    \item Poczta do korespondencji z rodzicami, administratorem.
+\end{itemize*}
+\subsubsection{Uczeñ}
+\begin{itemize*}
+    \item Przegl¹d otrzymanych ocen i obecnoœci,
+    \item Przegl¹d terminarza,
+    \item Poczta do korespondencji z nauczycielami, administratorem.
+\end{itemize*}
+\subsubsection{Rodzic}
+\begin{itemize*}
+    \item Przegl¹d otrzymanych ocen swojego dziecka,
+    \item Przegl¹d dziennika uwag swojego dziecka,
+    \item Przegl¹d nierozliczonych p³atnoœci,
+    \item Poczta do korespondencji z nauczycielami, administratorem.
+\end{itemize*}
+\subsubsection{Kasa}
+\begin{itemize*}
+    \item Dodawanie nowej p³atnoœci do ucznia lub ca³ej klasy,
+    \item Zatwierdzanie p³atnoœci w systemie,
+    \item Poczta do korespondencji z rodzicami, nauczycielami, administratorem.
+\end{itemize*}
+%-------------------------------------------------------------------------------------
 \subsection{Wymagania niefunkcjonalne}
+%-------------------------------------------------------------------------------------
 \subsubsection{Wykorzystywane technologie i narzêdzia}
+\begin{itemize*}
+    \item Dostêp z poziomu systemów Linuxowych i Windowsa (mo¿liwa aplikacja webowa),
+    \item Interfejs graficzny,
+    \item Baza danych zrobiona w systemie MySQL.
+\end{itemize*}
+%-------------------------------------------------------------------------------------
 \subsubsection{Wymagania dotycz¹ce rozmiaru bazy danych}
+\begin{itemize*}
+    \item 
+\end{itemize*}
+%-------------------------------------------------------------------------------------
 \subsubsection{Wymagania dotycz¹ce bezpieczeñstwa systemu}
+\begin{itemize*}
+    \item Logowanie siê do systemu nazw¹ u¿ytkownika i has³em (has³o w bazie w postaci zaszyfrowanej),
+    \item Mo¿liwoœæ zresetowania has³a na e-mail,
+    \item Mo¿liwoœæ w³¹czenia dwustopniowej weryfikacji (kod przysy³any na e-mail).
+\end{itemize*}
+%-------------------------------------------------------------------------------------
 \subsection{Przyjête za³o¿enia projektowe}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%^^^^=================================^^^^^===================================^^^^^^^^
+
+%=====================================================================================
+% ROZDZIA£ 3
+%-------------------------------------------------------------------------------------
 \section{Projekt systemu}
 \subsection{Projekt bazy danych}
 \subsubsection{Analiza rzeczywistoœci i uproszczony model konceptualny}
@@ -54,13 +192,22 @@
 \subsubsection{Projekt wybranych funkcji systemu}
 \subsubsection{Metoda pod³¹czania do bazy danych - integracja z baz¹ danych}
 \subsubsection{Projekt zabezpieczeñ na poziomie aplikacji}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%^^^^=================================^^^^^===================================^^^^^^^^
+
+%=====================================================================================
+% ROZDZIA£ 4
+%-------------------------------------------------------------------------------------
 \section{Implementacja systemu baz danych}
 \subsection{Tworzenie tabel i definiowanie ograniczeñ}
 \subsection{Implementacja mechanizmów przetwarzania danych}
 \subsection{Implementacja uprawnieñ i innych zabezpieczeñ}
 \subsection{Testowanie bazy danych na przyk³adowych danych}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%^^^^=================================^^^^^===================================^^^^^^^^
+
+
+%=====================================================================================
+% ROZDZIA£ 5
+%-------------------------------------------------------------------------------------
 \section{Implementacja i testy aplikacji}
 \subsection{Instalacja i konfigurowanie systemu}
 \subsection{Instrukcja u¿ytkowania aplikacji}
@@ -69,12 +216,35 @@
 \subsubsection{Implementacja interfejsu dostêpu do bazy danych}
 \subsubsection{Implementacja wybranych funkcjonalnoœci systemu}
 \subsubsection{Implementacja mechanizmów bezpieczeñstwa}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%^^^^=================================^^^^^===================================^^^^^^^^
+
+
+%=====================================================================================
+% ROZDZIA£ 6
+%-------------------------------------------------------------------------------------
 \section{Podsumowanie i wnioski}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%^^^^=================================^^^^^===================================^^^^^^^^
+
+
+%=====================================================================================
+% LITERATURA
+%-------------------------------------------------------------------------------------
 \section{Literatura}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%^^^^=================================^^^^^===================================^^^^^^^^
+
+
+
+%=====================================================================================
+% SPIS RYSUNKÓW
+%-------------------------------------------------------------------------------------
 \section{Spis rysunków}
+%^^^^=================================^^^^^===================================^^^^^^^^
+
+
+%=====================================================================================
+% SPIS TABEL
+%-------------------------------------------------------------------------------------
 \section{Spis tabel}
+%^^^^=================================^^^^^===================================^^^^^^^^
 
 \end{document}
