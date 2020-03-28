@@ -1,0 +1,1 @@
+SELECT * FROM ocena WHERE ocena.uczen = 005
