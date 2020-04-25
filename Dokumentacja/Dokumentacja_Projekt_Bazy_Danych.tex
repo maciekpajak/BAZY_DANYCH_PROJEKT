@@ -12,30 +12,31 @@
 \usepackage{subcaption}
 \usepackage{caption}
 \usepackage{mdwlist}
+\usepackage{lscape}
 \newgeometry{tmargin=2cm, bmargin=2cm, lmargin=3cm, rmargin=3cm}
         
 \begin{document}
 
 %==================================================================================
-% STRONA TYTU£OWA
+% STRONA TYTU≈ÅOWA
 %----------------------------------------------------------------------------------
 \begin{titlepage}
 \center
 
 
-%--------------  NAG£”WKI ---------------------------------------------------------
+%--------------  NAG≈Å√ìWKI ---------------------------------------------------------
 
-\textsc{\Large Politechnika Wroc≥awska}\\[0.5cm] % Name of your university/college
-\textsc{\large Wydzia≥ Elektroniki}\\[5cm] % Major heading such as course name
+\textsc{\Large Politechnika Wroc≈Çawska}\\[0.5cm] % Name of your university/college
+\textsc{\large Wydzia≈Ç Elektroniki}\\[5cm] % Major heading such as course name
 
-%--------------  TYTU£Y   ---------------------------------------------------------
+%--------------  TYTU≈ÅY   ---------------------------------------------------------
 
 \textsc{\LARGE PROJEKT Z BAZ DANYCH}\\[2cm] % Minor heading such as course title
 { \Large \bfseries Dziennik szkolny}\\[5cm] % Title of your document
-%--------------  TERMIN ZAJ ∆ -----------------------------------------------------
+%--------------  TERMIN ZAJƒòƒÜ -----------------------------------------------------
 \begin{minipage}{0.83\textwidth}
 \begin{flushleft} \large
-Termin zajÍÊ: åroda, 9-11 \\[2cm]
+Termin zajƒôƒá: ≈öroda, 9-11 \\[2cm]
 \end{flushleft}
 \end{minipage}
 \\[2cm]
@@ -46,181 +47,234 @@ Termin zajÍÊ: åroda, 9-11 \\[2cm]
 \begin{flushleft} \large
 \emph{Autorzy:}\\
 Adam \textsc{Mielniczek}\\
-Micha≥ \textsc{Kowalski}\\
-Maciej \textsc{Pajπk}\\
+Micha≈Ç \textsc{Kowalski}\\
+Maciej \textsc{PajƒÖk}\\
 \end{flushleft}
 \end{minipage}
 ~
 \begin{minipage}{0.4\textwidth}
 \begin{flushright} \large
-\emph{Prowadzπcy zajÍciar:} \\
-dr inø. Roman \textsc{PTAK} 
+\emph{ProwadzƒÖcy zajƒôciar:} \\
+dr in≈º. Roman \textsc{PTAK} 
 \end{flushright}
 \end{minipage}\\[2cm]
 
 %--------------  DATA     ----------------------------------------------------------
 
-{\large Wroc≥aw, 2020}\\[1cm] % Date, change the \today to a set date if you want to be precise
+{\large Wroc≈Çaw, 2020}\\[1cm] % Date, change the \today to a set date if you want to be precise
 
 \vfill 
 \end{titlepage}
 %^^^^=================================^^^^^===================================^^^^^^^^
 
 %=====================================================================================
-% SPIS TREåCI
+% SPIS TRE≈öCI
 %-------------------------------------------------------------------------------------
-\tableofcontents
+%\tableofcontents
 \newpage
 %^^^^=================================^^^^^===================================^^^^^^^^
 
 
 
 %=====================================================================================
-% ROZDZIA£ 1
+% ROZDZIA≈Å 1
 %-------------------------------------------------------------------------------------
-\section{WstÍp}
+\section{Wstƒôp}
 \subsection{Cel projektu}
+\hspace{0.5cm} Celem projektu jest zapoznanie siƒô z praktycznym u≈ºyciem (zaprojektowaniem oraz implementacjƒÖ) narzƒôdzia, jakim jest baza danych, zaznajomienie siƒô z jƒôzykiem SQL oraz poznanie sposob√≥w na mƒÖdre przechowywanie i przeszukiwanie du≈ºych zbior√≥w danych. Drugi cel to opracowanie aplikacji dostƒôpowej, kt√≥ra bƒôdzie zapewnia≈Ça dostƒôp do bazy danych osobom, nieposiadajƒÖcym wiedzy z zakresu dzia≈Çania baz danych.
+
 \subsection{Zakres projektu}
+\hspace{0.5cm} Projekt sk≈Çadaƒá bƒôdzie siƒô z 5 etap√≥w:
+\begin{enumerate}
+    \item Opis wymaga≈Ñ projektu,
+    \item Schemat konceptualny, logiczny oraz fizyczny relacji,
+    \item Implementacja bazy danych,
+    \item Napisanie aplikacji dostƒôpowej dla u≈ºytkownik√≥w,
+    \item Prezentacja, testy i podsumowanie ca≈Ço≈õci projektu.
+\end{enumerate}
+
 %^^^^=================================^^^^^===================================^^^^^^^^
 
 
 %=====================================================================================
-% ROZDZIA£ 2
+% ROZDZIA≈Å 2
 %-------------------------------------------------------------------------------------
-\section{Analiza wymagaÒ}
+\section{Opis wymaga≈Ñ}
 %-------------------------------------------------------------------------------------
-\subsection{Opis dzia≥ania i schemat logiczny systemu}
-\hspace{0.5cm} Dziennik szkolny bÍdzie zestawem bazy danych oraz aplikacji dostÍpowej, ktÛra umoøliwi podstawowe zarzπdzanie szko≥π. Docelowym klientem jest szko≥a licealna úredniej wielkoúci (oko≥o 360 uczniÛw).
+\subsection{Opis dzia≈Çania}
+\hspace{0.5cm} Dziennik szkolny bƒôdzie zestawem bazy danych oraz aplikacji dostƒôpowej, kt√≥ra umo≈ºliwi podstawowe zarzƒÖdzanie szko≈ÇƒÖ. Docelowym klientem jest szko≈Ça licealna ≈õredniej wielko≈õci (oko≈Ço 400-500 uczni√≥w). System ma spe≈Çniaƒá podstawowe wymagania zwiƒÖzane z funkcjonowaniem systemu nauczania w szkole takie jak np ocenianie i~sprawdznaie obecno≈õci uczni√≥w na zajƒôciach.
 %-------------------------------------------------------------------------------------
-\subsection{Rodzaje kont uøytkownika}
+\subsection{Rodzaje kont u≈ºytkownika}
 
-\hspace{0.5cm} Docelowy projekt bÍdzie pozwala≥ na zalogowanie siÍ na wymienione niøej rodzaje kont:
+\hspace{0.5cm} Docelowy projekt bƒôdzie pozwala≈Ç na zalogowanie siƒô na wymienione ni≈ºej rodzaje kont:
 \begin{itemize*}
     \item Dyrektor (Administrator),
     \item Nauczyciel,
     \item Rodzic,
     \item Wychowawca,
-    \item UczeÒ,
+    \item Ucze≈Ñ,
     \item Kasa szkolna.
 \end{itemize*}
 %-------------------------------------------------------------------------------------
 \subsection{Wymagania funkcjonalne}
+
+\hspace{0.5cm} Funkcjonalno≈õci sƒÖ kategorii CRUD, chyba ≈ºe w nawiasie w danym punkcie podano inaczej.
+
 \subsubsection{Administrator}
 \begin{itemize*}
-    \item Zarzπdzanie uczniami,
-    \item Zarzπdzanie nauczycielami,
-    \item Zarzπdzanie klasami,
-    \item Zarzπdzanie kontami uøytkownikÛw,
+    \item ZarzƒÖdzanie uczniami,
+    \item ZarzƒÖdzanie nauczycielami,
+    \item ZarzƒÖdzanie klasami,
+    \item ZarzƒÖdzanie kontami u≈ºytkownik√≥w,
     \item Wprowadzanie nagan dyrektorskich uczniom,
-    \item Generowanie úwiadectwa dla ucznia na zakoÒczenie roku szkolnego.
+    \item Generowanie ≈õwiadectwa dla ucznia na zako≈Ñczenie roku szkolnego - eksport do~zewnƒôtrznego pliku (C).
 \end{itemize*}
+
 \subsubsection{Nauczyciel}
 \begin{itemize*}
-    \item Wpisywanie tematu zajÍÊ i sprawdzanie listy obecnoúci,
-    \item Podglπd obecnoúci danego ucznia danej klasy z prowadzonych zajÍÊ,
-    \item Podglπd oraz wpisywanie uczniom ocen czπstkowych i ich wag,
-    \item Wystawianie ocen semestralnych i koÒcowych,
-    \item Dodawanie terminÛw kartkÛwek, sprawdzianÛw itp. dla danej klasy,
-    \item Wpisywanie uczniom uwag,
-    \item Poczta do korespondencji z rodzicami, innymi nauczycielami, administratorem.
+    \item Wpisywanie tematu zajƒôƒá i sprawdzanie listy obecno≈õci,
+    \item PodglƒÖd obecno≈õci danego ucznia z danej klasy (R),
+    \item PodglƒÖd oraz wpisywanie uczniom ocen czƒÖstkowych i ich wag,
+    \item Wystawianie ocen semestralnych i ko≈Ñcowych (tak≈ºe mo≈ºliwo≈õƒá ich edycji lub~usuniƒôcia w razie przypadkowego wystawienia),
+    \item Dodawanie termin√≥w kartk√≥wek, sprawdzian√≥w itp. dla danej klasy,
+    \item Wpisywanie uczniom uwag.
+
 \end{itemize*}
 \subsubsection{Wychowawca}
 \begin{itemize*}
-    \item DostÍp do terminarza klasy wychowawczej,
-    \item Usprawiedliwianie nieobecnoúci uczniÛw,
-    \item Wystawianie ocen z zachowania,
-    \item DostÍp do statystyk kaødego ucznia z klasy wychowawczej oraz ca≥ej klasy wychowawczej,
-    \item Poczta do korespondencji z rodzicami, administratorem.
+    \item Dostƒôp do terminarza klasy wychowawczej - wychowawca ma mo≈ºliwo≈õƒá podglƒÖdu wszystkich form (sprawdzian√≥w, kartk√≥wek) zaplanowanych w terminarzu danej~klasy (R),
+    \item Usprawiedliwianie nieobecno≈õci uczni√≥w (U),
+    \item Wystawianie ocen z zachowania, a tak≈ºe mo≈ºliwo≈õƒá ich korekty lub usuniƒôcia przy przypadkowym wpisaniu,
+    \item Dostƒôp do statystyk ka≈ºdego ucznia z klasy wychowawczej oraz ca≈Çej klasy wychowawczej (R).
 \end{itemize*}
-\subsubsection{UczeÒ}
+
+\subsubsection{Ucze≈Ñ}
 \begin{itemize*}
-    \item Przeglπd otrzymanych ocen i obecnoúci,
-    \item Przeglπd terminarza,
-    \item Poczta do korespondencji z nauczycielami, administratorem.
+    \item PrzeglƒÖd otrzymanych ocen i obecno≈õci (R),
+    \item PrzeglƒÖd terminarza (R).
 \end{itemize*}
 \subsubsection{Rodzic}
 \begin{itemize*}
-    \item Przeglπd otrzymanych ocen swojego dziecka,
-    \item Przeglπd dziennika uwag swojego dziecka,
-    \item Przeglπd nierozliczonych p≥atnoúci,
-    \item Poczta do korespondencji z nauczycielami, administratorem.
+    \item PrzeglƒÖd otrzymanych ocen swojego dziecka (R),
+    \item PrzeglƒÖd dziennika uwag swojego dziecka (R),
+    \item PrzeglƒÖd nierozliczonych p≈Çatno≈õci (R),
+    \item Usprawiedliwianie nieobecno≈õci swojego dziecka.
 \end{itemize*}
 \subsubsection{Kasa}
 \begin{itemize*}
-    \item Dodawanie nowej p≥atnoúci do ucznia lub ca≥ej klasy,
-    \item Zatwierdzanie p≥atnoúci w systemie,
-    \item Poczta do korespondencji z rodzicami, nauczycielami, administratorem.
+    \item Dodawanie nowej p≈Çatno≈õci do ucznia lub ca≈Çej klasy,
+    \item Zatwierdzanie p≈Çatno≈õci w systemie,
 \end{itemize*}
 %-------------------------------------------------------------------------------------
 \subsection{Wymagania niefunkcjonalne}
 %-------------------------------------------------------------------------------------
-\subsubsection{Wykorzystywane technologie i narzÍdzia}
+\subsubsection{Wykorzystywane technologie i narzƒôdzia}
 \begin{itemize*}
-    \item DostÍp z poziomu systemÛw Linuxowych i Windowsa (moøliwa aplikacja webowa),
+    \item Dostƒôp z poziomu system√≥w Linuxowych i Windowsa (mo≈ºliwa aplikacja webowa),
     \item Interfejs graficzny,
-    \item Baza danych zrobiona w systemie MySQL.
+    \item Baza danych zrobiona w systemie MariaDB.
 \end{itemize*}
 %-------------------------------------------------------------------------------------
-\subsubsection{Wymagania dotyczπce rozmiaru bazy danych}
+\subsubsection{Rozmiar bazy danych}
 \begin{itemize*}
-    \item 
+    \item Baza danych powinna pozwalaƒá na za≈Ço≈ºenie oko≈Ço 400-500 kont Uczni√≥w, 2 razy wiƒôkszƒÖ ilo≈õƒá kont rodzic√≥w oraz oko≈Ço 30 kont nauczycieli,
+    \item Przewidujemy, ≈ºe w ka≈ºdym roku szkolnym bƒôdzie przechowywane oko≈Ço $60-120$ tys. ocen, oko≈Ço miliona obecno≈õci oraz oko≈Ço $30$ tys. temat√≥w lekcyjnych.
+    \item Prawdopodobnie w "godzinach szczytu" z dziennika korzystaƒá bƒôdzie oko≈Ço $80$ os√≥b.
 \end{itemize*}
 %-------------------------------------------------------------------------------------
-\subsubsection{Wymagania dotyczπce bezpieczeÒstwa systemu}
+\subsubsection{Bezpiecze≈Ñstwo systemu bazodanowego}
 \begin{itemize*}
-    \item Logowanie siÍ do systemu nazwπ uøytkownika i has≥em (has≥o w bazie w postaci zaszyfrowanej),
-    \item MoøliwoúÊ zresetowania has≥a na e-mail,
-    \item MoøliwoúÊ w≥πczenia dwustopniowej weryfikacji (kod przysy≥any na e-mail).
+    \item Logowanie siƒô do systemu nazwƒÖ u≈ºytkownika i has≈Çem (has≈Ço w bazie w postaci zaszyfrowanej),
+    \item Mo≈ºliwo≈õƒá zresetowania has≈Ça na e-mail,
+    \item Mo≈ºliwo≈õƒá w≈ÇƒÖczenia dwustopniowej weryfikacji (kod przysy≈Çany na e-mail).
 \end{itemize*}
 %-------------------------------------------------------------------------------------
-\subsection{PrzyjÍte za≥oøenia projektowe}
+%\subsection{Przyjƒôte za≈Ço≈ºenia projektowe}
 %^^^^=================================^^^^^===================================^^^^^^^^
 
 %=====================================================================================
-% ROZDZIA£ 3
+% ROZDZIA≈Å 3
 %-------------------------------------------------------------------------------------
-\section{Projekt systemu}
-\subsection{Projekt bazy danych}
-\subsubsection{Analiza rzeczywistoúci i uproszczony model konceptualny}
-\subsubsection{Model logiczny i normalizacja}
-\subsubsection{Model fizyczny i ograniczenia integralnoúci danych}
+\section{Modele bazy danych}
+
+\hspace{0.5cm} Poni≈ºej przedstawione schematy systemu bazodanowego zosta≈Çy zrobione w aplikacji webowej draw.io.
+
+Przyk≈Çadem normalizacji przeprowadzonym na poni≈ºszych modelach jest przeniesienie p√≥l imiƒô oraz nazwisko z relacji rodzic, ucze≈Ñ i nauczyciel do relacji u≈ºytkownik. Adres zosta≈Ç tak≈ºe rozdzielony na czƒô≈õci oraz miejscowo≈õƒá i ulica przeniesione do dodatkowej relacji (podejrzewamy, ≈ºe wiƒôkszo≈õƒá uczni√≥w bƒôdzie z jednej miejscowo≈õci, a~spora czƒô≈õƒá tak≈ºe bƒôdzie mieszkaƒá przy tej samej ulicy). Relacja nauczyciel przedmiotu dodana zosta≈Ça w celu pozbycia siƒô relacji wiele do wielu miƒôdzy nauczycielem, a nauczanym przez niego przedmiotem. To samo dotyczy relacji opiekunowie, kt√≥ra u≈Çatwia po≈ÇƒÖczenie rodzica z uczniem.
+
+Ze wzglƒôd√≥w bezpiecze≈Ñstwa has≈Ço przechowywane w bazie danych bƒôdzie szyfrowane algorytmem MD5 - stƒÖd d≈Çugo≈õƒá zaszyfrowanego has≈Ça - zawsze 32 znaki.
+
+\begin{landscape}
+\subsection{Model konceptualny}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.47]{MKonceptualny.png}
+    \caption{Model konceptualny encji dziennika elektronicznego}
+    \label{fig:mk}
+\end{figure}
+
+\newpage
+\subsection{Model logiczny}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.47]{MLogiczny.png}
+    \caption{Model logiczny relacji dziennika elektronicznego}
+    \label{fig:ml}
+\end{figure}
+
+\newpage
+\subsection{Model fizyczny po normalizacji}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.42]{MZnormalizowany.png}
+    \caption{Model znormalizowany relacji dziennika elektronicznego}
+    \label{fig:mf}
+\end{figure}
+
+\end{landscape}
+\clearpage
+
+\subsubsection{Model fizyczny i ograniczenia integralno≈õci danych}
+
 \subsubsection{Inne elementy schematu - mechanizmy przetwarzania danych}
-\subsubsection{Projekt mechanizmÛw bezpieczeÒstwa na poziomie bazy danych}
-\subsection{Projekt aplikacji uøytkownika}
+\subsubsection{Projekt mechanizm√≥w bezpiecze≈Ñstwa na poziomie bazy danych}
+\subsection{Projekt aplikacji u≈ºytkownika}
 \subsubsection{Architektura aplikacji i diagramy projektowe}
 \subsubsection{Interfejs graficzny i struktura menu}
 \subsubsection{Projekt wybranych funkcji systemu}
-\subsubsection{Metoda pod≥πczania do bazy danych - integracja z bazπ danych}
-\subsubsection{Projekt zabezpieczeÒ na poziomie aplikacji}
+\subsubsection{Metoda pod≈ÇƒÖczania do bazy danych - integracja z bazƒÖ danych}
+\subsubsection{Projekt zabezpiecze≈Ñ na poziomie aplikacji}
 %^^^^=================================^^^^^===================================^^^^^^^^
 
 %=====================================================================================
-% ROZDZIA£ 4
+% ROZDZIA≈Å 4
 %-------------------------------------------------------------------------------------
 \section{Implementacja systemu baz danych}
-\subsection{Tworzenie tabel i definiowanie ograniczeÒ}
-\subsection{Implementacja mechanizmÛw przetwarzania danych}
-\subsection{Implementacja uprawnieÒ i innych zabezpieczeÒ}
-\subsection{Testowanie bazy danych na przyk≥adowych danych}
+\subsection{Tworzenie tabel i definiowanie ogranicze≈Ñ}
+\subsection{Implementacja mechanizm√≥w przetwarzania danych}
+\subsection{Implementacja uprawnie≈Ñ i innych zabezpiecze≈Ñ}
+\subsection{Testowanie bazy danych na przyk≈Çadowych danych}
 %^^^^=================================^^^^^===================================^^^^^^^^
 
 
 %=====================================================================================
-% ROZDZIA£ 5
+% ROZDZIA≈Å 5
 %-------------------------------------------------------------------------------------
 \section{Implementacja i testy aplikacji}
 \subsection{Instalacja i konfigurowanie systemu}
-\subsection{Instrukcja uøytkowania aplikacji}
+\subsection{Instrukcja u≈ºytkowania aplikacji}
 \subsection{Testowanie opracowanych funkcji systemu}
-\subsection{OmÛwienie wybranych rozwiπzaÒ programistycznych}
-\subsubsection{Implementacja interfejsu dostÍpu do bazy danych}
-\subsubsection{Implementacja wybranych funkcjonalnoúci systemu}
-\subsubsection{Implementacja mechanizmÛw bezpieczeÒstwa}
+\subsection{Om√≥wienie wybranych rozwiƒÖza≈Ñ programistycznych}
+\subsubsection{Implementacja interfejsu dostƒôpu do bazy danych}
+\subsubsection{Implementacja wybranych funkcjonalno≈õci systemu}
+\subsubsection{Implementacja mechanizm√≥w bezpiecze≈Ñstwa}
 %^^^^=================================^^^^^===================================^^^^^^^^
 
 
 %=====================================================================================
-% ROZDZIA£ 6
+% ROZDZIA≈Å 6
 %-------------------------------------------------------------------------------------
 \section{Podsumowanie i wnioski}
 %^^^^=================================^^^^^===================================^^^^^^^^
@@ -235,9 +289,9 @@ dr inø. Roman \textsc{PTAK}
 
 
 %=====================================================================================
-% SPIS RYSUNK”W
+% SPIS RYSUNK√ìW
 %-------------------------------------------------------------------------------------
-\section{Spis rysunkÛw}
+\section{Spis rysunk√≥w}
 %^^^^=================================^^^^^===================================^^^^^^^^
 
 
