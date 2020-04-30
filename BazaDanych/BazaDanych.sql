@@ -19,22 +19,30 @@ USE `dziennik szkolny`;
 -- Zrzut struktury tabela dziennik szkolny.adres
 CREATE TABLE IF NOT EXISTS `adres` (
   `ID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `ulica_id` int(3) unsigned zerofill DEFAULT NULL,
+  `ulice_miejscowosci_id` int(6) unsigned zerofill NOT NULL,
   `nr_domu` varchar(6) COLLATE ucs2_polish_ci NOT NULL,
   `nr_mieszkania` varchar(4) COLLATE ucs2_polish_ci DEFAULT NULL,
-  `kod` int(5) unsigned NOT NULL,
-  `miejscowosc_id` int(3) unsigned zerofill NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`),
-  KEY `FK_adres_ulica` (`ulica_id`),
-  KEY `FK_adres_miejscowosc` (`miejscowosc_id`),
-  CONSTRAINT `FK_adres_miejscowosc` FOREIGN KEY (`miejscowosc_id`) REFERENCES `miejscowosc` (`ID`),
-  CONSTRAINT `FK_adres_ulica` FOREIGN KEY (`ulica_id`) REFERENCES `ulica` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
+  KEY `FK_adres_ulice_miejscowosci` (`ulice_miejscowosci_id`),
+  CONSTRAINT `FK_adres_ulice_miejscowosci` FOREIGN KEY (`ulice_miejscowosci_id`) REFERENCES `ulice_miejscowosci` (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.adres: ~0 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.adres: ~11 rows (około)
 DELETE FROM `adres`;
 /*!40000 ALTER TABLE `adres` DISABLE KEYS */;
+INSERT INTO `adres` (`ID`, `ulice_miejscowosci_id`, `nr_domu`, `nr_mieszkania`) VALUES
+	(001, 000006, '23', '12'),
+	(002, 000005, '1', '123'),
+	(003, 000012, '23', '3'),
+	(004, 000006, '23', '33'),
+	(005, 000014, '23', '12'),
+	(006, 000001, '23', ''),
+	(007, 000004, '1', '12'),
+	(008, 000014, '23', '12'),
+	(009, 000002, '1', '2'),
+	(010, 000013, '23', '12'),
+	(011, 000012, '23', '19');
 /*!40000 ALTER TABLE `adres` ENABLE KEYS */;
 
 -- Zrzut struktury tabela dziennik szkolny.czas_lekcji
@@ -45,32 +53,39 @@ CREATE TABLE IF NOT EXISTS `czas_lekcji` (
   `godz_koniec` time NOT NULL DEFAULT '00:00:00',
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.czas_lekcji: ~0 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.czas_lekcji: ~5 rows (około)
 DELETE FROM `czas_lekcji`;
 /*!40000 ALTER TABLE `czas_lekcji` DISABLE KEYS */;
+INSERT INTO `czas_lekcji` (`ID`, `data`, `godz_start`, `godz_koniec`) VALUES
+	(00001, '2020-05-08', '14:00:00', '14:45:00'),
+	(00002, '2020-05-08', '15:00:00', '15:45:00'),
+	(00003, '2020-05-09', '14:00:00', '14:45:00'),
+	(00004, '2020-05-09', '15:00:00', '15:45:00'),
+	(00005, '2020-05-10', '14:00:00', '14:45:00');
 /*!40000 ALTER TABLE `czas_lekcji` ENABLE KEYS */;
 
 -- Zrzut struktury tabela dziennik szkolny.grupa_lekcji
 CREATE TABLE IF NOT EXISTS `grupa_lekcji` (
   `ID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `klasa_id` int(2) unsigned zerofill NOT NULL,
-  `przedmiot_id` varchar(32) COLLATE ucs2_polish_ci NOT NULL DEFAULT '',
-  `nauczyciel_id` int(2) unsigned zerofill NOT NULL,
+  `nauczyciel_przedmiot_id` int(3) unsigned zerofill NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`),
   KEY `FK_grupa_lekcji_klasa` (`klasa_id`),
-  KEY `FK_grupa_lekcji_nauczyciel` (`nauczyciel_id`),
-  KEY `FK_grupa_lekcji_przedmiot` (`przedmiot_id`),
+  KEY `FK_grupa_lekcji_nauczyciel_przedmiotu` (`nauczyciel_przedmiot_id`),
   CONSTRAINT `FK_grupa_lekcji_klasa` FOREIGN KEY (`klasa_id`) REFERENCES `klasa` (`ID`),
-  CONSTRAINT `FK_grupa_lekcji_nauczyciel` FOREIGN KEY (`nauczyciel_id`) REFERENCES `nauczyciel` (`ID`),
-  CONSTRAINT `FK_grupa_lekcji_przedmiot` FOREIGN KEY (`przedmiot_id`) REFERENCES `przedmiot` (`nazwa`)
-) ENGINE=InnoDB DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
+  CONSTRAINT `FK_grupa_lekcji_nauczyciel_przedmiotu` FOREIGN KEY (`nauczyciel_przedmiot_id`) REFERENCES `nauczyciel_przedmiotu` (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.grupa_lekcji: ~0 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.grupa_lekcji: ~3 rows (około)
 DELETE FROM `grupa_lekcji`;
 /*!40000 ALTER TABLE `grupa_lekcji` DISABLE KEYS */;
+INSERT INTO `grupa_lekcji` (`ID`, `klasa_id`, `nauczyciel_przedmiot_id`) VALUES
+	(00001, 07, 001),
+	(00002, 01, 003),
+	(00003, 07, 002);
 /*!40000 ALTER TABLE `grupa_lekcji` ENABLE KEYS */;
 
 -- Zrzut struktury tabela dziennik szkolny.klasa
@@ -116,41 +131,59 @@ CREATE TABLE IF NOT EXISTS `lekcja` (
   KEY `FK_lekcja_czas_lekcji` (`czas_lekcji_id`),
   CONSTRAINT `FK_lekcja_czas_lekcji` FOREIGN KEY (`czas_lekcji_id`) REFERENCES `czas_lekcji` (`ID`),
   CONSTRAINT `FK_lekcja_grupa_lekcji` FOREIGN KEY (`grupa_lekcji_id`) REFERENCES `grupa_lekcji` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=45201 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=45208 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.lekcja: ~0 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.lekcja: ~7 rows (około)
 DELETE FROM `lekcja`;
 /*!40000 ALTER TABLE `lekcja` DISABLE KEYS */;
+INSERT INTO `lekcja` (`ID`, `temat`, `sala`, `grupa_lekcji_id`, `czas_lekcji_id`) VALUES
+	(00001, 'Temat', 12, 001, 00001),
+	(00002, 'Temat', 12, 002, 00001),
+	(00003, 'Temat', 12, 003, 00001),
+	(00004, 'Temat', 12, 001, 00002),
+	(00005, 'Temat', 12, 002, 00002),
+	(00006, 'Temat', 12, 003, 00002),
+	(00007, 'Temat', 12, 002, 00004);
 /*!40000 ALTER TABLE `lekcja` ENABLE KEYS */;
 
 -- Zrzut struktury tabela dziennik szkolny.miejscowosc
 CREATE TABLE IF NOT EXISTS `miejscowosc` (
-  `ID` int(3) unsigned NOT NULL AUTO_INCREMENT,
+  `ID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `nazwa` varchar(30) COLLATE ucs2_polish_ci NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.miejscowosc: ~0 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.miejscowosc: ~6 rows (około)
 DELETE FROM `miejscowosc`;
 /*!40000 ALTER TABLE `miejscowosc` DISABLE KEYS */;
+INSERT INTO `miejscowosc` (`ID`, `nazwa`) VALUES
+	(001, 'Wrocław'),
+	(002, 'Oborniki Śląskie'),
+	(003, 'Oława'),
+	(004, 'Kamieniec Wrocławski'),
+	(005, 'Oleśnica'),
+	(006, 'Trzebnica');
 /*!40000 ALTER TABLE `miejscowosc` ENABLE KEYS */;
 
 -- Zrzut struktury tabela dziennik szkolny.nauczyciel
 CREATE TABLE IF NOT EXISTS `nauczyciel` (
   `ID` int(2) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `uzytkownik_login` varchar(16) COLLATE ucs2_polish_ci NOT NULL,
   `nr_tel` char(50) COLLATE ucs2_polish_ci NOT NULL,
   `czy_wych` enum('Y','N') COLLATE ucs2_polish_ci NOT NULL DEFAULT 'N',
-  `uzytkownik_login` varchar(16) COLLATE ucs2_polish_ci NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`),
-  KEY `FK_nauczyciel_uzytkownik_2` (`uzytkownik_login`),
+  UNIQUE KEY `uzytkownik_login` (`uzytkownik_login`),
   CONSTRAINT `FK_nauczyciel_uzytkownik_2` FOREIGN KEY (`uzytkownik_login`) REFERENCES `uzytkownik` (`login`)
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.nauczyciel: ~0 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.nauczyciel: ~2 rows (około)
 DELETE FROM `nauczyciel`;
 /*!40000 ALTER TABLE `nauczyciel` DISABLE KEYS */;
+INSERT INTO `nauczyciel` (`ID`, `uzytkownik_login`, `nr_tel`, `czy_wych`) VALUES
+	(01, 'N0001', '111111111', 'N'),
+	(02, 'N0002', '111111111', 'N');
 /*!40000 ALTER TABLE `nauczyciel` ENABLE KEYS */;
 
 -- Zrzut struktury tabela dziennik szkolny.nauczyciel_przedmiotu
@@ -164,11 +197,15 @@ CREATE TABLE IF NOT EXISTS `nauczyciel_przedmiotu` (
   KEY `FK_nauczyciel_przedmiotu_nauczyciel` (`nauczyciel_id`),
   CONSTRAINT `FK_nauczyciel_przedmiotu_nauczyciel` FOREIGN KEY (`nauczyciel_id`) REFERENCES `nauczyciel` (`ID`),
   CONSTRAINT `FK_nauczyciel_przedmiotu_przedmiot` FOREIGN KEY (`przedmiot_nazwa`) REFERENCES `przedmiot` (`nazwa`)
-) ENGINE=InnoDB DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.nauczyciel_przedmiotu: ~0 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.nauczyciel_przedmiotu: ~3 rows (około)
 DELETE FROM `nauczyciel_przedmiotu`;
 /*!40000 ALTER TABLE `nauczyciel_przedmiotu` DISABLE KEYS */;
+INSERT INTO `nauczyciel_przedmiotu` (`ID`, `nauczyciel_id`, `przedmiot_nazwa`) VALUES
+	(001, 01, 'WOS\r'),
+	(002, 01, 'historia\r'),
+	(003, 02, 'matematyka\r');
 /*!40000 ALTER TABLE `nauczyciel_przedmiotu` ENABLE KEYS */;
 
 -- Zrzut struktury tabela dziennik szkolny.obecnosc
@@ -183,11 +220,23 @@ CREATE TABLE IF NOT EXISTS `obecnosc` (
   KEY `lekcja` (`lekcja`),
   CONSTRAINT `FK_obecnosc_lekcja` FOREIGN KEY (`lekcja`) REFERENCES `lekcja` (`ID`),
   CONSTRAINT `FK_obecnosc_uczen` FOREIGN KEY (`uczen`) REFERENCES `uczen` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4768 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4778 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.obecnosc: ~0 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.obecnosc: ~11 rows (około)
 DELETE FROM `obecnosc`;
 /*!40000 ALTER TABLE `obecnosc` DISABLE KEYS */;
+INSERT INTO `obecnosc` (`ID`, `status`, `uczen`, `lekcja`) VALUES
+	(0000001, 'obecny', 001, 00001),
+	(0000002, 'spozniony', 001, 00002),
+	(0000003, 'obecny', 001, 00003),
+	(0000004, 'nieobecny', 001, 00004),
+	(0000005, 'obecny', 002, 00001),
+	(0000006, 'nieobecny', 002, 00002),
+	(0000007, 'obecny', 002, 00003),
+	(0000008, 'obecny', 003, 00001),
+	(0000009, 'obecny', 003, 00002),
+	(0000010, 'spozniony', 003, 00003),
+	(0000011, 'spozniony', 003, 00004);
 /*!40000 ALTER TABLE `obecnosc` ENABLE KEYS */;
 
 -- Zrzut struktury tabela dziennik szkolny.ocena
@@ -198,17 +247,27 @@ CREATE TABLE IF NOT EXISTS `ocena` (
   `opis` varchar(100) NOT NULL DEFAULT '',
   `data` date NOT NULL,
   `uczen` int(3) unsigned zerofill NOT NULL,
-  `nauczyciel_przedmiotu` int(3) unsigned zerofill NOT NULL,
+  `nauczyciel_przedmiotu_id` int(3) unsigned zerofill NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `Indeks 1` (`ID`),
   KEY `uczen` (`uczen`),
-  KEY `nauczyciel` (`nauczyciel_przedmiotu`),
+  KEY `nauczyciel` (`nauczyciel_przedmiotu_id`),
+  CONSTRAINT `FK_ocena_nauczyciel_przedmiotu` FOREIGN KEY (`nauczyciel_przedmiotu_id`) REFERENCES `nauczyciel_przedmiotu` (`ID`),
   CONSTRAINT `FK_ocena_uczen` FOREIGN KEY (`uczen`) REFERENCES `uczen` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2401 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2409 DEFAULT CHARSET=latin1;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.ocena: ~0 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.ocena: ~8 rows (około)
 DELETE FROM `ocena`;
 /*!40000 ALTER TABLE `ocena` DISABLE KEYS */;
+INSERT INTO `ocena` (`ID`, `stopien`, `waga`, `opis`, `data`, `uczen`, `nauczyciel_przedmiotu_id`) VALUES
+	(000001, 'dop', 3, '', '2020-04-29', 001, 001),
+	(000002, 'db', 1, '', '2020-04-29', 003, 002),
+	(000003, 'ndst', 2, '', '2020-04-29', 001, 003),
+	(000004, 'cel', 1, '', '2020-04-29', 002, 001),
+	(000005, 'dst', 1, '', '2020-04-29', 003, 002),
+	(000006, 'db', 1, '', '2020-04-29', 001, 003),
+	(000007, 'bdb', 8, '', '2020-04-29', 002, 003),
+	(000008, 'db', 1, '', '2020-04-29', 003, 001);
 /*!40000 ALTER TABLE `ocena` ENABLE KEYS */;
 
 -- Zrzut struktury tabela dziennik szkolny.opiekunowie
@@ -218,9 +277,16 @@ CREATE TABLE IF NOT EXISTS `opiekunowie` (
   UNIQUE KEY `ID` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=481 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.opiekunowie: ~0 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.opiekunowie: ~6 rows (około)
 DELETE FROM `opiekunowie`;
 /*!40000 ALTER TABLE `opiekunowie` DISABLE KEYS */;
+INSERT INTO `opiekunowie` (`ID`) VALUES
+	(001),
+	(002),
+	(003),
+	(004),
+	(005),
+	(006);
 /*!40000 ALTER TABLE `opiekunowie` ENABLE KEYS */;
 
 -- Zrzut struktury widok dziennik szkolny.podzial_klas
@@ -255,43 +321,57 @@ INSERT INTO `przedmiot` (`nazwa`) VALUES
 -- Zrzut struktury tabela dziennik szkolny.rodzic
 CREATE TABLE IF NOT EXISTS `rodzic` (
   `ID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `uzytkownik_login` varchar(16) COLLATE ucs2_polish_ci NOT NULL,
   `nr_telefonu` varchar(12) COLLATE ucs2_polish_ci DEFAULT NULL,
   `opiekunowie_id` int(3) unsigned zerofill NOT NULL,
-  `uzytkownik_login` varchar(16) COLLATE ucs2_polish_ci NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`),
+  UNIQUE KEY `uzytkownik_login` (`uzytkownik_login`),
   KEY `powiazanie` (`opiekunowie_id`),
-  KEY `FK_rodzic_uzytkownik_2` (`uzytkownik_login`),
   CONSTRAINT `FK_rodzic_powiazanie` FOREIGN KEY (`opiekunowie_id`) REFERENCES `opiekunowie` (`ID`),
   CONSTRAINT `FK_rodzic_uzytkownik_2` FOREIGN KEY (`uzytkownik_login`) REFERENCES `uzytkownik` (`login`)
-) ENGINE=InnoDB AUTO_INCREMENT=961 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=966 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.rodzic: ~0 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.rodzic: ~6 rows (około)
 DELETE FROM `rodzic`;
 /*!40000 ALTER TABLE `rodzic` DISABLE KEYS */;
+INSERT INTO `rodzic` (`ID`, `uzytkownik_login`, `nr_telefonu`, `opiekunowie_id`) VALUES
+	(001, 'R0001', '12313', 001),
+	(002, 'R0002', '12313', 001),
+	(003, 'R0003', '12313', 002),
+	(004, 'R0004', '12313', 002),
+	(005, 'R0005', '12313', 003),
+	(006, 'R0006', '12313', 003);
 /*!40000 ALTER TABLE `rodzic` ENABLE KEYS */;
 
 -- Zrzut struktury tabela dziennik szkolny.uczen
 CREATE TABLE IF NOT EXISTS `uczen` (
   `ID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `pesel` char(11) NOT NULL,
-  `adres` int(3) unsigned zerofill NOT NULL,
+  `adres_id` int(3) unsigned zerofill NOT NULL,
   `klasa` int(2) unsigned zerofill NOT NULL,
   `opiekunowie_id` int(3) unsigned zerofill NOT NULL,
   `uzytkownik_login` varchar(16) CHARACTER SET ucs2 COLLATE ucs2_polish_ci NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`,`pesel`),
+  UNIQUE KEY `uzytkownik_login` (`uzytkownik_login`),
   KEY `powiazanie` (`opiekunowie_id`),
   KEY `uzytkownik` (`uzytkownik_login`),
   KEY `klasa` (`klasa`),
+  KEY `FK_uczen_adres` (`adres_id`),
+  CONSTRAINT `FK_uczen_adres` FOREIGN KEY (`adres_id`) REFERENCES `adres` (`ID`),
   CONSTRAINT `FK_uczen_klasa` FOREIGN KEY (`klasa`) REFERENCES `klasa` (`ID`),
   CONSTRAINT `FK_uczen_powiazanie` FOREIGN KEY (`opiekunowie_id`) REFERENCES `opiekunowie` (`ID`),
   CONSTRAINT `FK_uczen_uzytkownik` FOREIGN KEY (`uzytkownik_login`) REFERENCES `uzytkownik` (`login`)
-) ENGINE=InnoDB AUTO_INCREMENT=481 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=484 DEFAULT CHARSET=latin1;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.uczen: ~0 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.uczen: ~3 rows (około)
 DELETE FROM `uczen`;
 /*!40000 ALTER TABLE `uczen` DISABLE KEYS */;
+INSERT INTO `uczen` (`ID`, `pesel`, `adres_id`, `klasa`, `opiekunowie_id`, `uzytkownik_login`) VALUES
+	(001, '99999999999', 009, 07, 001, 'U0001'),
+	(002, '99999999998', 009, 02, 002, 'U0002'),
+	(003, '99999999997', 008, 07, 003, 'U0003');
 /*!40000 ALTER TABLE `uczen` ENABLE KEYS */;
 
 -- Zrzut struktury tabela dziennik szkolny.ulica
@@ -300,11 +380,26 @@ CREATE TABLE IF NOT EXISTS `ulica` (
   `nazwa` varchar(30) COLLATE ucs2_polish_ci NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.ulica: ~0 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.ulica: ~14 rows (około)
 DELETE FROM `ulica`;
 /*!40000 ALTER TABLE `ulica` DISABLE KEYS */;
+INSERT INTO `ulica` (`ID`, `nazwa`) VALUES
+	(001, 'Mickiewicza'),
+	(002, 'Afgańska'),
+	(003, 'Agatowa'),
+	(004, 'Alpejska'),
+	(005, 'Ananasowa'),
+	(006, 'Bazaltowa'),
+	(007, 'Belgijska'),
+	(008, 'Bema'),
+	(009, 'Bolesława Prusa'),
+	(010, 'Cicha'),
+	(011, 'Dworcowa'),
+	(012, 'Grunwaldzka'),
+	(013, 'Grzybowa'),
+	(014, 'Dwóch Mieczy');
 /*!40000 ALTER TABLE `ulica` ENABLE KEYS */;
 
 -- Zrzut struktury tabela dziennik szkolny.ulice_miejscowosci
@@ -312,24 +407,41 @@ CREATE TABLE IF NOT EXISTS `ulice_miejscowosci` (
   `ID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `miejscowosc_id` int(3) unsigned zerofill NOT NULL,
   `ulica_id` int(3) unsigned zerofill NOT NULL,
+  `kod` int(5) unsigned NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`),
   KEY `FK_ulice_miejscowosci_miejscowosc` (`miejscowosc_id`),
   KEY `FK_ulice_miejscowosci_ulica` (`ulica_id`),
   CONSTRAINT `FK_ulice_miejscowosci_miejscowosc` FOREIGN KEY (`miejscowosc_id`) REFERENCES `miejscowosc` (`ID`),
   CONSTRAINT `FK_ulice_miejscowosci_ulica` FOREIGN KEY (`ulica_id`) REFERENCES `ulica` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.ulice_miejscowosci: ~0 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.ulice_miejscowosci: ~15 rows (około)
 DELETE FROM `ulice_miejscowosci`;
 /*!40000 ALTER TABLE `ulice_miejscowosci` DISABLE KEYS */;
+INSERT INTO `ulice_miejscowosci` (`ID`, `miejscowosc_id`, `ulica_id`, `kod`) VALUES
+	(000001, 001, 002, 50500),
+	(000002, 004, 006, 50123),
+	(000003, 005, 004, 50123),
+	(000004, 003, 006, 50123),
+	(000005, 002, 004, 50234),
+	(000006, 004, 009, 50123),
+	(000007, 003, 001, 50123),
+	(000008, 006, 001, 50123),
+	(000009, 004, 006, 50123),
+	(000010, 001, 006, 50123),
+	(000011, 004, 006, 50123),
+	(000012, 002, 008, 50123),
+	(000013, 006, 010, 50123),
+	(000014, 004, 013, 50123),
+	(000015, 002, 006, 50123);
 /*!40000 ALTER TABLE `ulice_miejscowosci` ENABLE KEYS */;
 
 -- Zrzut struktury tabela dziennik szkolny.uzytkownik
 CREATE TABLE IF NOT EXISTS `uzytkownik` (
   `login` varchar(16) COLLATE ucs2_polish_ci NOT NULL,
-  `imie` varchar(20) COLLATE ucs2_polish_ci NOT NULL,
   `nazwisko` varchar(30) COLLATE ucs2_polish_ci NOT NULL,
+  `imie` varchar(20) COLLATE ucs2_polish_ci NOT NULL,
   `haslo` char(32) COLLATE ucs2_polish_ci NOT NULL,
   `rodzaj` enum('U','N','R','I') COLLATE ucs2_polish_ci NOT NULL,
   `email` varchar(32) COLLATE ucs2_polish_ci DEFAULT NULL,
@@ -337,9 +449,21 @@ CREATE TABLE IF NOT EXISTS `uzytkownik` (
   UNIQUE KEY `login` (`login`)
 ) ENGINE=InnoDB DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.uzytkownik: ~0 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.uzytkownik: ~9 rows (około)
 DELETE FROM `uzytkownik`;
 /*!40000 ALTER TABLE `uzytkownik` DISABLE KEYS */;
+INSERT INTO `uzytkownik` (`login`, `nazwisko`, `imie`, `haslo`, `rodzaj`, `email`) VALUES
+	('N0001', 'Trąba', 'Wiktor', '11frf34423cwe', 'N', NULL),
+	('N0002', 'Ameba', 'Adam', '189fb7613', 'N', NULL),
+	('R0001', 'Nowak', 'Ewelina', '21n83h3f', 'R', NULL),
+	('R0002', 'Nowak', 'Wojciech', '120389f7fn', 'R', NULL),
+	('R0003', 'Kowalski', 'Edward', 'm203ifn7', 'R', NULL),
+	('R0004', 'Kowalska', 'Hanna', 'o1398nh7', 'R', NULL),
+	('R0005', 'Grzyb', 'Adam', '1309ab8ds', 'R', NULL),
+	('R0006', 'Grzyb', 'Natalia', '1833b7v64', 'R', NULL),
+	('U0001', 'Nowak', 'Michał', 'ADOafgh', 'U', NULL),
+	('U0002', 'Kowalski', 'Maksymilian', 'akjgfaify23', 'U', NULL),
+	('U0003', 'Grzyb', 'Aleksander', 'ui138w', 'U', NULL);
 /*!40000 ALTER TABLE `uzytkownik` ENABLE KEYS */;
 
 -- Zrzut struktury widok dziennik szkolny.podzial_klas
