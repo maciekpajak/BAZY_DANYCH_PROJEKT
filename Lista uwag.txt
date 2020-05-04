@@ -4,31 +4,10 @@ ETAP 1: ZAKOŃCZONY
 
 ETAP 2:
 
-UWAGI ogólne
-//1. Na rysunkach 2. i 3. niektóre linie się nakładają na siebie co utrudnia czytanie schematu. Proszę to poprawić.
-//2. Model z rysunku 2. precyzyjnie trzeba by nazwać model logiczny przed normalizacją.
-3. Rozumiem, że po normalizacji nie wprowadzili Panowie denormalizacji?
+Dziękuje za przesłanie poprawionej wersji modelu.
 
-//UWAGI odnośnie encji/tabel
-//1. Na modelu konceptualnym mają Panowie związek "Uczeń" "Rodzic" typu wiele do wielu obustronnie. Słusznie. Ale został on źle //przetransformowany na modelu logicznym i dalej fizycznym. Wprowadzenie tabeli pośredniczącej "Opiekunowie" jest dobre ale //należy zmienić kierunki ktornści - wiele (0,N lub 1,N) powinny być skierowane to tej tabeli pośredniej.
-//2. Na schemacie logicznym i fizycznym nie może być zwiazków obustronie typu 1,1 do 1,1 bo oznaczało by to tożsamosć. Jeśli //miało by tak byc to niepotrzenie rozdzielili Panowie encję na tabelę "Uczeń" i "Adres".
-//3. Ziązki 1,1-1,1 pomiędzy "Uczeń", "Rodzic" a "Użytkownik" też nie są możliwe. Proszę sprawidzić czy nie powinny być ona 0,1 //lub 1,N albo 0,N.
-
-//UWAGI do modelu logicznego
-//Dlaczego zdecydowali się Panowie tylko na klucze sztuczne typu ID? Czy w Panów modelu może warto wprowadizć jakieś klucze //naturalne?
-
-UWAGI odnośnie atrybutów w modelu fizycznym
-//1. W tabeli "Adres" numer domu i nr mieszkania nie powinny być liczbowe - mamy np. nr domu 110A, 123-127 albo numer mieszknia //17C.
-//2. W tabeli "Uczeń" czy PESEL da się przechować w polu typu INT(11)? Lepiej użyć CHAR(11).
-//3. Dlaczego w tabeli "Użytkownik" hasło jest typu CHAR? Czy to wynika z szyfrowania tego hasła?
-//4. Atrybut temat w tabeli "Lekcja" jest typu text - to nie jest poprawne bo to jest obiekt typu LOB i inaczej jest alokowany. //Proszę raczej dać nvarchar(250) lub coś podobnego.
-//5. Nie łączą Panowie tabel "Miejścowość" z "Ulica"? Może warto by to wprowadzić aby wiedzieć jakie są ulice w poszczególnych //miejscowościach.
-//6. Czy opcjonalność atrybutów, czyli Nullable oznaczyli Panowie przez "(opcjonalne)"? Jeśli tak to dlaczego ulica, nr //mieszkania w tabeli "Adres" nie są opcjonalne?
-//7. Czy na pewno nr telefonu jest tylko liczbą? Czy aby zawsze?
-
-Proszę nanieść te poprawki.
 
 Idąc dalej proszę popza tabelami też zaprojektować sekwencje, widoki, indeksy, procedury składowane oraz trigery.
 Brakuje też wytycznych co do bezpieczeństwa bazy danych.
 
-Jako kolejny punkt należy zaprojektować aplikację dostępową. Widziałbym tutaj Diagram/y przypadków użycia, makiety interfejsy itd.
+//Jako kolejny punkt należy zaprojektować aplikację dostępową. Widziałbym tutaj Diagram/y przypadków użycia, makiety interfejsy //itd.
