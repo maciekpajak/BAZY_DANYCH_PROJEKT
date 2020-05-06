@@ -29,10 +29,30 @@ Procedury:
 -Dane nauczyciela,
 -Dane rodzica,
 -Dane instancji,
+-Lista rodziców uczniów klasy,
 
 
 Widoki:
 -Lista użytkowników,
+-Lista rodziców,
+-Lista uczniów,
+-Lista nauczycieli,
 -Lista ocen ucznia (z podziałem na przedmioty),
 -Lista klas danego nauczyciela (danej grupy przedmiotu),
 -Lista uczniów w danej klasie,
+-Info na temat lekcji,
+
+Indeksy:
+-W ocenach,
+-W lekcjach,
+-W obecnościach,
+-W ulicach miejscowości.
+
+Sekwencje:
+-Autoincrement,
+
+Wyzwalacze:
+-
+
+Przypadki użycia:
+
