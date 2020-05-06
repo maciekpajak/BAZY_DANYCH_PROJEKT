@@ -11,3 +11,28 @@ Idąc dalej proszę popza tabelami też zaprojektować sekwencje, widoki, indeks
 Brakuje też wytycznych co do bezpieczeństwa bazy danych.
 
 //Jako kolejny punkt należy zaprojektować aplikację dostępową. Widziałbym tutaj Diagram/y przypadków użycia, makiety interfejsy //itd.
+
+Procedury:
+-Zmiana hasła IN(login, hasło),
+-Dodanie do lekcji tematu IN(temat, lekcja_id),
+-Dodanie do lekcji frekwencji IN(frekwencja, lekcja_id, uczen_id),
+-Frekwencja ucznia,
+-Frekwencja na lekcji,
+-Klasa z grupy lekcji,
+-Lekcje nauczyciela,
+-Ocena ucznia,
+-Rodzice ucznia,
+-Dzieci rodziców,
+-Nauczyciele przedmiotu IN(przedmiot),
+-Plan lekcji klasy,
+-Dane ucznia,
+-Dane nauczyciela,
+-Dane rodzica,
+-Dane instancji,
+
+
+Widoki:
+-Lista użytkowników,
+-Lista ocen ucznia (z podziałem na przedmioty),
+-Lista klas danego nauczyciela (danej grupy przedmiotu),
+-Lista uczniów w danej klasie,
