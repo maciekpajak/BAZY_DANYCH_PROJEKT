@@ -6,12 +6,6 @@ ETAP 2:
 
 Dziękuje za przesłanie poprawionej wersji modelu.
 
-
-Idąc dalej proszę popza tabelami też zaprojektować sekwencje, widoki, indeksy, procedury składowane oraz trigery.
-Brakuje też wytycznych co do bezpieczeństwa bazy danych.
-
-//Jako kolejny punkt należy zaprojektować aplikację dostępową. Widziałbym tutaj Diagram/y przypadków użycia, makiety interfejsy //itd.
-
 Procedury:
 -Zmiana hasła IN(login, hasło),
 -Dodanie do lekcji tematu IN(temat, lekcja_id),
@@ -56,3 +50,22 @@ Wyzwalacze:
 
 Przypadki użycia:
 
+UWAGI:
+//Sekwencje :
+//Czy należy to rozumieć tak, że zastosowali Panowie ten rodzaj sekwencji?
+
+Widoki:
+W tym miejscu powinny się pojawić projekty wszystkich zaplanowanych widoków.
+
+Indeksy:
+Należy podać wszystkie projektowane indeksy. Czyli należy podać relacji i ich atrybuty które mają być indeksowane. Proszę też pamiętać, że indeksy mogą być złożone z kilku atrybutów.
+
+DPU:
+//DPU powinien być przed makietami. Gdyż to projekt funkcjonalności definiuje wygląd interfejsu a nie odwrotnie.
+//Rysunek 13. pokazuje 4 przypadki użycia.
+Uwagi do Rys. 13:
+1) PU "Edycja frekwencji" nie jest w ogóle dostępny.
+2) Dla rodzica przypadek "Przegląd frekwencji" powinien raczej być rozszerzany do PU "Generowanie usprawiedliwienia". Wtedy bez kreski pomiędzy "rodzic" a "Generowanie usprawiedliwienia".
+3) Strzałki od aktorów do PU powinny być raczej bez grotów strzałek bo te oznaczają kierunkowość użycia.
+4) Czy dla nauczyciela trzeba rozdzielać PU "Edycja frekwencji" a "Usprawiedliwienie lekcji"?
+5) A co z pozostałymi przypadkami? Czy pojawią sie na innych diagramach?
