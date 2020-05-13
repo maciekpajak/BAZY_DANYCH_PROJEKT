@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `grupa_lekcji` (
   CONSTRAINT `FK_grupa_lekcji_nauczyciel_przedmiotu` FOREIGN KEY (`nauczyciel_przedmiot_id`) REFERENCES `nauczyciel_przedmiotu` (`nauczyciel_przedmiotu_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.grupa_lekcji: ~2 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.grupa_lekcji: ~3 rows (około)
 DELETE FROM `grupa_lekcji`;
 /*!40000 ALTER TABLE `grupa_lekcji` DISABLE KEYS */;
 INSERT INTO `grupa_lekcji` (`grupa_lekcji_ID`, `klasa_id`, `nauczyciel_przedmiot_id`) VALUES
@@ -694,7 +694,7 @@ CREATE TABLE IF NOT EXISTS `uzytkownik` (
   UNIQUE KEY `login` (`uzytkownik_login`)
 ) ENGINE=InnoDB DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.uzytkownik: ~12 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.uzytkownik: ~13 rows (około)
 DELETE FROM `uzytkownik`;
 /*!40000 ALTER TABLE `uzytkownik` DISABLE KEYS */;
 INSERT INTO `uzytkownik` (`uzytkownik_login`, `nazwisko`, `imie`, `haslo`, `rodzaj`, `email`) VALUES
@@ -715,15 +715,18 @@ INSERT INTO `uzytkownik` (`uzytkownik_login`, `nazwisko`, `imie`, `haslo`, `rodz
 
 -- Zrzut struktury tabela dziennik szkolny.wersja
 CREATE TABLE IF NOT EXISTS `wersja` (
-  `wersja` varchar(10) COLLATE ucs2_polish_ci NOT NULL,
-  `opis` varchar(500) COLLATE ucs2_polish_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `major` int(10) unsigned DEFAULT 0,
+  `minor` int(10) unsigned DEFAULT 0,
+  `data` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.wersja: ~0 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.wersja: ~1 rows (około)
 DELETE FROM `wersja`;
 /*!40000 ALTER TABLE `wersja` DISABLE KEYS */;
-INSERT INTO `wersja` (`wersja`, `opis`) VALUES
-	('v3.0', 'Wersja wyjściowa.\r\nPo zmianach w bazie danych należy dodać kolejny rekord wersji:\r\n- przy dużych zmianach należy powiększyć liczbę przed pierwszą kropką o 1\r\n- przy małych zmianach należy powiększyć liczbę przed drugą kropką o 1\r\n- kolejne liczby po kolejnych kropkach dodawać w razie potrzeby');
+INSERT INTO `wersja` (`id`, `major`, `minor`, `data`) VALUES
+	(1, 1, 0, '2020-05-13 17:31:38');
 /*!40000 ALTER TABLE `wersja` ENABLE KEYS */;
 
 -- Zrzut struktury procedura dziennik szkolny.zmiana_hasla

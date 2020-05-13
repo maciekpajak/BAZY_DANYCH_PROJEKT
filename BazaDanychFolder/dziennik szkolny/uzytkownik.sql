@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `uzytkownik` (
   UNIQUE KEY `login` (`uzytkownik_login`)
 ) ENGINE=InnoDB DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.uzytkownik: ~13 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.uzytkownik: ~12 rows (około)
 DELETE FROM `uzytkownik`;
 /*!40000 ALTER TABLE `uzytkownik` DISABLE KEYS */;
 INSERT INTO `uzytkownik` (`uzytkownik_login`, `nazwisko`, `imie`, `haslo`, `rodzaj`, `email`) VALUES

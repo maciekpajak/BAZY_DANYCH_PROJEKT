@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `grupa_lekcji` (
   CONSTRAINT `FK_grupa_lekcji_nauczyciel_przedmiotu` FOREIGN KEY (`nauczyciel_przedmiot_id`) REFERENCES `nauczyciel_przedmiotu` (`nauczyciel_przedmiotu_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.grupa_lekcji: ~3 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.grupa_lekcji: ~2 rows (około)
 DELETE FROM `grupa_lekcji`;
 /*!40000 ALTER TABLE `grupa_lekcji` DISABLE KEYS */;
 INSERT INTO `grupa_lekcji` (`grupa_lekcji_ID`, `klasa_id`, `nauczyciel_przedmiot_id`) VALUES
