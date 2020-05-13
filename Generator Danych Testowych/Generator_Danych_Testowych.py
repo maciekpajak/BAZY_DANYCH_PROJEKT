@@ -28,7 +28,7 @@ uczniowie_w_klasach = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
 liczba_klas = 16
 wychowawcow = 16
 
-liczba_nauczycieli = 100
+liczba_nauczycieli = 80
 liczba_uczniow_w_klasie = 30
 liczba_uczniow = liczba_uczniow_w_klasie*16
 liczba_ocen = liczba_uczniow *5 #20*10
