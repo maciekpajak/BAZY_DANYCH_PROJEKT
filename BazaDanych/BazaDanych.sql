@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `adres` (
   PRIMARY KEY (`adres_ID`),
   UNIQUE KEY `ID` (`adres_ID`),
   KEY `FK_adres_ulice_miejscowosci` (`ulice_miejscowosci_id`),
-  CONSTRAINT `FK_adres_ulice_miejscowosci` FOREIGN KEY (`ulice_miejscowosci_id`) REFERENCES `ulicemiejscowosci` (`ulicemiejscowosci_ID`)
+  CONSTRAINT `FK_adres_ulice_miejscowosci` FOREIGN KEY (`ulice_miejscowosci_id`) REFERENCES `ulice_miejscowosci` (`ulice_miejscowosci_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
 -- Zrzucanie danych dla tabeli dziennik szkolny.adres: ~11 rows (około)
@@ -45,26 +45,16 @@ INSERT INTO `adres` (`adres_ID`, `ulice_miejscowosci_id`, `nr_domu`, `nr_mieszka
 	(011, 000012, '23', '19');
 /*!40000 ALTER TABLE `adres` ENABLE KEYS */;
 
--- Zrzut struktury tabela dziennik szkolny.czaslekcji
-CREATE TABLE IF NOT EXISTS `czaslekcji` (
-  `czaslekcji_ID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `data` date NOT NULL DEFAULT '0000-00-00',
-  `godz_start` time NOT NULL DEFAULT '00:00:00',
-  `godz_koniec` time NOT NULL DEFAULT '00:00:00',
-  PRIMARY KEY (`czaslekcji_ID`),
-  UNIQUE KEY `ID` (`czaslekcji_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
-
--- Zrzucanie danych dla tabeli dziennik szkolny.czaslekcji: ~5 rows (około)
-DELETE FROM `czaslekcji`;
-/*!40000 ALTER TABLE `czaslekcji` DISABLE KEYS */;
-INSERT INTO `czaslekcji` (`czaslekcji_ID`, `data`, `godz_start`, `godz_koniec`) VALUES
-	(00001, '2020-05-08', '14:00:00', '14:45:00'),
-	(00002, '2020-05-08', '15:00:00', '15:45:00'),
-	(00003, '2020-05-09', '14:00:00', '14:45:00'),
-	(00004, '2020-05-09', '15:00:00', '15:45:00'),
-	(00005, '2020-05-10', '14:00:00', '14:45:00');
-/*!40000 ALTER TABLE `czaslekcji` ENABLE KEYS */;
+-- Zrzut struktury widok dziennik szkolny.adres_info_lista
+-- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
+CREATE TABLE `adres_info_lista` (
+	`adres_ID` INT(3) UNSIGNED ZEROFILL NOT NULL,
+	`miejscowosc` VARCHAR(30) NOT NULL COLLATE 'ucs2_polish_ci',
+	`kod` INT(5) UNSIGNED NOT NULL,
+	`ulica` VARCHAR(30) NOT NULL COLLATE 'ucs2_polish_ci',
+	`nr_domu` VARCHAR(6) NOT NULL COLLATE 'ucs2_polish_ci',
+	`nr_mieszkania` VARCHAR(4) NULL COLLATE 'ucs2_polish_ci'
+) ENGINE=MyISAM;
 
 -- Zrzut struktury tabela dziennik szkolny.czas_lekcji
 CREATE TABLE IF NOT EXISTS `czas_lekcji` (
@@ -92,10 +82,11 @@ DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `dzieci_rodzica`(
 	IN `rodzic_id` INT
 
+
 )
-select *
-from rodzic 
-join uczen_info as ui on rodzic.opiekunowie_id = ui.opiekunowie_id
+select ulst.imie, ulst.nazwisko, ulst.klasa_id
+from rodzic as r
+join uczen_info_lista as ulst on rodzic.opiekunowie_id = ulst.opiekunowie_id
 where rodzic.rodzic_ID = rodzic_id//
 DELIMITER ;
 
@@ -103,12 +94,15 @@ DELIMITER ;
 DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `frekwencja_na_lekcji`(
 	IN `lekcja_id` INT
+
+
 )
-select *
-from obecnosc
-join lekcja on obecnosc.lekcja = lekcja.lekcja_ID
-join uczen on obecnosc.uczen = uczen.uczen_ID
-where lekcja.lekcja_ID = lekcja_id//
+select u.imie, u.nazwisko, o.`status`
+from obecnosc as o
+join lekcja as l on o.lekcja_id = l.lekcja_ID
+join uczen_info_lista as u on o.uczen_id = u.uczen_ID
+where l.lekcja_ID = lekcja_id
+order by u.nazwisko//
 DELIMITER ;
 
 -- Zrzut struktury procedura dziennik szkolny.frekwencja_ucznia
@@ -117,41 +111,36 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `frekwencja_ucznia`(
 	IN `uczen_id` INT
 
 
+
 )
-select *
-from lekcja_info as li
-join nauczyciel_info as ni on li.grupalekcji_ID = ni.gpid
-join obecnosc on li.lekcja_ID = obecnosc.lekcja
-where obecnosc.uczen = uczen_id
-order by li.`data`//
+select l.`data`, l.godz_start, l.godz_koniec, l.sala, l.przedmiot, l.imie, l.nazwisko, l.temat, o.`status`
+from lekcja_info_lista as l
+join obecnosc as o on l.lekcja_ID = o.lekcja_id
+where o.uczen_id = uczen_id
+order by l.`data`//
 DELIMITER ;
 
--- Zrzut struktury tabela dziennik szkolny.grupalekcji
-CREATE TABLE IF NOT EXISTS `grupalekcji` (
-  `grupalekcji_ID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,
+-- Zrzut struktury tabela dziennik szkolny.grupa_lekcji
+CREATE TABLE IF NOT EXISTS `grupa_lekcji` (
+  `grupa_lekcji_ID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `klasa_id` int(2) unsigned zerofill NOT NULL,
   `nauczyciel_przedmiot_id` int(3) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`grupalekcji_ID`),
-  UNIQUE KEY `ID` (`grupalekcji_ID`),
+  PRIMARY KEY (`grupa_lekcji_ID`),
+  UNIQUE KEY `ID` (`grupa_lekcji_ID`),
   KEY `FK_grupa_lekcji_klasa` (`klasa_id`),
   KEY `FK_grupa_lekcji_nauczyciel_przedmiotu` (`nauczyciel_przedmiot_id`),
   CONSTRAINT `FK_grupa_lekcji_klasa` FOREIGN KEY (`klasa_id`) REFERENCES `klasa` (`klasa_ID`),
-  CONSTRAINT `FK_grupa_lekcji_nauczyciel_przedmiotu` FOREIGN KEY (`nauczyciel_przedmiot_id`) REFERENCES `nauczycielprzedmiotu` (`nauczycielprzedmiotu_ID`)
+  CONSTRAINT `FK_grupa_lekcji_nauczyciel_przedmiotu` FOREIGN KEY (`nauczyciel_przedmiot_id`) REFERENCES `nauczyciel_przedmiotu` (`nauczyciel_przedmiotu_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.grupalekcji: ~2 rows (około)
-DELETE FROM `grupalekcji`;
-/*!40000 ALTER TABLE `grupalekcji` DISABLE KEYS */;
-INSERT INTO `grupalekcji` (`grupalekcji_ID`, `klasa_id`, `nauczyciel_przedmiot_id`) VALUES
+-- Zrzucanie danych dla tabeli dziennik szkolny.grupa_lekcji: ~2 rows (około)
+DELETE FROM `grupa_lekcji`;
+/*!40000 ALTER TABLE `grupa_lekcji` DISABLE KEYS */;
+INSERT INTO `grupa_lekcji` (`grupa_lekcji_ID`, `klasa_id`, `nauczyciel_przedmiot_id`) VALUES
 	(00001, 07, 001),
 	(00002, 01, 003),
 	(00003, 07, 002);
-/*!40000 ALTER TABLE `grupalekcji` ENABLE KEYS */;
-
--- Zrzut struktury widok dziennik szkolny.grupalekcjinauczycielprzemiotu
--- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
-CREATE TABLE `grupalekcjinauczycielprzemiotu` 
-) ENGINE=MyISAM;
+/*!40000 ALTER TABLE `grupa_lekcji` ENABLE KEYS */;
 
 -- Zrzut struktury tabela dziennik szkolny.klasa
 CREATE TABLE IF NOT EXISTS `klasa` (
@@ -191,11 +180,11 @@ CREATE TABLE IF NOT EXISTS `lekcja` (
   `grupa_lekcji_id` int(3) unsigned zerofill NOT NULL,
   `czas_lekcji_id` int(5) unsigned zerofill NOT NULL,
   PRIMARY KEY (`lekcja_ID`),
-  UNIQUE KEY `lekcja_id` (`lekcja_ID`),
+  UNIQUE KEY `lekcja_id` (`lekcja_ID`) USING BTREE,
   KEY `FK_lekcja_grupa_lekcji` (`grupa_lekcji_id`),
   KEY `FK_lekcja_czas_lekcji` (`czas_lekcji_id`),
   CONSTRAINT `FK_lekcja_czas_lekcji` FOREIGN KEY (`czas_lekcji_id`) REFERENCES `czaslekcji` (`czaslekcji_ID`),
-  CONSTRAINT `FK_lekcja_grupa_lekcji` FOREIGN KEY (`grupa_lekcji_id`) REFERENCES `grupalekcji` (`grupalekcji_ID`)
+  CONSTRAINT `FK_lekcja_grupa_lekcji` FOREIGN KEY (`grupa_lekcji_id`) REFERENCES `grupa_lekcji` (`grupa_lekcji_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
 -- Zrzucanie danych dla tabeli dziennik szkolny.lekcja: ~7 rows (około)
@@ -211,18 +200,20 @@ INSERT INTO `lekcja` (`lekcja_ID`, `temat`, `sala`, `grupa_lekcji_id`, `czas_lek
 	(00007, 'Procedury, widoki, wyzwalacze i indeksy', 12, 002, 00004);
 /*!40000 ALTER TABLE `lekcja` ENABLE KEYS */;
 
--- Zrzut struktury widok dziennik szkolny.lekcja_info
+-- Zrzut struktury widok dziennik szkolny.lekcja_info_lista
 -- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
-CREATE TABLE `lekcja_info` (
+CREATE TABLE `lekcja_info_lista` (
 	`lekcja_ID` INT(5) UNSIGNED ZEROFILL NOT NULL,
-	`temat` VARCHAR(250) NOT NULL COLLATE 'ucs2_polish_ci',
+	`data` DATE NOT NULL,
+	`godz_start` TIME NOT NULL,
+	`godz_koniec` TIME NOT NULL,
+	`oddzial` VARCHAR(3) NOT NULL COLLATE 'ucs2_polish_ci',
 	`sala` INT(2) UNSIGNED NOT NULL,
-	`nauczyciel_przedmiot_id` INT(3) UNSIGNED ZEROFILL NOT NULL,
-	`klasa_id` INT(2) UNSIGNED ZEROFILL NOT NULL,
-	`data` DATE NULL,
-	`godz_start` TIME NULL,
-	`godz_koniec` TIME NULL,
-	`grupalekcji_ID` INT(5) UNSIGNED ZEROFILL NOT NULL
+	`przedmiot` VARCHAR(32) NULL COLLATE 'ucs2_polish_ci',
+	`imie` VARCHAR(20) NOT NULL COLLATE 'ucs2_polish_ci',
+	`nazwisko` VARCHAR(30) NOT NULL COLLATE 'ucs2_polish_ci',
+	`temat` VARCHAR(250) NOT NULL COLLATE 'ucs2_polish_ci',
+	`nauczyciel_id` INT(2) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=MyISAM;
 
 -- Zrzut struktury procedura dziennik szkolny.lekcje_nauczyciela
@@ -230,52 +221,29 @@ DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `lekcje_nauczyciela`(
 	IN `nauczyciel_id` INT
 
-)
-select * 
-from nauczycielprzedmiotu as np
-join lekcja_info as li on np.nauczycielprzedmiotu_ID = li.nauczyciel_przedmiot_id
-join nauczyciel on np.nauczyciel_id  = nauczyciel.nauczyciel_ID//
-DELIMITER ;
 
--- Zrzut struktury widok dziennik szkolny.lista_nauczycieli
--- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
-CREATE TABLE `lista_nauczycieli` (
-	`ID` INT(2) UNSIGNED ZEROFILL NOT NULL,
-	`nazwisko` VARCHAR(30) NOT NULL COLLATE 'ucs2_polish_ci',
-	`imie` VARCHAR(20) NOT NULL COLLATE 'ucs2_polish_ci',
-	`nr_tel` CHAR(50) NOT NULL COLLATE 'ucs2_polish_ci',
-	`email` VARCHAR(32) NULL COLLATE 'ucs2_polish_ci',
-	`przedmiot` VARCHAR(32) NULL COLLATE 'ucs2_polish_ci'
-) ENGINE=MyISAM;
+
+
+
+)
+select l.`data`, l.godz_start, l.godz_koniec, l.oddzial,l.sala,l.przedmiot
+from nauczyciel_info_lista as n
+join lekcja_info_lista as l on n.ID = l.nauczyciel_id and `l`.`przedmiot` = `n`.`przedmiot`
+where n.ID = nauczyciel_id//
+DELIMITER ;
 
 -- Zrzut struktury procedura dziennik szkolny.lista_osob_w_klasie
 DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `lista_osob_w_klasie`(
-	IN `in_oddzial` CHAR(3)
-
-
+	IN `klasa_id` INT
 )
-SELECT klasa.oddzial AS 'klasa', uzytkownik.imie AS 'imie', uzytkownik.nazwisko AS 'nazwisko'
-FROM ((uczen
-INNER JOIN klasa ON uczen.klasa = klasa.id AND klasa.oddzial= in_oddzial )
-left JOIN uzytkownik ON uczen.uzytkownik_login = uzytkownik.login)
+SELECT uzytkownik.imie AS 'imie', uzytkownik.nazwisko AS 'nazwisko', k.oddzial
+FROM uczen as u
+INNER JOIN klasa as k ON u.klasa_id = k.klasa_ID 
+left JOIN uzytkownik ON u.uzytkownik_login = uzytkownik.uzytkownik_login
+where k.klasa_ID =klasa_id
 ORDER BY nazwisko ASC//
 DELIMITER ;
-
--- Zrzut struktury widok dziennik szkolny.lista_rodzicow
--- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
-CREATE TABLE `lista_rodzicow` 
-) ENGINE=MyISAM;
-
--- Zrzut struktury widok dziennik szkolny.lista_uczniow
--- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
-CREATE TABLE `lista_uczniow` 
-) ENGINE=MyISAM;
-
--- Zrzut struktury widok dziennik szkolny.lista_uzytkownikow
--- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
-CREATE TABLE `lista_uzytkownikow` 
-) ENGINE=MyISAM;
 
 -- Zrzut struktury tabela dziennik szkolny.miejscowosc
 CREATE TABLE IF NOT EXISTS `miejscowosc` (
@@ -325,63 +293,68 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `nauczyciele_przedmiotu`(
 
 
 
+
+
+
 )
-select *
-from przedmiot
-where przedmiot.przedmiot_nazwa = przedmiot_nazwa//
+select np.przedmiot_nazwa, nlst.imie, nlst.nazwisko, nlst.nr_tel, nlst.email
+from nauczyciel_przedmiotu as np
+join nauczyciel_info_lista as nlst on np.nauczyciel_id = nlst.ID and np.przedmiot_nazwa = nlst.przedmiot
+where np.przedmiot_nazwa = przedmiot_nazwa//
 DELIMITER ;
 
--- Zrzut struktury tabela dziennik szkolny.nauczycielprzedmiotu
-CREATE TABLE IF NOT EXISTS `nauczycielprzedmiotu` (
-  `nauczycielprzedmiotu_ID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,
+-- Zrzut struktury widok dziennik szkolny.nauczyciel_info_lista
+-- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
+CREATE TABLE `nauczyciel_info_lista` (
+	`ID` INT(2) UNSIGNED ZEROFILL NOT NULL,
+	`nazwisko` VARCHAR(30) NOT NULL COLLATE 'ucs2_polish_ci',
+	`imie` VARCHAR(20) NOT NULL COLLATE 'ucs2_polish_ci',
+	`nr_tel` CHAR(50) NOT NULL COLLATE 'ucs2_polish_ci',
+	`email` VARCHAR(32) NULL COLLATE 'ucs2_polish_ci',
+	`przedmiot` VARCHAR(32) NULL COLLATE 'ucs2_polish_ci',
+	`nauczyciel_przedmiotu_ID` INT(3) UNSIGNED ZEROFILL NOT NULL
+) ENGINE=MyISAM;
+
+-- Zrzut struktury tabela dziennik szkolny.nauczyciel_przedmiotu
+CREATE TABLE IF NOT EXISTS `nauczyciel_przedmiotu` (
+  `nauczyciel_przedmiotu_ID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `nauczyciel_id` int(2) unsigned zerofill NOT NULL,
   `przedmiot_nazwa` varchar(32) COLLATE ucs2_polish_ci DEFAULT NULL,
-  PRIMARY KEY (`nauczycielprzedmiotu_ID`),
-  UNIQUE KEY `ID` (`nauczycielprzedmiotu_ID`),
+  PRIMARY KEY (`nauczyciel_przedmiotu_ID`),
+  UNIQUE KEY `ID` (`nauczyciel_przedmiotu_ID`),
   KEY `FK_nauczyciel_przedmiotu_przedmiot` (`przedmiot_nazwa`),
   KEY `FK_nauczyciel_przedmiotu_nauczyciel` (`nauczyciel_id`),
   CONSTRAINT `FK_nauczyciel_przedmiotu_nauczyciel` FOREIGN KEY (`nauczyciel_id`) REFERENCES `nauczyciel` (`nauczyciel_ID`),
   CONSTRAINT `FK_nauczyciel_przedmiotu_przedmiot` FOREIGN KEY (`przedmiot_nazwa`) REFERENCES `przedmiot` (`przedmiot_nazwa`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.nauczycielprzedmiotu: ~3 rows (około)
-DELETE FROM `nauczycielprzedmiotu`;
-/*!40000 ALTER TABLE `nauczycielprzedmiotu` DISABLE KEYS */;
-INSERT INTO `nauczycielprzedmiotu` (`nauczycielprzedmiotu_ID`, `nauczyciel_id`, `przedmiot_nazwa`) VALUES
-	(001, 01, 'WOS\r'),
-	(002, 01, 'historia\r'),
-	(003, 02, 'matematyka\r');
-/*!40000 ALTER TABLE `nauczycielprzedmiotu` ENABLE KEYS */;
-
--- Zrzut struktury widok dziennik szkolny.nauczyciel_info
--- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
-CREATE TABLE `nauczyciel_info` (
-	`ID` INT(2) UNSIGNED ZEROFILL NOT NULL,
-	`imie` VARCHAR(20) NOT NULL COLLATE 'ucs2_polish_ci',
-	`nazwisko` VARCHAR(30) NOT NULL COLLATE 'ucs2_polish_ci',
-	`nazwa` VARCHAR(32) NOT NULL COLLATE 'ucs2_polish_ci',
-	`gpid` INT(5) UNSIGNED ZEROFILL NOT NULL,
-	`npid` INT(3) UNSIGNED ZEROFILL NOT NULL
-) ENGINE=MyISAM;
+-- Zrzucanie danych dla tabeli dziennik szkolny.nauczyciel_przedmiotu: ~3 rows (około)
+DELETE FROM `nauczyciel_przedmiotu`;
+/*!40000 ALTER TABLE `nauczyciel_przedmiotu` DISABLE KEYS */;
+INSERT INTO `nauczyciel_przedmiotu` (`nauczyciel_przedmiotu_ID`, `nauczyciel_id`, `przedmiot_nazwa`) VALUES
+	(001, 01, 'WOS'),
+	(002, 01, 'historia'),
+	(003, 02, 'matematyka');
+/*!40000 ALTER TABLE `nauczyciel_przedmiotu` ENABLE KEYS */;
 
 -- Zrzut struktury tabela dziennik szkolny.obecnosc
 CREATE TABLE IF NOT EXISTS `obecnosc` (
   `obecnosc_ID` int(7) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `status` enum('obecny','nieobecny','spóźniony') COLLATE ucs2_polish_ci NOT NULL DEFAULT 'obecny',
-  `uczen` int(3) unsigned zerofill NOT NULL,
-  `lekcja` int(5) unsigned zerofill NOT NULL,
+  `uczen_id` int(3) unsigned zerofill NOT NULL,
+  `lekcja_id` int(5) unsigned zerofill NOT NULL,
   PRIMARY KEY (`obecnosc_ID`),
-  UNIQUE KEY `obecność_id` (`obecnosc_ID`),
-  KEY `uczen` (`uczen`),
-  KEY `lekcja` (`lekcja`),
-  CONSTRAINT `FK_obecnosc_lekcja` FOREIGN KEY (`lekcja`) REFERENCES `lekcja` (`lekcja_ID`),
-  CONSTRAINT `FK_obecnosc_uczen` FOREIGN KEY (`uczen`) REFERENCES `uczen` (`uczen_ID`)
+  UNIQUE KEY `obecność_id` (`obecnosc_ID`) USING BTREE,
+  KEY `uczen` (`uczen_id`),
+  KEY `lekcja` (`lekcja_id`),
+  CONSTRAINT `FK_obecnosc_lekcja` FOREIGN KEY (`lekcja_id`) REFERENCES `lekcja` (`lekcja_ID`),
+  CONSTRAINT `FK_obecnosc_uczen` FOREIGN KEY (`uczen_id`) REFERENCES `uczen` (`uczen_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
 -- Zrzucanie danych dla tabeli dziennik szkolny.obecnosc: ~11 rows (około)
 DELETE FROM `obecnosc`;
 /*!40000 ALTER TABLE `obecnosc` DISABLE KEYS */;
-INSERT INTO `obecnosc` (`obecnosc_ID`, `status`, `uczen`, `lekcja`) VALUES
+INSERT INTO `obecnosc` (`obecnosc_ID`, `status`, `uczen_id`, `lekcja_id`) VALUES
 	(0000001, 'spóźniony', 001, 00001),
 	(0000002, 'obecny', 001, 00002),
 	(0000003, 'obecny', 001, 00003),
@@ -408,7 +381,7 @@ CREATE TABLE IF NOT EXISTS `ocena` (
   UNIQUE KEY `Indeks 1` (`ocena_ID`) USING BTREE,
   KEY `nauczyciel` (`nauczyciel_przedmiotu_id`),
   KEY `uczen` (`uczen_id`),
-  CONSTRAINT `FK_ocena_nauczyciel_przedmiotu` FOREIGN KEY (`nauczyciel_przedmiotu_id`) REFERENCES `nauczycielprzedmiotu` (`nauczycielprzedmiotu_ID`),
+  CONSTRAINT `FK_ocena_nauczyciel_przedmiotu` FOREIGN KEY (`nauczyciel_przedmiotu_id`) REFERENCES `nauczyciel_przedmiotu` (`nauczyciel_przedmiotu_ID`),
   CONSTRAINT `FK_ocena_uczen` FOREIGN KEY (`uczen_id`) REFERENCES `uczen` (`uczen_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
@@ -426,16 +399,30 @@ INSERT INTO `ocena` (`ocena_ID`, `stopien`, `waga`, `opis`, `data`, `uczen_id`, 
 	(000008, 'db', 1, '', '2020-04-29', 003, 001);
 /*!40000 ALTER TABLE `ocena` ENABLE KEYS */;
 
+-- Zrzut struktury widok dziennik szkolny.ocena_info_lista
+-- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
+CREATE TABLE `ocena_info_lista` (
+	`ocena_ID` INT(6) UNSIGNED ZEROFILL NOT NULL,
+	`stopien` ENUM('brak','ndst','dop','dst','db','bdb','cel') NOT NULL COLLATE 'utf8_polish_ci',
+	`waga` INT(1) UNSIGNED NOT NULL,
+	`opis` VARCHAR(100) NOT NULL COLLATE 'utf8_polish_ci',
+	`data` DATE NOT NULL,
+	`uczen_id` INT(3) UNSIGNED ZEROFILL NOT NULL,
+	`imie` VARCHAR(20) NOT NULL COLLATE 'ucs2_polish_ci',
+	`nazwisko` VARCHAR(30) NOT NULL COLLATE 'ucs2_polish_ci',
+	`przedmiot` VARCHAR(32) NULL COLLATE 'ucs2_polish_ci'
+) ENGINE=MyISAM;
+
 -- Zrzut struktury procedura dziennik szkolny.oceny_ucznia
 DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `oceny_ucznia`(
 	IN `uczen_id` INT
 
+
 )
 select * 
-from ocena 
-join nauczyciel_info as ni on ocena.nauczyciel_przedmiotu_id = ni.npid
-where ocena.uczen_id = uczen_id//
+from ocena_info_lista as o
+where o.uczen_id = uczen_id//
 DELIMITER ;
 
 -- Zrzut struktury tabela dziennik szkolny.opiekunowie
@@ -457,6 +444,20 @@ INSERT INTO `opiekunowie` (`opiekunowie_ID`) VALUES
 	(006);
 /*!40000 ALTER TABLE `opiekunowie` ENABLE KEYS */;
 
+-- Zrzut struktury procedura dziennik szkolny.plan_lekcji_klasy
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `plan_lekcji_klasy`(
+	IN `klasa_id` INT
+
+
+
+)
+select *
+from lekcja_info_lista as l
+join klasa as k on l.oddzial = k.oddzial
+where k.klasa_ID = klasa_id//
+DELIMITER ;
+
 -- Zrzut struktury tabela dziennik szkolny.przedmiot
 CREATE TABLE IF NOT EXISTS `przedmiot` (
   `przedmiot_nazwa` varchar(32) COLLATE ucs2_polish_ci NOT NULL,
@@ -464,22 +465,24 @@ CREATE TABLE IF NOT EXISTS `przedmiot` (
   UNIQUE KEY `przedmiot_nazwa` (`przedmiot_nazwa`)
 ) ENGINE=InnoDB DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.przedmiot: ~11 rows (około)
+-- Zrzucanie danych dla tabeli dziennik szkolny.przedmiot: ~14 rows (około)
 DELETE FROM `przedmiot`;
 /*!40000 ALTER TABLE `przedmiot` DISABLE KEYS */;
 INSERT INTO `przedmiot` (`przedmiot_nazwa`) VALUES
+	('angielski\r'),
 	('biologia'),
-	('chemia\r'),
+	('chemia'),
 	('fizyka\r'),
-	('geografia\r'),
+	('geografia'),
 	('historia\r'),
-	('j.angielski\r'),
-	('j.niemiecki\r'),
-	('j.polski\r'),
+	('historia'),
 	('matematyka\r'),
 	('matematyka'),
+	('niemiecki\r'),
+	('polski'),
 	('wf\r'),
-	('WOS\r');
+	('WOS\r'),
+	('WOS');
 /*!40000 ALTER TABLE `przedmiot` ENABLE KEYS */;
 
 -- Zrzut struktury tabela dziennik szkolny.rodzic
@@ -513,21 +516,46 @@ DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `rodzice_ucznia`(
 	IN `uczen_id` INT
 
+
+
+
 )
-select * 
+select rlst.imie, rlst.nazwisko, rlst.email, rlst.nr_telefonu
 from opiekunowie
 join uczen on opiekunowie.opiekunowie_ID = uczen.opiekunowie_id
-join rodzic_info as ri on opiekunowie.opiekunowie_ID = ri.opiekunowie_id
+join rodzic_info_lista as rlst on opiekunowie.opiekunowie_ID = rlst.opiekunowie_id
 where uczen.uczen_ID = uczen_id//
 DELIMITER ;
 
--- Zrzut struktury widok dziennik szkolny.rodzic_info
+-- Zrzut struktury procedura dziennik szkolny.rodzice_w_klasie
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `rodzice_w_klasie`(
+	IN `klasa_id` INT
+
+
+)
+select rlst.imie, rlst.nazwisko, rlst.email, rlst.nr_telefonu
+from uczen_info_lista as ui
+join rodzic_info_lista as rlst on ui.opiekunowie_id = rlst.opiekunowie_id
+where ui.klasa_id = klasa_id//
+DELIMITER ;
+
+-- Zrzut struktury procedura dziennik szkolny.rodzic_info
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `rodzic_info`(
+	IN `rodzic_id` INT
+
+)
+select rlst.imie, rlst.nazwisko, rlst.email, rlst.nr_telefonu
+from rodzic_info_lista as rlst
+where rlst.rodzic_ID  = rodzic_id//
+DELIMITER ;
+
+-- Zrzut struktury widok dziennik szkolny.rodzic_info_lista
 -- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
-CREATE TABLE `rodzic_info` (
+CREATE TABLE `rodzic_info_lista` (
 	`rodzic_ID` INT(3) UNSIGNED ZEROFILL NOT NULL,
 	`nr_telefonu` VARCHAR(12) NULL COLLATE 'ucs2_polish_ci',
-	`uzytkownik_login` VARCHAR(16) NULL COLLATE 'ucs2_polish_ci',
-	`haslo` CHAR(32) NULL COLLATE 'ucs2_polish_ci',
 	`imie` VARCHAR(20) NULL COLLATE 'ucs2_polish_ci',
 	`nazwisko` VARCHAR(30) NULL COLLATE 'ucs2_polish_ci',
 	`email` VARCHAR(32) NULL COLLATE 'ucs2_polish_ci',
@@ -564,18 +592,31 @@ INSERT INTO `uczen` (`uczen_ID`, `pesel`, `adres_id`, `klasa_id`, `opiekunowie_i
 	(003, '99999999997', 008, 07, 003, 'U0003');
 /*!40000 ALTER TABLE `uczen` ENABLE KEYS */;
 
--- Zrzut struktury widok dziennik szkolny.uczen_info
+-- Zrzut struktury procedura dziennik szkolny.uczen_info
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `uczen_info`(
+	IN `uczen_id` INT
+
+)
+select * 
+from uczen_info_lista
+where uczen_info_lista.uczen_ID = uczen_id//
+DELIMITER ;
+
+-- Zrzut struktury widok dziennik szkolny.uczen_info_lista
 -- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
-CREATE TABLE `uczen_info` (
+CREATE TABLE `uczen_info_lista` (
 	`uczen_ID` INT(3) UNSIGNED ZEROFILL NOT NULL,
-	`pesel` CHAR(11) NOT NULL COLLATE 'latin1_swedish_ci',
-	`klasa_id` INT(2) UNSIGNED ZEROFILL NOT NULL,
-	`opiekunowie_id` INT(3) UNSIGNED ZEROFILL NOT NULL,
-	`uzytkownik_login` VARCHAR(16) NOT NULL COLLATE 'ucs2_polish_ci',
-	`haslo` CHAR(32) NOT NULL COLLATE 'ucs2_polish_ci',
+	`oddzial` VARCHAR(3) NOT NULL COLLATE 'ucs2_polish_ci',
 	`imie` VARCHAR(20) NOT NULL COLLATE 'ucs2_polish_ci',
 	`nazwisko` VARCHAR(30) NOT NULL COLLATE 'ucs2_polish_ci',
-	`email` VARCHAR(32) NULL COLLATE 'ucs2_polish_ci'
+	`pesel` CHAR(11) NOT NULL COLLATE 'latin1_swedish_ci',
+	`email` VARCHAR(32) NULL COLLATE 'ucs2_polish_ci',
+	`miejscowosc` VARCHAR(30) NOT NULL COLLATE 'ucs2_polish_ci',
+	`kod` INT(5) UNSIGNED NOT NULL,
+	`ulica` VARCHAR(30) NOT NULL COLLATE 'ucs2_polish_ci',
+	`nr_domu` VARCHAR(6) NOT NULL COLLATE 'ucs2_polish_ci',
+	`nr_mieszkania` VARCHAR(4) NULL COLLATE 'ucs2_polish_ci'
 ) ENGINE=MyISAM;
 
 -- Zrzut struktury tabela dziennik szkolny.ulica
@@ -606,24 +647,24 @@ INSERT INTO `ulica` (`ulica_ID`, `nazwa`) VALUES
 	(014, 'Dwóch Mieczy');
 /*!40000 ALTER TABLE `ulica` ENABLE KEYS */;
 
--- Zrzut struktury tabela dziennik szkolny.ulicemiejscowosci
-CREATE TABLE IF NOT EXISTS `ulicemiejscowosci` (
-  `ulicemiejscowosci_ID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT,
+-- Zrzut struktury tabela dziennik szkolny.ulice_miejscowosci
+CREATE TABLE IF NOT EXISTS `ulice_miejscowosci` (
+  `ulice_miejscowosci_ID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `miejscowosc_id` int(3) unsigned zerofill NOT NULL,
   `ulica_id` int(3) unsigned zerofill NOT NULL,
   `kod` int(5) unsigned NOT NULL,
-  PRIMARY KEY (`ulicemiejscowosci_ID`),
-  UNIQUE KEY `ID` (`ulicemiejscowosci_ID`),
+  PRIMARY KEY (`ulice_miejscowosci_ID`),
+  UNIQUE KEY `ID` (`ulice_miejscowosci_ID`) USING BTREE,
   KEY `FK_ulice_miejscowosci_miejscowosc` (`miejscowosc_id`),
   KEY `FK_ulice_miejscowosci_ulica` (`ulica_id`),
   CONSTRAINT `FK_ulice_miejscowosci_miejscowosc` FOREIGN KEY (`miejscowosc_id`) REFERENCES `miejscowosc` (`miejscowosc_ID`),
   CONSTRAINT `FK_ulice_miejscowosci_ulica` FOREIGN KEY (`ulica_id`) REFERENCES `ulica` (`ulica_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
 
--- Zrzucanie danych dla tabeli dziennik szkolny.ulicemiejscowosci: ~15 rows (około)
-DELETE FROM `ulicemiejscowosci`;
-/*!40000 ALTER TABLE `ulicemiejscowosci` DISABLE KEYS */;
-INSERT INTO `ulicemiejscowosci` (`ulicemiejscowosci_ID`, `miejscowosc_id`, `ulica_id`, `kod`) VALUES
+-- Zrzucanie danych dla tabeli dziennik szkolny.ulice_miejscowosci: ~15 rows (około)
+DELETE FROM `ulice_miejscowosci`;
+/*!40000 ALTER TABLE `ulice_miejscowosci` DISABLE KEYS */;
+INSERT INTO `ulice_miejscowosci` (`ulice_miejscowosci_ID`, `miejscowosc_id`, `ulica_id`, `kod`) VALUES
 	(000001, 001, 002, 50500),
 	(000002, 004, 006, 50123),
 	(000003, 005, 004, 50123),
@@ -639,7 +680,7 @@ INSERT INTO `ulicemiejscowosci` (`ulicemiejscowosci_ID`, `miejscowosc_id`, `ulic
 	(000013, 006, 010, 50123),
 	(000014, 004, 013, 50123),
 	(000015, 002, 006, 50123);
-/*!40000 ALTER TABLE `ulicemiejscowosci` ENABLE KEYS */;
+/*!40000 ALTER TABLE `ulice_miejscowosci` ENABLE KEYS */;
 
 -- Zrzut struktury tabela dziennik szkolny.uzytkownik
 CREATE TABLE IF NOT EXISTS `uzytkownik` (
@@ -657,6 +698,7 @@ CREATE TABLE IF NOT EXISTS `uzytkownik` (
 DELETE FROM `uzytkownik`;
 /*!40000 ALTER TABLE `uzytkownik` DISABLE KEYS */;
 INSERT INTO `uzytkownik` (`uzytkownik_login`, `nazwisko`, `imie`, `haslo`, `rodzaj`, `email`) VALUES
+	('adad', 'adsasd', 'asdsad', 'asdasd', 'U', NULL),
 	('N0001', 'Trąba', 'Wiktor', '897n23nx723', 'N', NULL),
 	('N0002', 'Ameba', 'Adam', '189fb7613', 'N', NULL),
 	('N0003', 'Koch', 'Paweł', 'afsgfsgrw', 'N', NULL),
@@ -670,6 +712,19 @@ INSERT INTO `uzytkownik` (`uzytkownik_login`, `nazwisko`, `imie`, `haslo`, `rodz
 	('U0002', 'Kowalski', 'Maksymilian', 'akjgfaify23', 'U', NULL),
 	('U0003', 'Grzyb', 'Aleksander', 'haslo', 'U', NULL);
 /*!40000 ALTER TABLE `uzytkownik` ENABLE KEYS */;
+
+-- Zrzut struktury tabela dziennik szkolny.wersja
+CREATE TABLE IF NOT EXISTS `wersja` (
+  `wersja` varchar(10) COLLATE ucs2_polish_ci NOT NULL,
+  `opis` varchar(500) COLLATE ucs2_polish_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=ucs2 COLLATE=ucs2_polish_ci;
+
+-- Zrzucanie danych dla tabeli dziennik szkolny.wersja: ~0 rows (około)
+DELETE FROM `wersja`;
+/*!40000 ALTER TABLE `wersja` DISABLE KEYS */;
+INSERT INTO `wersja` (`wersja`, `opis`) VALUES
+	('v3.0', 'Wersja wyjściowa.\r\nPo zmianach w bazie danych należy dodać kolejny rekord wersji:\r\n- przy dużych zmianach należy powiększyć liczbę przed pierwszą kropką o 1\r\n- przy małych zmianach należy powiększyć liczbę przed drugą kropką o 1\r\n- kolejne liczby po kolejnych kropkach dodawać w razie potrzeby');
+/*!40000 ALTER TABLE `wersja` ENABLE KEYS */;
 
 -- Zrzut struktury procedura dziennik szkolny.zmiana_hasla
 DELIMITER //
@@ -719,57 +774,35 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `zmiana_tematu_lekcji`(
 update lekcja set lekcja.temat = new_temat where lekcja.ID = lekcja_id//
 DELIMITER ;
 
--- Zrzut struktury wyzwalacz dziennik szkolny.test
-SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
-DELIMITER //
-CREATE TRIGGER `test` BEFORE DELETE ON `rodzic` FOR EACH ROW delete from uzytkownik where login = OLD.uzytkownik_login//
-DELIMITER ;
-SET SQL_MODE=@OLDTMP_SQL_MODE;
-
--- Zrzut struktury widok dziennik szkolny.grupalekcjinauczycielprzemiotu
+-- Zrzut struktury widok dziennik szkolny.adres_info_lista
 -- Usuwanie tabeli tymczasowej i tworzenie ostatecznej struktury WIDOKU
-DROP TABLE IF EXISTS `grupalekcjinauczycielprzemiotu`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `grupalekcjinauczycielprzemiotu` AS select `dziennik szkolny`.`grupalekcji`.`ID` AS `glid`,`dziennik szkolny`.`nauczycielprzedmiotu`.`ID` AS `npid`,`dziennik szkolny`.`nauczycielprzedmiotu`.`nauczyciel_id` AS `nauczyciel_id` from (`grupalekcji` left join `nauczycielprzedmiotu` on(`dziennik szkolny`.`grupalekcji`.`nauczyciel_przedmiot_id` = `dziennik szkolny`.`nauczycielprzedmiotu`.`ID`));
+DROP TABLE IF EXISTS `adres_info_lista`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `adres_info_lista` AS select `adres`.`adres_ID` AS `adres_ID`,`miejscowosc`.`nazwa` AS `miejscowosc`,`um`.`kod` AS `kod`,`ulica`.`nazwa` AS `ulica`,`adres`.`nr_domu` AS `nr_domu`,`adres`.`nr_mieszkania` AS `nr_mieszkania` from (((`ulice_miejscowosci` `um` join `ulica` on(`um`.`ulica_id` = `ulica`.`ulica_ID`)) join `miejscowosc` on(`um`.`miejscowosc_id` = `miejscowosc`.`miejscowosc_ID`)) join `adres` on(`adres`.`ulice_miejscowosci_id` = `um`.`ulice_miejscowosci_ID`));
 
--- Zrzut struktury widok dziennik szkolny.lekcja_info
+-- Zrzut struktury widok dziennik szkolny.lekcja_info_lista
 -- Usuwanie tabeli tymczasowej i tworzenie ostatecznej struktury WIDOKU
-DROP TABLE IF EXISTS `lekcja_info`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `lekcja_info` AS select `l`.`lekcja_ID` AS `lekcja_ID`,`l`.`temat` AS `temat`,`l`.`sala` AS `sala`,`gl`.`nauczyciel_przedmiot_id` AS `nauczyciel_przedmiot_id`,`gl`.`klasa_id` AS `klasa_id`,`cl`.`data` AS `data`,`cl`.`godz_start` AS `godz_start`,`cl`.`godz_koniec` AS `godz_koniec`,`gl`.`grupalekcji_ID` AS `grupalekcji_ID` from ((`lekcja` `l` join `grupalekcji` `gl` on(`l`.`grupa_lekcji_id` = `gl`.`grupalekcji_ID`)) left join `czas_lekcji` `cl` on(`l`.`czas_lekcji_id` = `cl`.`czas_lekcji_ID`));
+DROP TABLE IF EXISTS `lekcja_info_lista`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `lekcja_info_lista` AS select `l`.`lekcja_ID` AS `lekcja_ID`,`c`.`data` AS `data`,`c`.`godz_start` AS `godz_start`,`c`.`godz_koniec` AS `godz_koniec`,`o`.`oddzial` AS `oddzial`,`l`.`sala` AS `sala`,`o`.`przedmiot` AS `przedmiot`,`o`.`imie` AS `imie`,`o`.`nazwisko` AS `nazwisko`,`l`.`temat` AS `temat`,`o`.`ID` AS `nauczyciel_id` from ((`dziennik szkolny`.`lekcja` `l` join `dziennik szkolny`.`czas_lekcji` `c` on(`l`.`czas_lekcji_id` = `c`.`czas_lekcji_ID`)) join (select `gr`.`grupa_lekcji_ID` AS `grupa_lekcji_ID`,`k`.`oddzial` AS `oddzial`,`nlst`.`imie` AS `imie`,`nlst`.`nazwisko` AS `nazwisko`,`nlst`.`przedmiot` AS `przedmiot`,`nlst`.`ID` AS `ID` from ((`dziennik szkolny`.`grupa_lekcji` `gr` join `dziennik szkolny`.`nauczyciel_info_lista` `nlst` on(`gr`.`nauczyciel_przedmiot_id` = `nlst`.`nauczyciel_przedmiotu_ID`)) join `dziennik szkolny`.`klasa` `k` on(`gr`.`klasa_id` = `k`.`klasa_ID`))) `o` on(`l`.`grupa_lekcji_id` = `o`.`grupa_lekcji_ID`));
 
--- Zrzut struktury widok dziennik szkolny.lista_nauczycieli
+-- Zrzut struktury widok dziennik szkolny.nauczyciel_info_lista
 -- Usuwanie tabeli tymczasowej i tworzenie ostatecznej struktury WIDOKU
-DROP TABLE IF EXISTS `lista_nauczycieli`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `lista_nauczycieli` AS select `nauczyciel`.`nauczyciel_ID` AS `ID`,`uzytkownik`.`nazwisko` AS `nazwisko`,`uzytkownik`.`imie` AS `imie`,`nauczyciel`.`nr_tel` AS `nr_tel`,`uzytkownik`.`email` AS `email`,`nauczycielprzedmiotu`.`przedmiot_nazwa` AS `przedmiot` from ((`nauczyciel` join `uzytkownik` on(`nauczyciel`.`uzytkownik_login` = `uzytkownik`.`uzytkownik_login`)) join `nauczycielprzedmiotu` on(`nauczyciel`.`nauczyciel_ID` = `nauczycielprzedmiotu`.`nauczyciel_id`));
+DROP TABLE IF EXISTS `nauczyciel_info_lista`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `nauczyciel_info_lista` AS select `nauczyciel`.`nauczyciel_ID` AS `ID`,`uzytkownik`.`nazwisko` AS `nazwisko`,`uzytkownik`.`imie` AS `imie`,`nauczyciel`.`nr_tel` AS `nr_tel`,`uzytkownik`.`email` AS `email`,`nauczyciel_przedmiotu`.`przedmiot_nazwa` AS `przedmiot`,`nauczyciel_przedmiotu`.`nauczyciel_przedmiotu_ID` AS `nauczyciel_przedmiotu_ID` from ((`nauczyciel` join `uzytkownik` on(`nauczyciel`.`uzytkownik_login` = `uzytkownik`.`uzytkownik_login`)) join `nauczyciel_przedmiotu` on(`nauczyciel`.`nauczyciel_ID` = `nauczyciel_przedmiotu`.`nauczyciel_id`));
 
--- Zrzut struktury widok dziennik szkolny.lista_rodzicow
+-- Zrzut struktury widok dziennik szkolny.ocena_info_lista
 -- Usuwanie tabeli tymczasowej i tworzenie ostatecznej struktury WIDOKU
-DROP TABLE IF EXISTS `lista_rodzicow`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `lista_rodzicow` AS select `dziennik szkolny`.`uzytkownik`.`login` AS `login`,`dziennik szkolny`.`uzytkownik`.`nazwisko` AS `nazwisko`,`dziennik szkolny`.`uzytkownik`.`imie` AS `imie`,`dziennik szkolny`.`uzytkownik`.`haslo` AS `haslo`,`dziennik szkolny`.`uzytkownik`.`rodzaj` AS `rodzaj`,`dziennik szkolny`.`uzytkownik`.`email` AS `email` from `uzytkownik` where `dziennik szkolny`.`uzytkownik`.`rodzaj` = 'R';
+DROP TABLE IF EXISTS `ocena_info_lista`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `ocena_info_lista` AS select `ocena`.`ocena_ID` AS `ocena_ID`,`ocena`.`stopien` AS `stopien`,`ocena`.`waga` AS `waga`,`ocena`.`opis` AS `opis`,`ocena`.`data` AS `data`,`ocena`.`uczen_id` AS `uczen_id`,`n`.`imie` AS `imie`,`n`.`nazwisko` AS `nazwisko`,`n`.`przedmiot` AS `przedmiot` from (`ocena` join `nauczyciel_info_lista` `n` on(`ocena`.`nauczyciel_przedmiotu_id` = `n`.`nauczyciel_przedmiotu_ID`));
 
--- Zrzut struktury widok dziennik szkolny.lista_uczniow
+-- Zrzut struktury widok dziennik szkolny.rodzic_info_lista
 -- Usuwanie tabeli tymczasowej i tworzenie ostatecznej struktury WIDOKU
-DROP TABLE IF EXISTS `lista_uczniow`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `lista_uczniow` AS select `dziennik szkolny`.`uczen`.`ID` AS `ID`,`dziennik szkolny`.`uzytkownik`.`imie` AS `imie`,`dziennik szkolny`.`uzytkownik`.`nazwisko` AS `nazwisko`,`dziennik szkolny`.`klasa`.`oddzial` AS `oddzial` from ((`uczen` join `uzytkownik` on(`dziennik szkolny`.`uczen`.`uzytkownik_login` = `dziennik szkolny`.`uzytkownik`.`login`)) join `klasa` on(`dziennik szkolny`.`uczen`.`klasa_id` = `dziennik szkolny`.`klasa`.`ID`));
+DROP TABLE IF EXISTS `rodzic_info_lista`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `rodzic_info_lista` AS select `r`.`rodzic_ID` AS `rodzic_ID`,`r`.`nr_telefonu` AS `nr_telefonu`,`u`.`imie` AS `imie`,`u`.`nazwisko` AS `nazwisko`,`u`.`email` AS `email`,`r`.`opiekunowie_id` AS `opiekunowie_id` from (`rodzic` `r` left join `uzytkownik` `u` on(`r`.`uzytkownik_login` = `u`.`uzytkownik_login`));
 
--- Zrzut struktury widok dziennik szkolny.lista_uzytkownikow
+-- Zrzut struktury widok dziennik szkolny.uczen_info_lista
 -- Usuwanie tabeli tymczasowej i tworzenie ostatecznej struktury WIDOKU
-DROP TABLE IF EXISTS `lista_uzytkownikow`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `lista_uzytkownikow` AS select `dziennik szkolny`.`uzytkownik`.`login` AS `login`,`dziennik szkolny`.`uzytkownik`.`haslo` AS `haslo`,`dziennik szkolny`.`uzytkownik`.`rodzaj` AS `rodzaj`,`dziennik szkolny`.`uzytkownik`.`email` AS `email` from `uzytkownik`;
-
--- Zrzut struktury widok dziennik szkolny.nauczyciel_info
--- Usuwanie tabeli tymczasowej i tworzenie ostatecznej struktury WIDOKU
-DROP TABLE IF EXISTS `nauczyciel_info`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `nauczyciel_info` AS select `lstn`.`ID` AS `ID`,`lstn`.`imie` AS `imie`,`lstn`.`nazwisko` AS `nazwisko`,`przedmiot`.`przedmiot_nazwa` AS `nazwa`,`grupalekcji`.`grupalekcji_ID` AS `gpid`,`np`.`nauczycielprzedmiotu_ID` AS `npid` from (((`nauczycielprzedmiotu` `np` join `grupalekcji` on(`np`.`nauczycielprzedmiotu_ID` = `grupalekcji`.`nauczyciel_przedmiot_id`)) join `przedmiot` on(`np`.`przedmiot_nazwa` = `przedmiot`.`przedmiot_nazwa`)) join `lista_nauczycieli` `lstn` on(`np`.`nauczyciel_id` = `lstn`.`ID`));
-
--- Zrzut struktury widok dziennik szkolny.rodzic_info
--- Usuwanie tabeli tymczasowej i tworzenie ostatecznej struktury WIDOKU
-DROP TABLE IF EXISTS `rodzic_info`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `rodzic_info` AS select `r`.`rodzic_ID` AS `rodzic_ID`,`r`.`nr_telefonu` AS `nr_telefonu`,`u`.`uzytkownik_login` AS `uzytkownik_login`,`u`.`haslo` AS `haslo`,`u`.`imie` AS `imie`,`u`.`nazwisko` AS `nazwisko`,`u`.`email` AS `email`,`r`.`opiekunowie_id` AS `opiekunowie_id` from (`rodzic` `r` left join `uzytkownik` `u` on(`r`.`uzytkownik_login` = `u`.`uzytkownik_login`));
-
--- Zrzut struktury widok dziennik szkolny.uczen_info
--- Usuwanie tabeli tymczasowej i tworzenie ostatecznej struktury WIDOKU
-DROP TABLE IF EXISTS `uczen_info`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `uczen_info` AS select `ucz`.`uczen_ID` AS `uczen_ID`,`ucz`.`pesel` AS `pesel`,`ucz`.`klasa_id` AS `klasa_id`,`ucz`.`opiekunowie_id` AS `opiekunowie_id`,`u`.`uzytkownik_login` AS `uzytkownik_login`,`u`.`haslo` AS `haslo`,`u`.`imie` AS `imie`,`u`.`nazwisko` AS `nazwisko`,`u`.`email` AS `email` from (`uczen` `ucz` join `uzytkownik` `u` on(`ucz`.`uzytkownik_login` = `u`.`uzytkownik_login`));
+DROP TABLE IF EXISTS `uczen_info_lista`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `uczen_info_lista` AS select `ucz`.`uczen_ID` AS `uczen_ID`,`k`.`oddzial` AS `oddzial`,`u`.`imie` AS `imie`,`u`.`nazwisko` AS `nazwisko`,`ucz`.`pesel` AS `pesel`,`u`.`email` AS `email`,`a`.`miejscowosc` AS `miejscowosc`,`a`.`kod` AS `kod`,`a`.`ulica` AS `ulica`,`a`.`nr_domu` AS `nr_domu`,`a`.`nr_mieszkania` AS `nr_mieszkania` from (((`uczen` `ucz` join `uzytkownik` `u` on(`ucz`.`uzytkownik_login` = `u`.`uzytkownik_login`)) join `adres_info_lista` `a` on(`ucz`.`adres_id` = `a`.`adres_ID`)) join `klasa` `k` on(`ucz`.`klasa_id` = `k`.`klasa_ID`));
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
