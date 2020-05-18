@@ -107,6 +107,8 @@ session_start();
 	}
 	
 	
+	
+	
 	</style>
 
 
@@ -114,7 +116,58 @@ session_start();
 
 
 <body>
+	
+	<div id="container">
+	
+		<div id="logo">
 		
+			<h1>Zalogowano jako Admin</h1>
+		
+		</div>
+		
+		<a href="a_konto.php">
+		<div id="teraz">
+		Zarządzanie kontem
+		</div>
+		</a>
+		
+		
+		<a href="a_edycja_kont.php">
+		<div id="inne">
+		Edycja kont użytkowanika 
+		</div></a>
+		
+		
+		<a href="a_edycja_uczniow.php">
+		<div id="inne">
+		Edycja uczniów 
+		</div></a>
+			
+			
+		<a href="a_edycja_rodzicow.php">
+		<div id="inne">
+		Edycja rodziców 
+		</div></a>
+		
+		<a href="a_edycja_pracownikow.php">
+		<div id="inne">
+		Edycja pracowników 
+		</div></a>
+		
+		<a href="a_edycja_klas.php">
+		<div id="inne">
+		Edycja klas 
+		</div></a>
+		
+		<a href="a_nagany.php">
+		<div id="inne">
+		Nagany 
+		</div></a>
+		
+		<a href="a_swiadectwa.php">
+		<div id="inne">
+		Generuj świadectwa 
+		</div></a>
 		<?php 
 	unset($_SESSION['blad']);
 	
@@ -137,11 +190,11 @@ session_start();
 		$sql="SELECT * FROM uzytkownik WHERE uzytkownik_login='$login' AND haslo='$haslo'";
 		$result = @$conn->query($sql);
 	
-		$sql2="SELECT * FROM nauczyciel WHERE uzytkownik_login='$login' ";
+		$sql2="SELECT * FROM rodzic WHERE uzytkownik_login='$login' ";
 		$result2 = @$conn->query($sql2);
 		
 		$dane_uzytkowanika=@mysqli_fetch_assoc($result);
-		$dane_nauczyciela=@mysqli_fetch_assoc($result2);
+		$dane_rodzica=@mysqli_fetch_assoc($result2);
 				
 
 		
@@ -153,58 +206,6 @@ session_start();
 	
 	
 	?>
-
-
-
-	<div id="container">
-	
-		<div id="logo">
-		
-			<h1>Zalogowano jako nauczyciel</h1>
-		
-		</div>
-		
-		<a href="n_konto.php">
-		<div id="teraz">
-		Zarządzanie kontem
-		</div>
-		</a>
-				
-		<a href="n_lekcje.php">
-		<div id="inne">
-		Lekcje (temat i frekwencja)
-		</div> </a>
-		
-		<a href="n_oceny.php">
-		<div id="inne">
-		Oceny 
-		</div></a>
-		
-		<a href="n_oceny_koncowe.php">
-		<div id="inne">
-		Oceny końcowe 
-		</div></a>
-		
-		<a href="n_terminarz.php">
-		<div id="inne">
-		Terminarz
-		</div></a>
-		
-		<a href="n_uwagi.php">
-		<div id="inne">
-		Uwagi 
-		</div></a>
-		<?php
-		if($dane_nauczyciela['czy_wych']=="Y")
-		
-		echo '<a href="n_klasa_wych.php">
-		<div id="inne">
-		Klasa wychowawcza
-		</div></a>';	
-		
-		?>
-
-
 		<div id="tresc">
 			<div id="lewy">
 			
@@ -212,7 +213,6 @@ session_start();
 			<div id="dane">
 				imie:  <?php echo $dane_uzytkowanika['imie'] ; ?>  <br/>
 				nazwisko: <?php echo $dane_uzytkowanika['nazwisko'] ; ?>   <br/>
-				Nr tel: <?php echo $dane_nauczyciela['nr_tel'] ; ?>  <br/>
 				login: <?php echo $dane_uzytkowanika['uzytkownik_login'] ; ?><br/>
 				email: <?php echo $dane_uzytkowanika['email'] ; ?><br/>
 			</div>
@@ -223,7 +223,7 @@ session_start();
 			
 			
 			
-	<form action="zmiana_hasla.php" method="post">
+<form action="zmiana_hasla.php" method="post">
 			<div id="prawy">
 				<B> Zmiana hasła: </B><br/>
 				<div id="zmianahasla">
@@ -240,14 +240,14 @@ session_start();
 				</div>
 				
 			</div>
+				
 
 		</div>
-				<form action="wyloguj.php" >
-	
-		
+		<form action="wyloguj.php" >
+
 		<button type="submit">wyloguj</button>
-		
 		</form>
+		
 		
 		
 		
