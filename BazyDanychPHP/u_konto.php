@@ -8,7 +8,7 @@ session_start();
 <html lang="pl">
 <head>
 	<meta charset="utf-8" />
-	<title>Tytuł</title>
+	<title>Zarządzanie kontem</title>
 	<meta name="description" content="opis w google"/>
 	<meta name="keywords" content="słowa po których google szuka"/>
 
@@ -33,7 +33,7 @@ session_start();
 	text-align: center;
 	
 	}
-	#konto
+	#teraz
 	{
 	border:  solid black;	
 	float: left;
@@ -43,28 +43,8 @@ session_start();
 	padding: 5px;
 	color: black
 	}
-	
-	
-	#oceny
-	{
-	border:solid black;	
-	float: left;
-	min-height: 25px;
-	text-align: center;
-	padding: 5px;
-	color: black
-	
-	}
-	#frekwencja 
-	{
-	border:  solid black;
-	float: left;
-	min-height: 25px;
-	padding: 5px;
-	color: black
-	
-	}
-	#terminarz 
+
+	#inne
 	{
 	border:  solid black;
 	float: left;
@@ -126,8 +106,6 @@ session_start();
 	padding:20px;
 	}
 	
-	
-	
 	</style>
 
 
@@ -135,7 +113,47 @@ session_start();
 
 
 <body>
-		<?php 
+
+	<div id="container">
+	
+		<div id="logo">
+		
+			<h1>Zalogowano jako uczeń</h1>
+		
+		</div>
+		
+		<a href="u_konto.html">
+		<div id="teraz">
+		Zarządzanie kontem
+		</div>
+		</a>
+		
+		
+		<a href="u_oceny.html">
+		<div id="inne">
+		 Oceny 
+		</div></a>
+		
+		
+		<a href="u_frekwencja.html">
+		<div id="inne">
+		 Frekwencja
+		</div> </a>	
+		
+		
+		<a href="u_terminarz.html">
+		<div id="inne">
+		 Terminarz 
+		</div>
+		</a>	
+		
+		
+		
+		
+		
+				<?php 
+	unset($_SESSION['blad']);
+	
 	require_once "connect.php";
 	
 	$conn=@new mysqli($IP, $username, $password, $DB_name); 
@@ -155,13 +173,21 @@ session_start();
 		$sql="SELECT * FROM uzytkownik WHERE uzytkownik_login='$login' AND haslo='$haslo'";
 		$result = @$conn->query($sql);
 	
-					
+		$sql2="SELECT * FROM uczen WHERE uzytkownik_login='$login' ";
+		$result2 = @$conn->query($sql2);
+		
 		$dane_uzytkowanika=@mysqli_fetch_assoc($result);
-		
+		$dane_ucznia=@mysqli_fetch_assoc($result2);
 				
-				
+		$sql3="SELECT * FROM klasa WHERE klasa_ID='$dane_ucznia[klasa_id]' ";
+		$result3 = @$conn->query($sql3);
 		
+		$klasa=@mysqli_fetch_assoc($result3);
 		
+		$sql4="SELECT * FROM adres_info_lista WHERE adres_ID='$dane_ucznia[adres_id]' ";
+		$result4 = @$conn->query($sql4);
+		
+		$adres=@mysqli_fetch_assoc($result4);
 		
 		
 			$conn->close();
@@ -169,44 +195,6 @@ session_start();
 	
 	
 	?>
-	<div id="container">
-	
-		<div id="logo">
-		
-			<h1>Zalogowano jako uczeń</h1>
-		
-		</div>
-		
-		<a href="u_konto.html">
-		<div id="konto">
-		Zarządzanie kontem
-		</div>
-		</a>
-		
-		
-		<a href="u_oceny.html">
-		<div id="oceny">
-		 Oceny 
-		</div></a>
-		
-		
-		<a href="u_frekwencja.html">
-		<div id="frekwencja">
-		 Frekwencja
-		</div> </a>	
-		
-		
-		<a href="u_terminarz.html">
-		<div id="terminarz">
-		 Terminarz 
-		</div>
-		</a>	
-		
-		
-		
-		
-		
-		
 		<div id="tresc">
 			<div id="lewy">
 			
@@ -214,24 +202,28 @@ session_start();
 			<div id="dane">
 				imie:  <?php echo $dane_uzytkowanika['imie'] ; ?>  <br/>
 				nazwisko: <?php echo $dane_uzytkowanika['nazwisko'] ; ?>   <br/>
-				klasa:  <br/>
-				pesel: <br/>
-				adres: <br/>
+				klasa: <?php echo $klasa['oddzial'] ; ?>  <br/>
+				pesel: <?php echo $dane_ucznia['pesel'] ; ?><br/>
+				adres: <?php echo $adres['ulica']." ".$adres['nr_mieszkania']."/".$adres['nr_domu'].", ".$adres['kod']." ".$adres['miejscowosc'] ; ?>  <br/>
 				login: <?php echo $dane_uzytkowanika['uzytkownik_login'] ; ?><br/>
 				email: <?php echo $dane_uzytkowanika['email'] ; ?><br/>
 			</div>
 			
 			</div>
+			<form action="zmiana_hasla.php" method="post">
 			<div id="prawy">
 				<B> Zmiana hasła: </B><br/>
 				<div id="zmianahasla">
 					stare hasło:<br/>
-					<input type="text" name="stare"> <br/>
+					<input type="password" name="stare"> <br/>
 					nowe hasło:<br/>
-					<input type="text" name="stare"><br/>
+					<input type="password" name="nowe"><br/>
 					powtórz nowe hasło:<br/>
-					<input type="text" name="stare"><br/>
-					<button type="button">Zatwierdź</button>
+					<input type="password" name="p_nowe"><br/>
+					<button type="submit">Zatwierdź</button>
+					
+					</form>
+					
 				</div>
 				
 			</div>
@@ -243,6 +235,10 @@ session_start();
 		
 		
 		
+		<form action="wyloguj.php" >
+
+		<button type="submit">wyloguj</button>
+		</form>
 		
 		
 		

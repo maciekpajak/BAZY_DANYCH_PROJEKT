@@ -36,7 +36,7 @@
 	{
 	
 	font-size:25px;
-	margin-left:400px;
+	margin-left:350px;
 	margin-bottom:50px;
 	line-height:1.5;
 	}
@@ -67,32 +67,17 @@
 	
 		<div id="logo">
 		
-			<h1>Dziennik elektroniczny</h1>
+			<h1>Nie pamietasz hasła?</h1>
 		
 		</div>
-		
-		<form action="zaloguj.php" method="post">
 		<div id="tresc">
 		
-		login:<br/>
-		<input type="text" name="login"/><br/>
-		hasło:<br/>
-		<input type="password" name="haslo"/><br/>
-		<a href="niepamietamhasla.php" style="font-size:20px">
-		Nie pamiętam hasła
-		</a>
-		<br/>
-		<button type="submit">Zaloguj</button>
-		<br/>
-		<?php
-		
-		if(isset($_SESSION['blad']))
-		echo $_SESSION['blad'];
-		?>
-		
-		
+		Skontaktu się z administracją.</br>
+		<b>Email:</b> admin1@szkola.pl</br>
+		<b>Tel:</b> 111222333</br>
 		
 		</div>
+		
 		</form>
 		
 		

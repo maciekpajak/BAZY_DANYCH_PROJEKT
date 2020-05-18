@@ -2,12 +2,13 @@
 session_start();
 ?>
 
+
 <!DOCTYPE HTML>
 
 <html lang="pl">
 <head>
 	<meta charset="utf-8" />
-	<title>Tytuł</title>
+	<title>Zarządzanie kontem</title>
 	<meta name="description" content="opis w google"/>
 	<meta name="keywords" content="słowa po których google szuka"/>
 
@@ -32,7 +33,7 @@ session_start();
 	text-align: center;
 	
 	}
-	#konto
+	#teraz
 	{
 	border:  solid black;	
 	float: left;
@@ -42,28 +43,8 @@ session_start();
 	padding: 5px;
 	color: black
 	}
-	
-	
-	#oceny
-	{
-	border:solid black;	
-	float: left;
-	min-height: 25px;
-	text-align: center;
-	padding: 5px;
-	color: black
-	
-	}
-	#frekwencja 
-	{
-	border:  solid black;
-	float: left;
-	min-height: 25px;
-	padding: 5px;
-	color: black
-	
-	}
-	#terminarz 
+
+	#inne
 	{
 	border:  solid black;
 	float: left;
@@ -125,8 +106,6 @@ session_start();
 	padding:20px;
 	}
 	
-	
-	
 	</style>
 
 
@@ -144,34 +123,115 @@ session_start();
 		</div>
 		
 		<a href="r_konto.php">
-		<div id="konto">
+		<div id="teraz">
 		Zarządzanie kontem
 		</div>
 		</a>
 		
 		
 		<a href="r_oceny.php">
-		<div id="oceny">
+		<div id="inne">
 		 Oceny 
 		</div></a>
 		
 		
-		<a href="r_frekwencja.html">
-		<div id="frekwencja">
-		 Frekwencja
+		<a href="r_uwagi.php">
+		<div id="inne">
+		Dziennik uwag
 		</div> </a>	
 		
 		
-		<a href="r_terminarz.html">
-		<div id="terminarz">
-		 Terminarz 
+		<a href="platnosci.php">
+		<div id="inne">
+		Płatności
 		</div>
-		</a>	
+		</a>
+		<a href="Usprawiedliwienia.php">
+		<div id="inne">
+		Usprawiedliwienia
+		</div>
+		</a>		
 		
+		<?php 
+	unset($_SESSION['blad']);
+	
+	require_once "connect.php";
+	
+	$conn=@new mysqli($IP, $username, $password, $DB_name); 
+		                                   /*("adres IP", "username","password", "DB_name")*/
+	if ($conn->connect_errno!=0)
+	{
+		echo "Error: ".$conn->connect_errno;
+	}
+	else
+	{
+
+		$login=$_SESSION['uzytkownik_login'];
+		
+		$haslo = $_SESSION['haslo'];
+		
+		
+		$sql="SELECT * FROM uzytkownik WHERE uzytkownik_login='$login' AND haslo='$haslo'";
+		$result = @$conn->query($sql);
+	
+		$sql2="SELECT * FROM rodzic WHERE uzytkownik_login='$login' ";
+		$result2 = @$conn->query($sql2);
+		
+		$dane_uzytkowanika=@mysqli_fetch_assoc($result);
+		$dane_rodzica=@mysqli_fetch_assoc($result2);
+				
+
+		
+
+		
+		
+			$conn->close();
+			}
+	
+	
+	?>
 		<div id="tresc">
+			<div id="lewy">
+			
+			<B> Dane: </B><br/>
+			<div id="dane">
+				imie:  <?php echo $dane_uzytkowanika['imie'] ; ?>  <br/>
+				nazwisko: <?php echo $dane_uzytkowanika['nazwisko'] ; ?>   <br/>
+				Nr tel: <?php echo $dane_rodzica['nr_telefonu'] ; ?>  <br/>
+				login: <?php echo $dane_uzytkowanika['uzytkownik_login'] ; ?><br/>
+				email: <?php echo $dane_uzytkowanika['email'] ; ?><br/>
+			</div>
+			
+			</div>
+			
+			
+			
+			
+			
+			
+<form action="zmiana_hasla.php" method="post">
+			<div id="prawy">
+				<B> Zmiana hasła: </B><br/>
+				<div id="zmianahasla">
+					stare hasło:<br/>
+					<input type="password" name="stare"> <br/>
+					nowe hasło:<br/>
+					<input type="password" name="nowe"><br/>
+					powtórz nowe hasło:<br/>
+					<input type="password" name="p_nowe"><br/>
+					<button type="submit">Zatwierdź</button>
+					
+					</form>
+					
+				</div>
+				
+			</div>
 		
-		Co ma byc w zakłądce	
 		</div>
+		<form action="wyloguj.php" >
+
+		<button type="submit">wyloguj</button>
+		</form>
 		
 		
 		

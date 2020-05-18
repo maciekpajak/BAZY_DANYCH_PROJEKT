@@ -35,6 +35,11 @@
 					
 					header('Location: u_konto.php');
 				}
+				if($dane['rodzaj']=='A')
+				{
+					
+					header('Location: a_konto.php');
+				}
 				if($dane['rodzaj']=='R')
 				{
 					header('Location: r_konto.php');
@@ -47,7 +52,8 @@
 				
 			else
 				{
-			
+				$_SESSION['blad']='<span style="font-size:20px; color:red">Nieprawidłowy login lub hasło</span>';
+				header('Location: index.php');
 				}
 		
 		
