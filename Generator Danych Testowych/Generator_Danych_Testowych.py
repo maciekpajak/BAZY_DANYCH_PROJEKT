@@ -11,7 +11,7 @@ from Obecnosc import Obecnosc
 
 znak_odstepu = ';'
 
-przedmioty = ('matematyka', 'j.polski', 'j.angielski','historia','wf','fizyka','chemia','geografia','biologia','WOS','j.niemiecki')
+przedmioty = ('matematyka', 'polski', 'angielski','historia','wf','fizyka','chemia','geografia','biologia','WOS','niemiecki')
 stopnie = ('brak','ndst','dop','dst','db','bdb','cel')
 mf = ['m','f']
 imiona_f = []
@@ -19,7 +19,7 @@ imiona_m = []
 nazwiska_m =[]
 nazwiska_f = []
 
-status_obecnosci = ('obecny','nieobecny','spozniony')
+status_obecnosci = ('obecny','nieobecny','spóźniony')
 
 klasy_dla_n= ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16']
 klasy_id = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16']
@@ -44,8 +44,14 @@ lekcja_id = 1
 ocena_id = 1
 klasa_id = 1
 
+adres = []
+adres_naglowki = ('adres_ID','ulice_miejscowosci_id','nr_domu','nr_mieszkania')
+czas_lekcji = []
+czas_lekcji_naglowki = ('czas_lekcji_ID','data','godz_start','godz_koniec')
+
 
 uzytkownicy = []
+uzytkownik_naglowki = ('','','','','','')
 nauczyciele = []
 rodzice = []
 uczniowie = []
@@ -75,6 +81,12 @@ def load_nazwiska_m():
     file = open('./nazwiska_m.txt','r')
     nazwiska_m = file.read().split(';')
 
+def pisz_do_pliku(nazwa_pliku,naglowki, instancja ):
+    with open(nazwa_pliku, 'w') as csvfile:
+        csvwriter = csv.writer(csvfile, delimiter=znak_odstepu)
+        csvwriter.writerow(naglowki)
+        for i in instancja:
+            csvwriter.writerow(i.write())
 
 def generuj_nauczyciela():
     global nauczyciel_id
