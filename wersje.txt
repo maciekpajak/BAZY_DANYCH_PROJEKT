@@ -1,3 +1,10 @@
 v1.0:
 wersja wyjœciowa
 -----
+v1.1 
+21.05.2020
++ naprawiona procedura "dzieci_rodzica"
++ dodana kolumna do widoku "uczen_info_lista" -> potrzebna dla procedury "rodzice_w_klasie"
++ dodana procedura "dodaj_ocene"
++ dodana funkcja "zmien_haslo" z weryfikacj¹ starego hasla (zwraca 1 jesli uda³o siê zmieniæ haslo, zwraca 0 jeœli stare haslo podanego uzytkownika siê nie zgadza)
+- usuniêta zdublowana procedura
