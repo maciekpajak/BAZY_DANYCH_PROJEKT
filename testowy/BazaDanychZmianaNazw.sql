@@ -39,9 +39,9 @@ REPLACE INTO `adres` (`adres_ID`, `ulice_miejscowosci_id`, `nr_domu`, `nr_mieszk
 	(011, 000012, '23', '19');
 /*!40000 ALTER TABLE `adres` ENABLE KEYS */;
 
--- Zrzut struktury widok id13767441_dziennik.adres_full_info
+-- Zrzut struktury widok id13767441_dziennik.adres_info_lista
 -- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
-CREATE TABLE `adres_full_info` (
+CREATE TABLE `adres_info_lista` (
 	`adres_ID` INT(3) UNSIGNED ZEROFILL NOT NULL,
 	`miejscowosc` VARCHAR(30) NOT NULL COLLATE 'utf8_polish_ci',
 	`kod` INT(5) UNSIGNED NOT NULL,
@@ -57,8 +57,7 @@ CREATE TABLE IF NOT EXISTS `czas_lekcji` (
   `godz_start` time NOT NULL DEFAULT '00:00:00',
   `godz_koniec` time NOT NULL DEFAULT '00:00:00',
   PRIMARY KEY (`czas_lekcji_ID`),
-  UNIQUE KEY `ID` (`czas_lekcji_ID`),
-  KEY `data` (`data`,`godz_start`) USING BTREE
+  UNIQUE KEY `ID` (`czas_lekcji_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- Zrzucanie danych dla tabeli id13767441_dziennik.czas_lekcji: ~5 rows (około)
@@ -70,17 +69,6 @@ REPLACE INTO `czas_lekcji` (`czas_lekcji_ID`, `data`, `godz_start`, `godz_koniec
 	(00004, '2020-05-09', '15:00:00', '15:45:00'),
 	(00005, '2020-05-10', '14:00:00', '14:45:00');
 /*!40000 ALTER TABLE `czas_lekcji` ENABLE KEYS */;
-
--- Zrzut struktury procedura id13767441_dziennik.dodaj_obecnosc
-DELIMITER //
-CREATE DEFINER=`admin`@`localhost` PROCEDURE `dodaj_obecnosc`(
-	IN `obecnosc_status` ENUM('obecny','nieobecny','spóźniony'),
-	IN `uczen_id` INT,
-	IN `lekcja_id` INT
-)
-INSERT INTO obecnosc (obecnosc.`status`, obecnosc.uczen_id, obecnosc.lekcja_id)
-VALUES (obecnosc_status, uczen_id, lekcja_id)//
-DELIMITER ;
 
 -- Zrzut struktury procedura id13767441_dziennik.dodaj_ocene
 DELIMITER //
@@ -98,72 +86,6 @@ INSERT INTO ocena (ocena.stopien, ocena.waga, ocena.opis, ocena.uczen_id, ocena.
 VALUES (stopien,waga,opis,uczen_id,nauczyciel_przedmiotu_id)//
 DELIMITER ;
 
--- Zrzut struktury procedura id13767441_dziennik.dodaj_rodzica
-DELIMITER //
-CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `dodaj_rodzica`(
-	IN `imie` VARCHAR(16),
-	IN `nazwisko` VARCHAR(32),
-	IN `nr_tel` VARCHAR(12),
-	IN `email` VARCHAR(32),
-	IN `opiekunowie_id` INT
-
-
-
-
-)
-BEGIN 
-	DECLARE login VARCHAR(16);
-	DECLARE haslo CHAR(32);
-	SET login = LEFT(MD5(RAND()),8);
-	SET haslo = LEFT(MD5(RAND()),16);
-	call dodaj_uzytkownika(login, haslo, imie, nazwisko, 'R', email);
-	
-	INSERT INTO rodzic (rodzic.uzytkownik_login,rodzic.nr_telefonu, rodzic.opiekunowie_id)
-	VALUES (login,nr_tel, opiekunowie_id);
- END//
-DELIMITER ;
-
--- Zrzut struktury procedura id13767441_dziennik.dodaj_ucznia
-DELIMITER //
-CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `dodaj_ucznia`(
-	IN `pesel` CHAR(11),
-	IN `adres_id` INT,
-	IN `klasa_id` INT,
-	IN `opiekunowie_id` INT
-
-
-
-,
-	IN `imie` VARCHAR(20),
-	IN `nazwisko` VARCHAR(30),
-	IN `email` VARCHAR(32)
-
-
-)
-BEGIN 
-	DECLARE login VARCHAR(16);
-	DECLARE haslo CHAR(32);
-	SET login = LEFT(MD5(RAND()),8);
-	SET haslo = LEFT(MD5(RAND()),16);
-	call dodaj_uzytkownika(login, haslo, imie, nazwisko, 'U', email);
-	INSERT INTO uczen (uczen.pesel, uczen.adres_id, uczen.klasa_id, uczen.opiekunowie_id, uczen.uzytkownik_login)
-	VALUES (pesel,adres_id, klasa_id, opiekunowie_id, login);
- END//
-DELIMITER ;
-
--- Zrzut struktury procedura id13767441_dziennik.dodaj_uzytkownika
-DELIMITER //
-CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `dodaj_uzytkownika`(
-	IN `login` VARCHAR(16),
-	IN `haslo` VARCHAR(32),
-	IN `imie` VARCHAR(20),
-	IN `nazwisko` VARCHAR(30),
-	IN `rodzaj` ENUM('U','R','N','I','A'),
-	IN `email` VARCHAR(32)
-)
-INSERT INTO uzytkownik (uzytkownik.uzytkownik_login,uzytkownik.haslo, uzytkownik.imie, uzytkownik.nazwisko, uzytkownik.rodzaj, uzytkownik.email) VALUES (login, MD5(haslo), imie, nazwisko, rodzaj,email)//
-DELIMITER ;
-
 -- Zrzut struktury procedura id13767441_dziennik.dzieci_rodzica
 DELIMITER //
 CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `dzieci_rodzica`(
@@ -176,35 +98,42 @@ CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `dzieci_rodzica`(
 
 
 
-
-
 )
-SELECT u.imie, u.nazwisko, u.oddzial, u.uczen_ID
-FROM rodzic AS r
-JOIN uczen_full_info AS u ON r.opiekunowie_id = u.opiekunowie_id
-WHERE r.rodzic_ID = rodzic_id//
+select u.imie, u.nazwisko, u.oddzial, u.uczen_ID
+from rodzic as r
+join uczen_info_lista as u on r.opiekunowie_id = u.opiekunowie_id
+where r.rodzic_ID = rodzic_id//
 DELIMITER ;
 
 -- Zrzut struktury procedura id13767441_dziennik.frekwencja_na_lekcji
 DELIMITER //
 CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `frekwencja_na_lekcji`(
 	IN `lekcja_id` INT
+
+
+
+
 )
-SELECT u.imie, u.nazwisko, o.`status`
-FROM obecnosc AS o
-JOIN lekcja_full_info AS l ON o.lekcja_id = l.lekcja_ID
-JOIN uczen_full_info AS u ON o.uczen_id = u.uczen_ID
-WHERE l.lekcja_ID = lekcja_id AND l.oddzial = u.oddzial
-ORDER BY u.nazwisko , u.imie ASC//
+select u.imie, u.nazwisko, o.`status`
+from obecnosc as o
+join lekcja_info_lista as l on o.lekcja_id = l.lekcja_ID
+join uczen_info_lista as u on o.uczen_id = u.uczen_ID
+where l.lekcja_ID = lekcja_id
+and l.oddzial = u.oddzial
+order by u.nazwisko//
 DELIMITER ;
 
 -- Zrzut struktury procedura id13767441_dziennik.frekwencja_ucznia
 DELIMITER //
 CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `frekwencja_ucznia`(
 	IN `uczen_id` INT
+
+
+
+
 )
 select l.`data`, l.godz_start, l.godz_koniec, l.sala, l.przedmiot, l.imie, l.nazwisko, l.temat, o.`status`
-from lekcja_full_info as l
+from lekcja_info_lista as l
 join obecnosc as o on l.lekcja_ID = o.lekcja_id
 where o.uczen_id = uczen_id
 order by l.`data`//
@@ -263,7 +192,7 @@ REPLACE INTO `klasa` (`klasa_ID`, `oddzial`) VALUES
 -- Zrzut struktury tabela id13767441_dziennik.lekcja
 CREATE TABLE IF NOT EXISTS `lekcja` (
   `lekcja_ID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `temat` varchar(250) COLLATE utf8_polish_ci DEFAULT NULL,
+  `temat` varchar(250) COLLATE utf8_polish_ci NOT NULL,
   `sala` int(2) unsigned NOT NULL,
   `grupa_lekcji_id` int(3) unsigned zerofill NOT NULL,
   `czas_lekcji_id` int(5) unsigned zerofill NOT NULL,
@@ -287,9 +216,9 @@ REPLACE INTO `lekcja` (`lekcja_ID`, `temat`, `sala`, `grupa_lekcji_id`, `czas_le
 	(00007, 'Procedury, widoki, wyzwalacze i indeksy', 12, 002, 00004);
 /*!40000 ALTER TABLE `lekcja` ENABLE KEYS */;
 
--- Zrzut struktury widok id13767441_dziennik.lekcja_full_info
+-- Zrzut struktury widok id13767441_dziennik.lekcja_info_lista
 -- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
-CREATE TABLE `lekcja_full_info` (
+CREATE TABLE `lekcja_info_lista` (
 	`lekcja_ID` INT(5) UNSIGNED ZEROFILL NOT NULL,
 	`data` DATE NOT NULL,
 	`godz_start` TIME NOT NULL,
@@ -299,7 +228,7 @@ CREATE TABLE `lekcja_full_info` (
 	`przedmiot` VARCHAR(32) NULL COLLATE 'utf8_polish_ci',
 	`imie` VARCHAR(20) NOT NULL COLLATE 'utf8_polish_ci',
 	`nazwisko` VARCHAR(30) NOT NULL COLLATE 'utf8_polish_ci',
-	`temat` VARCHAR(250) NULL COLLATE 'utf8_polish_ci',
+	`temat` VARCHAR(250) NOT NULL COLLATE 'utf8_polish_ci',
 	`nauczyciel_id` INT(2) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=MyISAM;
 
@@ -313,11 +242,10 @@ CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `lekcje_nauczyciela`(
 
 
 
-
 )
 select l.`data`, l.godz_start, l.godz_koniec, l.oddzial,l.sala,l.przedmiot
-from nauczyciel_full_info as n
-join lekcja_full_info as l on n.ID = l.nauczyciel_id and `l`.`przedmiot` = `n`.`przedmiot`
+from nauczyciel_info_lista as n
+join lekcja_info_lista as l on n.ID = l.nauczyciel_id and `l`.`przedmiot` = `n`.`przedmiot`
 where n.ID = nauczyciel_id//
 DELIMITER ;
 
@@ -325,13 +253,14 @@ DELIMITER ;
 DELIMITER //
 CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `lista_osob_w_klasie`(
 	IN `klasa_id` INT
+
 )
-SELECT uz.imie AS 'imie', uz.nazwisko AS 'nazwisko', k.oddzial
+SELECT uzytkownik.imie AS 'imie', uzytkownik.nazwisko AS 'nazwisko', k.oddzial
 FROM uczen as u
 INNER JOIN klasa as k ON u.klasa_id = k.klasa_ID 
-left JOIN uzytkownik as uz ON u.uzytkownik_login = uz.uzytkownik_login
-where k.klasa_ID = klasa_id
-ORDER BY nazwisko,imie ASC//
+left JOIN uzytkownik ON u.uzytkownik_login = uzytkownik.uzytkownik_login
+where k.klasa_ID =klasa_id
+ORDER BY nazwisko ASC//
 DELIMITER ;
 
 -- Zrzut struktury tabela id13767441_dziennik.miejscowosc
@@ -357,7 +286,7 @@ REPLACE INTO `miejscowosc` (`miejscowosc_ID`, `nazwa`) VALUES
 CREATE TABLE IF NOT EXISTS `nauczyciel` (
   `nauczyciel_ID` int(2) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `uzytkownik_login` varchar(16) COLLATE utf8_polish_ci NOT NULL,
-  `nr_tel` char(50) COLLATE utf8_polish_ci DEFAULT NULL,
+  `nr_tel` char(50) COLLATE utf8_polish_ci NOT NULL,
   `czy_wych` enum('Y','N') COLLATE utf8_polish_ci NOT NULL DEFAULT 'N',
   PRIMARY KEY (`nauczyciel_ID`),
   UNIQUE KEY `ID` (`nauczyciel_ID`),
@@ -384,21 +313,20 @@ CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `nauczyciele_przedmiotu`(
 
 
 
-
 )
-select np.przedmiot_nazwa, n.imie, n.nazwisko, n.nr_tel, n.email
+select np.przedmiot_nazwa, nlst.imie, nlst.nazwisko, nlst.nr_tel, nlst.email
 from nauczyciel_przedmiotu as np
-join nauczyciel_full_info as n on np.nauczyciel_id = n.ID and np.przedmiot_nazwa = n.przedmiot
+join nauczyciel_info_lista as nlst on np.nauczyciel_id = nlst.ID and np.przedmiot_nazwa = nlst.przedmiot
 where np.przedmiot_nazwa = przedmiot_nazwa//
 DELIMITER ;
 
--- Zrzut struktury widok id13767441_dziennik.nauczyciel_full_info
+-- Zrzut struktury widok id13767441_dziennik.nauczyciel_info_lista
 -- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
-CREATE TABLE `nauczyciel_full_info` (
+CREATE TABLE `nauczyciel_info_lista` (
 	`ID` INT(2) UNSIGNED ZEROFILL NOT NULL,
 	`nazwisko` VARCHAR(30) NOT NULL COLLATE 'utf8_polish_ci',
 	`imie` VARCHAR(20) NOT NULL COLLATE 'utf8_polish_ci',
-	`nr_tel` CHAR(50) NULL COLLATE 'utf8_polish_ci',
+	`nr_tel` CHAR(50) NOT NULL COLLATE 'utf8_polish_ci',
 	`email` VARCHAR(32) NULL COLLATE 'utf8_polish_ci',
 	`przedmiot` VARCHAR(32) NULL COLLATE 'utf8_polish_ci',
 	`nauczyciel_przedmiotu_ID` INT(3) UNSIGNED ZEROFILL NOT NULL
@@ -458,9 +386,9 @@ REPLACE INTO `obecnosc` (`obecnosc_ID`, `status`, `uczen_id`, `lekcja_id`) VALUE
 -- Zrzut struktury tabela id13767441_dziennik.ocena
 CREATE TABLE IF NOT EXISTS `ocena` (
   `ocena_ID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `stopien` enum('0','1','2','3','4','5','6') COLLATE utf8_polish_ci NOT NULL DEFAULT '0',
+  `stopien` enum('0','1','2','3','4','5','6') COLLATE utf8_polish_ci NOT NULL,
   `waga` int(1) unsigned NOT NULL DEFAULT 1,
-  `opis` varchar(100) COLLATE utf8_polish_ci DEFAULT 'Brak opisu',
+  `opis` varchar(100) COLLATE utf8_polish_ci NOT NULL DEFAULT 'Brak opisu',
   `data` date NOT NULL DEFAULT curdate(),
   `uczen_id` int(3) unsigned zerofill NOT NULL,
   `nauczyciel_przedmiotu_id` int(3) unsigned zerofill NOT NULL,
@@ -468,7 +396,6 @@ CREATE TABLE IF NOT EXISTS `ocena` (
   UNIQUE KEY `Indeks 1` (`ocena_ID`) USING BTREE,
   KEY `nauczyciel` (`nauczyciel_przedmiotu_id`),
   KEY `uczen` (`uczen_id`),
-  KEY `data` (`data`) USING BTREE,
   CONSTRAINT `FK_ocena_nauczyciel_przedmiotu` FOREIGN KEY (`nauczyciel_przedmiotu_id`) REFERENCES `nauczyciel_przedmiotu` (`nauczyciel_przedmiotu_ID`),
   CONSTRAINT `FK_ocena_uczen` FOREIGN KEY (`uczen_id`) REFERENCES `uczen` (`uczen_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
@@ -476,12 +403,12 @@ CREATE TABLE IF NOT EXISTS `ocena` (
 -- Zrzucanie danych dla tabeli id13767441_dziennik.ocena: ~12 rows (około)
 /*!40000 ALTER TABLE `ocena` DISABLE KEYS */;
 REPLACE INTO `ocena` (`ocena_ID`, `stopien`, `waga`, `opis`, `data`, `uczen_id`, `nauczyciel_przedmiotu_id`) VALUES
-	(000001, '3', 3, '', '2020-04-23', 001, 001),
+	(000001, '3', 3, '', '2020-04-29', 001, 001),
 	(000002, '5', 1, '', '2020-04-29', 003, 002),
 	(000003, '4', 2, '', '2020-04-29', 001, 003),
 	(000004, '0', 1, '', '2020-04-29', 002, 001),
 	(000005, '0', 1, '', '2020-04-29', 003, 002),
-	(000006, '1', 1, '', '2020-04-26', 001, 003),
+	(000006, '1', 1, '', '2020-04-29', 001, 003),
 	(000007, '5', 8, '', '2020-04-29', 002, 003),
 	(000008, '3', 1, '', '2020-04-29', 003, 001),
 	(000009, '4', 2, 'Brak opisu', '2020-05-21', 001, 001),
@@ -490,13 +417,13 @@ REPLACE INTO `ocena` (`ocena_ID`, `stopien`, `waga`, `opis`, `data`, `uczen_id`,
 	(000012, '1', 1, 'Brak opisu', '2020-05-21', 002, 002);
 /*!40000 ALTER TABLE `ocena` ENABLE KEYS */;
 
--- Zrzut struktury widok id13767441_dziennik.ocena_full_info
+-- Zrzut struktury widok id13767441_dziennik.ocena_info_lista
 -- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
-CREATE TABLE `ocena_full_info` (
+CREATE TABLE `ocena_info_lista` (
 	`ocena_ID` INT(6) UNSIGNED ZEROFILL NOT NULL,
 	`stopien` ENUM('0','1','2','3','4','5','6') NOT NULL COLLATE 'utf8_polish_ci',
 	`waga` INT(1) UNSIGNED NOT NULL,
-	`opis` VARCHAR(100) NULL COLLATE 'utf8_polish_ci',
+	`opis` VARCHAR(100) NOT NULL COLLATE 'utf8_polish_ci',
 	`data` DATE NOT NULL,
 	`uczen_id` INT(3) UNSIGNED ZEROFILL NOT NULL,
 	`imie` VARCHAR(20) NOT NULL COLLATE 'utf8_polish_ci',
@@ -508,11 +435,14 @@ CREATE TABLE `ocena_full_info` (
 DELIMITER //
 CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `oceny_ucznia`(
 	IN `uczen_id` INT
+
+
+
+
 )
 select * 
-from ocena_full_info as o
-where o.uczen_id = uczen_id
-ORDER BY o.`przedmiot`, o.`data` ASC//
+from ocena_info_lista as o
+where o.uczen_id = uczen_id//
 DELIMITER ;
 
 -- Zrzut struktury tabela id13767441_dziennik.opiekunowie
@@ -541,24 +471,11 @@ CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `plan_lekcji_klasy`(
 
 
 
-
 )
 select *
-from lekcja_full_info as l
+from lekcja_info_lista as l
 join klasa as k on l.oddzial = k.oddzial
 where k.klasa_ID = klasa_id//
-DELIMITER ;
-
--- Zrzut struktury procedura id13767441_dziennik.pokaz_frekwencje_ucznia
-DELIMITER //
-CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `pokaz_frekwencje_ucznia`(
-	IN `uczen_id` INT
-)
-SELECT l.`data`, l.godz_start, l.godz_koniec, l.sala, l.przedmiot, l.imie, l.nazwisko, l.temat, o.`status`
-FROM lekcja_full_info AS l
-JOIN obecnosc AS o ON l.lekcja_ID = o.lekcja_id
-WHERE o.uczen_id = uczen_id
-ORDER BY l.`data` AND l.godz_start//
 DELIMITER ;
 
 -- Zrzut struktury tabela id13767441_dziennik.przedmiot
@@ -621,13 +538,12 @@ CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `rodzice_ucznia`(
 
 
 
-
 )
-select r.imie, r.nazwisko, r.email, r.nr_telefonu
-from opiekunowie as o
-join uczen as u on o.opiekunowie_ID = u.opiekunowie_id
-join rodzic_full_info as r on o.opiekunowie_ID = r.opiekunowie_id
-where u.uczen_ID = uczen_id//
+select rlst.imie, rlst.nazwisko, rlst.email, rlst.nr_telefonu
+from opiekunowie
+join uczen on opiekunowie.opiekunowie_ID = uczen.opiekunowie_id
+join rodzic_info_lista as rlst on opiekunowie.opiekunowie_ID = rlst.opiekunowie_id
+where uczen.uczen_ID = uczen_id//
 DELIMITER ;
 
 -- Zrzut struktury procedura id13767441_dziennik.rodzice_w_klasie
@@ -638,24 +554,12 @@ CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `rodzice_w_klasie`(
 
 
 
-
 )
 select r.imie, r.nazwisko, r.email, r.nr_telefonu
-from uczen_full_info as u
-join rodzic_full_info as r on u.opiekunowie_id = r.opiekunowie_id
+from uczen_info_lista as u
+join rodzic_info_lista as r on u.opiekunowie_id = r.opiekunowie_id
 where u.klasa_id = klasa_id//
 DELIMITER ;
-
--- Zrzut struktury widok id13767441_dziennik.rodzic_full_info
--- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
-CREATE TABLE `rodzic_full_info` (
-	`rodzic_ID` INT(3) UNSIGNED ZEROFILL NOT NULL,
-	`nr_telefonu` VARCHAR(12) NULL COLLATE 'utf8_polish_ci',
-	`imie` VARCHAR(20) NULL COLLATE 'utf8_polish_ci',
-	`nazwisko` VARCHAR(30) NULL COLLATE 'utf8_polish_ci',
-	`email` VARCHAR(32) NULL COLLATE 'utf8_polish_ci',
-	`opiekunowie_id` INT(3) UNSIGNED ZEROFILL NOT NULL
-) ENGINE=MyISAM;
 
 -- Zrzut struktury procedura id13767441_dziennik.rodzic_info
 DELIMITER //
@@ -663,12 +567,22 @@ CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `rodzic_info`(
 	IN `rodzic_id` INT
 
 
-
 )
-select r.imie, r.nazwisko, r.email, r.nr_telefonu
-from rodzic_full_info as r
-where r.rodzic_ID  = rodzic_id//
+select rlst.imie, rlst.nazwisko, rlst.email, rlst.nr_telefonu
+from rodzic_info_lista as rlst
+where rlst.rodzic_ID  = rodzic_id//
 DELIMITER ;
+
+-- Zrzut struktury widok id13767441_dziennik.rodzic_info_lista
+-- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
+CREATE TABLE `rodzic_info_lista` (
+	`rodzic_ID` INT(3) UNSIGNED ZEROFILL NOT NULL,
+	`nr_telefonu` VARCHAR(12) NULL COLLATE 'utf8_polish_ci',
+	`imie` VARCHAR(20) NULL COLLATE 'utf8_polish_ci',
+	`nazwisko` VARCHAR(30) NULL COLLATE 'utf8_polish_ci',
+	`email` VARCHAR(32) NULL COLLATE 'utf8_polish_ci',
+	`opiekunowie_id` INT(3) UNSIGNED ZEROFILL NOT NULL
+) ENGINE=MyISAM;
 
 -- Zrzut struktury tabela id13767441_dziennik.uczen
 CREATE TABLE IF NOT EXISTS `uczen` (
@@ -689,20 +603,31 @@ CREATE TABLE IF NOT EXISTS `uczen` (
   CONSTRAINT `FK_uczen_klasa` FOREIGN KEY (`klasa_id`) REFERENCES `klasa` (`klasa_ID`),
   CONSTRAINT `FK_uczen_powiazanie` FOREIGN KEY (`opiekunowie_id`) REFERENCES `opiekunowie` (`opiekunowie_ID`),
   CONSTRAINT `FK_uczen_uzytkownik` FOREIGN KEY (`uzytkownik_login`) REFERENCES `uzytkownik` (`uzytkownik_login`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- Zrzucanie danych dla tabeli id13767441_dziennik.uczen: ~3 rows (około)
 /*!40000 ALTER TABLE `uczen` DISABLE KEYS */;
 REPLACE INTO `uczen` (`uczen_ID`, `pesel`, `adres_id`, `klasa_id`, `opiekunowie_id`, `uzytkownik_login`) VALUES
 	(001, '99999999999', 009, 07, 001, 'U0001'),
 	(002, '99999999998', 009, 02, 002, 'U0002'),
-	(003, '99999999997', 008, 07, 003, 'U0003'),
-	(008, '99900099911', 001, 04, 002, 'eab698c5');
+	(003, '99999999997', 008, 07, 003, 'U0003');
 /*!40000 ALTER TABLE `uczen` ENABLE KEYS */;
 
--- Zrzut struktury widok id13767441_dziennik.uczen_full_info
+-- Zrzut struktury procedura id13767441_dziennik.uczen_info
+DELIMITER //
+CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `uczen_info`(
+	IN `uczen_id` INT
+
+
+)
+select * 
+from uczen_info_lista
+where uczen_info_lista.uczen_ID = uczen_id//
+DELIMITER ;
+
+-- Zrzut struktury widok id13767441_dziennik.uczen_info_lista
 -- Tworzenie tymczasowej tabeli aby przezwyciężyć błędy z zależnościami w WIDOKU
-CREATE TABLE `uczen_full_info` (
+CREATE TABLE `uczen_info_lista` (
 	`uczen_ID` INT(3) UNSIGNED ZEROFILL NOT NULL,
 	`klasa_ID` INT(2) UNSIGNED ZEROFILL NOT NULL,
 	`oddzial` VARCHAR(3) NOT NULL COLLATE 'utf8_polish_ci',
@@ -717,19 +642,6 @@ CREATE TABLE `uczen_full_info` (
 	`nr_mieszkania` VARCHAR(4) NULL COLLATE 'utf8_polish_ci',
 	`opiekunowie_id` INT(3) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=MyISAM;
-
--- Zrzut struktury procedura id13767441_dziennik.uczen_info
-DELIMITER //
-CREATE DEFINER=`id13767441_dzienn`@`%` PROCEDURE `uczen_info`(
-	IN `uczen_id` INT
-
-
-
-)
-select * 
-from uczen_full_info as u
-where u.uczen_ID = uczen_id//
-DELIMITER ;
 
 -- Zrzut struktury tabela id13767441_dziennik.ulica
 CREATE TABLE IF NOT EXISTS `ulica` (
@@ -797,19 +709,18 @@ CREATE TABLE IF NOT EXISTS `uzytkownik` (
   `uzytkownik_login` varchar(16) COLLATE utf8_polish_ci NOT NULL DEFAULT left(md5(rand()),6),
   `nazwisko` varchar(30) COLLATE utf8_polish_ci NOT NULL,
   `imie` varchar(20) COLLATE utf8_polish_ci NOT NULL,
-  `haslo` char(32) COLLATE utf8_polish_ci NOT NULL DEFAULT md5('123456'),
+  `haslo` char(32) COLLATE utf8_polish_ci NOT NULL DEFAULT left(md5(rand()),16),
   `rodzaj` enum('U','N','R','I','A') COLLATE utf8_polish_ci DEFAULT 'I',
   `email` varchar(32) COLLATE utf8_polish_ci DEFAULT NULL,
-  PRIMARY KEY (`uzytkownik_login`) USING BTREE,
-  UNIQUE KEY `login` (`uzytkownik_login`),
-  KEY `haslo` (`haslo`) USING BTREE
+  PRIMARY KEY (`uzytkownik_login`),
+  UNIQUE KEY `login` (`uzytkownik_login`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- Zrzucanie danych dla tabeli id13767441_dziennik.uzytkownik: ~14 rows (około)
 /*!40000 ALTER TABLE `uzytkownik` DISABLE KEYS */;
 REPLACE INTO `uzytkownik` (`uzytkownik_login`, `nazwisko`, `imie`, `haslo`, `rodzaj`, `email`) VALUES
-	('6ea9d50b', 'Polny', 'Maciej', '44718d94ddc04963', 'I', ''),
-	('eab698c5', 'Okoń', 'Aleksander', '95add1e8cbea1b16776f95ad39c09e54', 'U', 'przykladowy@gumka.io'),
+	('46f823', 'asd', 'adasd', 'e36b985580dbdd59', 'I', NULL),
+	('db511b', 'Jackowski', 'Antoni', '452414799544ed31', 'A', NULL),
 	('N0001', 'Trąba', 'Wiktor', '897n23nx723', 'N', NULL),
 	('N0002', 'Ameba', 'Adam', '189fb7613', 'N', NULL),
 	('N0003', 'Koch', 'Paweł', 'afsgfsgrw', 'N', NULL),
@@ -831,15 +742,13 @@ CREATE TABLE IF NOT EXISTS `wersja` (
   `minor` int(10) unsigned DEFAULT 0,
   `data` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
--- Zrzucanie danych dla tabeli id13767441_dziennik.wersja: ~1 rows (około)
+-- Zrzucanie danych dla tabeli id13767441_dziennik.wersja: ~2 rows (około)
 /*!40000 ALTER TABLE `wersja` DISABLE KEYS */;
 REPLACE INTO `wersja` (`id`, `major`, `minor`, `data`) VALUES
 	(1, 1, 0, '2020-05-13 17:31:38'),
-	(2, 1, 1, '2020-05-21 13:25:43'),
-	(3, 1, 2, '2020-05-21 18:35:21'),
-	(4, 1, 3, '2020-05-27 10:07:30');
+	(2, 1, 1, '2020-05-21 13:25:43');
 /*!40000 ALTER TABLE `wersja` ENABLE KEYS */;
 
 -- Zrzut struktury procedura id13767441_dziennik.zmiana_hasla_admin
@@ -883,7 +792,6 @@ CREATE DEFINER=`id13767441_dzienn`@`%` FUNCTION `zmien_haslo`(`uzytkownik_login`
 	`new_haslo` CHAR(32)
 
 
-
 ) RETURNS bit(1)
 BEGIN
     DECLARE s BIT;
@@ -891,13 +799,13 @@ BEGIN
     IF exists 
 	 (
 		 select *
-		 from uzytkownik as u
-		 where u.uzytkownik_login = uzytkownik_login and u.haslo = old_haslo
+		 from uzytkownik 
+		 where uzytkownik.uzytkownik_login = uzytkownik_login and uzytkownik.haslo = old_haslo
 	 )
 	 THEN 
 		 update uzytkownik
-			set u.haslo = new_haslo
-		  	where u.uzytkownik_login = uzytkownik_login;
+			set uzytkownik.haslo = new_haslo
+		  	where uzytkownik.uzytkownik_login = uzytkownik_login;
 		 SET s = 1;
 	  
     ELSE SET s = 0;
@@ -909,56 +817,42 @@ BEGIN
 END//
 DELIMITER ;
 
--- Zrzut struktury widok id13767441_dziennik.adres_full_info
+-- Zrzut struktury widok id13767441_dziennik.adres_info_lista
 -- Usuwanie tabeli tymczasowej i tworzenie ostatecznej struktury WIDOKU
-DROP TABLE IF EXISTS `adres_full_info`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`id13767441_dzienn`@`%` SQL SECURITY DEFINER VIEW `adres_full_info` AS SELECT `a`.`adres_ID` AS `adres_ID`,`m`.`nazwa` AS `miejscowosc`,`um`.`kod` AS `kod`,`u`.`nazwa` AS `ulica`,`a`.`nr_domu` AS `nr_domu`,`a`.`nr_mieszkania` AS `nr_mieszkania`
+DROP TABLE IF EXISTS `adres_info_lista`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`id13767441_dzienn`@`%` SQL SECURITY DEFINER VIEW `adres_info_lista` AS SELECT `id13767441_dziennik`.`adres`.`adres_ID` AS `adres_ID`,`id13767441_dziennik`.`miejscowosc`.`nazwa` AS `miejscowosc`,`um`.`kod` AS `kod`,`id13767441_dziennik`.`ulica`.`nazwa` AS `ulica`,`id13767441_dziennik`.`adres`.`nr_domu` AS `nr_domu`,`id13767441_dziennik`.`adres`.`nr_mieszkania` AS `nr_mieszkania`
 FROM (((`ulice_miejscowosci` `um`
-JOIN `ulica` AS u ON(`um`.`ulica_id` = `u`.`ulica_ID`))
-JOIN `miejscowosc` AS m ON(`um`.`miejscowosc_id` = `m`.`miejscowosc_ID`))
-JOIN `adres` AS a ON(`a`.`ulice_miejscowosci_id` = `um`.`ulice_miejscowosci_ID`)) ;
+JOIN `ulica` ON(`um`.`ulica_id` = `id13767441_dziennik`.`ulica`.`ulica_ID`))
+JOIN `miejscowosc` ON(`um`.`miejscowosc_id` = `id13767441_dziennik`.`miejscowosc`.`miejscowosc_ID`))
+JOIN `adres` ON(`id13767441_dziennik`.`adres`.`ulice_miejscowosci_id` = `um`.`ulice_miejscowosci_ID`)) ;
 
--- Zrzut struktury widok id13767441_dziennik.lekcja_full_info
+-- Zrzut struktury widok id13767441_dziennik.lekcja_info_lista
 -- Usuwanie tabeli tymczasowej i tworzenie ostatecznej struktury WIDOKU
-DROP TABLE IF EXISTS `lekcja_full_info`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`id13767441_dzienn`@`%` SQL SECURITY DEFINER VIEW `lekcja_full_info` AS SELECT `l`.`lekcja_ID` AS `lekcja_ID`,`c`.`data` AS `data`,`c`.`godz_start` AS `godz_start`,`c`.`godz_koniec` AS `godz_koniec`,`o`.`oddzial` AS `oddzial`,`l`.`sala` AS `sala`,`o`.`przedmiot` AS `przedmiot`,`o`.`imie` AS `imie`,`o`.`nazwisko` AS `nazwisko`,`l`.`temat` AS `temat`,`o`.`ID` AS `nauczyciel_id`
-FROM ((`lekcja` `l`
-JOIN `czas_lekcji` `c` ON(`l`.`czas_lekcji_id` = `c`.`czas_lekcji_ID`))
-JOIN (
-SELECT `gr`.`grupa_lekcji_ID` AS `grupa_lekcji_ID`,`k`.`oddzial` AS `oddzial`,`n`.`imie` AS `imie`,`n`.`nazwisko` AS `nazwisko`,`n`.`przedmiot` AS `przedmiot`,`n`.`ID` AS `ID`
-FROM ((`grupa_lekcji` `gr`
-JOIN `nauczyciel_full_info` `n` ON(`gr`.`nauczyciel_przedmiot_id` = `n`.`nauczyciel_przedmiotu_ID`))
-JOIN `klasa` `k` ON(`gr`.`klasa_id` = `k`.`klasa_ID`))) `o` ON(`l`.`grupa_lekcji_id` = `o`.`grupa_lekcji_ID`)) ;
+DROP TABLE IF EXISTS `lekcja_info_lista`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`id13767441_dzienn`@`%` SQL SECURITY DEFINER VIEW `lekcja_info_lista` AS select `l`.`lekcja_ID` AS `lekcja_ID`,`c`.`data` AS `data`,`c`.`godz_start` AS `godz_start`,`c`.`godz_koniec` AS `godz_koniec`,`o`.`oddzial` AS `oddzial`,`l`.`sala` AS `sala`,`o`.`przedmiot` AS `przedmiot`,`o`.`imie` AS `imie`,`o`.`nazwisko` AS `nazwisko`,`l`.`temat` AS `temat`,`o`.`ID` AS `nauczyciel_id` from ((`id13767441_dziennik`.`lekcja` `l` join `id13767441_dziennik`.`czas_lekcji` `c` on(`l`.`czas_lekcji_id` = `c`.`czas_lekcji_ID`)) join (select `gr`.`grupa_lekcji_ID` AS `grupa_lekcji_ID`,`k`.`oddzial` AS `oddzial`,`nlst`.`imie` AS `imie`,`nlst`.`nazwisko` AS `nazwisko`,`nlst`.`przedmiot` AS `przedmiot`,`nlst`.`ID` AS `ID` from ((`id13767441_dziennik`.`grupa_lekcji` `gr` join `id13767441_dziennik`.`nauczyciel_info_lista` `nlst` on(`gr`.`nauczyciel_przedmiot_id` = `nlst`.`nauczyciel_przedmiotu_ID`)) join `id13767441_dziennik`.`klasa` `k` on(`gr`.`klasa_id` = `k`.`klasa_ID`))) `o` on(`l`.`grupa_lekcji_id` = `o`.`grupa_lekcji_ID`)) ;
 
--- Zrzut struktury widok id13767441_dziennik.nauczyciel_full_info
+-- Zrzut struktury widok id13767441_dziennik.nauczyciel_info_lista
 -- Usuwanie tabeli tymczasowej i tworzenie ostatecznej struktury WIDOKU
-DROP TABLE IF EXISTS `nauczyciel_full_info`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`id13767441_dzienn`@`%` SQL SECURITY DEFINER VIEW `nauczyciel_full_info` AS SELECT n.`nauczyciel_ID` AS `ID`,u.`nazwisko` AS `nazwisko`,u.`imie` AS `imie`,n.`nr_tel` AS `nr_tel`,u.`email` AS `email`,np.`przedmiot_nazwa` AS `przedmiot`,np.`nauczyciel_przedmiotu_ID` AS `nauczyciel_przedmiotu_ID`
-FROM ((`nauczyciel` AS n
-JOIN `uzytkownik` AS u ON(n.`uzytkownik_login` = u.`uzytkownik_login`))
-JOIN `nauczyciel_przedmiotu` AS np ON(n.`nauczyciel_ID` = np.`nauczyciel_id`)) ;
+DROP TABLE IF EXISTS `nauczyciel_info_lista`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`id13767441_dzienn`@`%` SQL SECURITY DEFINER VIEW `nauczyciel_info_lista` AS select `id13767441_dziennik`.`nauczyciel`.`nauczyciel_ID` AS `ID`,`id13767441_dziennik`.`uzytkownik`.`nazwisko` AS `nazwisko`,`id13767441_dziennik`.`uzytkownik`.`imie` AS `imie`,`id13767441_dziennik`.`nauczyciel`.`nr_tel` AS `nr_tel`,`id13767441_dziennik`.`uzytkownik`.`email` AS `email`,`id13767441_dziennik`.`nauczyciel_przedmiotu`.`przedmiot_nazwa` AS `przedmiot`,`id13767441_dziennik`.`nauczyciel_przedmiotu`.`nauczyciel_przedmiotu_ID` AS `nauczyciel_przedmiotu_ID` from ((`nauczyciel` join `uzytkownik` on(`id13767441_dziennik`.`nauczyciel`.`uzytkownik_login` = `id13767441_dziennik`.`uzytkownik`.`uzytkownik_login`)) join `nauczyciel_przedmiotu` on(`id13767441_dziennik`.`nauczyciel`.`nauczyciel_ID` = `id13767441_dziennik`.`nauczyciel_przedmiotu`.`nauczyciel_id`)) ;
 
--- Zrzut struktury widok id13767441_dziennik.ocena_full_info
+-- Zrzut struktury widok id13767441_dziennik.ocena_info_lista
 -- Usuwanie tabeli tymczasowej i tworzenie ostatecznej struktury WIDOKU
-DROP TABLE IF EXISTS `ocena_full_info`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`id13767441_dzienn`@`%` SQL SECURITY DEFINER VIEW `ocena_full_info` AS SELECT `o`.`ocena_ID` AS `ocena_ID`,`o`.`stopien` AS `stopien`,`o`.`waga` AS `waga`,`o`.`opis` AS `opis`,`o`.`data` AS `data`,`o`.`uczen_id` AS `uczen_id`,`n`.`imie` AS `imie`,`n`.`nazwisko` AS `nazwisko`,`n`.`przedmiot` AS `przedmiot`
-FROM (`ocena` as o
-JOIN `nauczyciel_full_info` `n` ON(`o`.`nauczyciel_przedmiotu_id` = `n`.`nauczyciel_przedmiotu_ID`)) ;
+DROP TABLE IF EXISTS `ocena_info_lista`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`id13767441_dzienn`@`%` SQL SECURITY DEFINER VIEW `ocena_info_lista` AS select `id13767441_dziennik`.`ocena`.`ocena_ID` AS `ocena_ID`,`id13767441_dziennik`.`ocena`.`stopien` AS `stopien`,`id13767441_dziennik`.`ocena`.`waga` AS `waga`,`id13767441_dziennik`.`ocena`.`opis` AS `opis`,`id13767441_dziennik`.`ocena`.`data` AS `data`,`id13767441_dziennik`.`ocena`.`uczen_id` AS `uczen_id`,`n`.`imie` AS `imie`,`n`.`nazwisko` AS `nazwisko`,`n`.`przedmiot` AS `przedmiot` from (`ocena` join `nauczyciel_info_lista` `n` on(`id13767441_dziennik`.`ocena`.`nauczyciel_przedmiotu_id` = `n`.`nauczyciel_przedmiotu_ID`)) ;
 
--- Zrzut struktury widok id13767441_dziennik.rodzic_full_info
+-- Zrzut struktury widok id13767441_dziennik.rodzic_info_lista
 -- Usuwanie tabeli tymczasowej i tworzenie ostatecznej struktury WIDOKU
-DROP TABLE IF EXISTS `rodzic_full_info`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`id13767441_dzienn`@`%` SQL SECURITY DEFINER VIEW `rodzic_full_info` AS SELECT `r`.`rodzic_ID` AS `rodzic_ID`,`r`.`nr_telefonu` AS `nr_telefonu`,`u`.`imie` AS `imie`,`u`.`nazwisko` AS `nazwisko`,`u`.`email` AS `email`,`r`.`opiekunowie_id` AS `opiekunowie_id`
-FROM (`rodzic` `r`
-LEFT JOIN `uzytkownik` `u` ON(`r`.`uzytkownik_login` = `u`.`uzytkownik_login`)) ;
+DROP TABLE IF EXISTS `rodzic_info_lista`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`id13767441_dzienn`@`%` SQL SECURITY DEFINER VIEW `rodzic_info_lista` AS select `r`.`rodzic_ID` AS `rodzic_ID`,`r`.`nr_telefonu` AS `nr_telefonu`,`u`.`imie` AS `imie`,`u`.`nazwisko` AS `nazwisko`,`u`.`email` AS `email`,`r`.`opiekunowie_id` AS `opiekunowie_id` from (`rodzic` `r` left join `uzytkownik` `u` on(`r`.`uzytkownik_login` = `u`.`uzytkownik_login`)) ;
 
--- Zrzut struktury widok id13767441_dziennik.uczen_full_info
+-- Zrzut struktury widok id13767441_dziennik.uczen_info_lista
 -- Usuwanie tabeli tymczasowej i tworzenie ostatecznej struktury WIDOKU
-DROP TABLE IF EXISTS `uczen_full_info`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`id13767441_dzienn`@`%` SQL SECURITY DEFINER VIEW `uczen_full_info` AS SELECT `ucz`.`uczen_ID` AS `uczen_ID`,k.klasa_ID,`k`.`oddzial` AS `oddzial`,`u`.`imie` AS `imie`,`u`.`nazwisko` AS `nazwisko`,`ucz`.`pesel` AS `pesel`,`u`.`email` AS `email`,`a`.`miejscowosc` AS `miejscowosc`,`a`.`kod` AS `kod`,`a`.`ulica` AS `ulica`,`a`.`nr_domu` AS `nr_domu`,`a`.`nr_mieszkania` AS `nr_mieszkania`, ucz.opiekunowie_id
+DROP TABLE IF EXISTS `uczen_info_lista`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`id13767441_dzienn`@`%` SQL SECURITY DEFINER VIEW `uczen_info_lista` AS SELECT `ucz`.`uczen_ID` AS `uczen_ID`,k.klasa_ID,`k`.`oddzial` AS `oddzial`,`u`.`imie` AS `imie`,`u`.`nazwisko` AS `nazwisko`,`ucz`.`pesel` AS `pesel`,`u`.`email` AS `email`,`a`.`miejscowosc` AS `miejscowosc`,`a`.`kod` AS `kod`,`a`.`ulica` AS `ulica`,`a`.`nr_domu` AS `nr_domu`,`a`.`nr_mieszkania` AS `nr_mieszkania`, ucz.opiekunowie_id
 FROM (((`uczen` `ucz`
 JOIN `uzytkownik` `u` ON(`ucz`.`uzytkownik_login` = `u`.`uzytkownik_login`))
-JOIN `adres_full_info` `a` ON(`ucz`.`adres_id` = `a`.`adres_ID`))
+JOIN `adres_info_lista` `a` ON(`ucz`.`adres_id` = `a`.`adres_ID`))
 JOIN `klasa` `k` ON(`ucz`.`klasa_id` = `k`.`klasa_ID`)) ;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

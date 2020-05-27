@@ -8,3 +8,8 @@ v1.1
 + dodana procedura "dodaj_ocene"
 + dodana funkcja "zmien_haslo" z weryfikacj¹ starego hasla (zwraca 1 jesli uda³o siê zmieniæ haslo, zwraca 0 jeœli stare haslo podanego uzytkownika siê nie zgadza)
 - usuniêta zdublowana procedura
+-----------------------------------
+v1.3 
+27.05.2020
++ drobne zmiany w nazwach
++ dodane indeksy
