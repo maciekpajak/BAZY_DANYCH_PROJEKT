@@ -51,17 +51,19 @@ session_start();
 		</div> </a>	
 		
 		
-		<a href="platnosci.php">
+		<a href="r_platnosci.php">
 		<div id="inne">
 		Płatności
 		</div>
 		</a>
-		<a href="Usprawiedliwienia.php">
+		<a href="r_usprawiedliwienia.php">
 		<div id="inne">
 		Usprawiedliwienia
 		</div>
 		</a>		
-		
+	    
+	    <!-- ------------------------------------------------------- -->
+	    
 		<?php 
 	unset($_SESSION['blad']);
 	
@@ -89,11 +91,6 @@ session_start();
 		
 		$dane_uzytkowanika=@mysqli_fetch_assoc($result);
 		$dane_rodzica=@mysqli_fetch_assoc($result2);
-				
-
-		
-
-		
 		
 			$conn->close();
 			}
@@ -112,12 +109,9 @@ session_start();
 				email: <?php echo $dane_uzytkowanika['email'] ; ?><br/>
 			</div>
 			
-			</div>
+		</div>
 			
-			
-			
-			
-			
+	
 			
 <form action="zmiana_hasla.php" method="post">
 			<div id="prawy">
@@ -136,37 +130,23 @@ session_start();
 				</div>
 				
 			</div>
+	
+		<!-- ------------------------------------------------------- -->
+		
 		
 		</div>
 		<form action="../wyloguj.php" >
 
 		<button type="submit">wyloguj</button>
 		</form>
-		
-		
-		
-		
-		
-		
-		
-		
+
 		
 		<div id="footer">
 		e-dziennik
 		</div>
-	
-	
-	
-	
-	
-	
-	
+
 	</div>
 	
 </body>
-
-
-
-
 
 </html>
