@@ -94,7 +94,7 @@ session_start();
 		
 		$klasa=@mysqli_fetch_assoc($result3);
 		
-		$sql4="SELECT * FROM adres_info_lista WHERE adres_ID='$dane_ucznia[adres_id]' ";
+		$sql4="SELECT * FROM adres_full_info WHERE adres_ID='$dane_ucznia[adres_id]' ";
 		$result4 = @$conn->query($sql4);
 		
 		$adres=@mysqli_fetch_assoc($result4);
