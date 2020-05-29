@@ -13,3 +13,10 @@ v1.3
 27.05.2020
 + drobne zmiany w nazwach
 + dodane indeksy
+-----------------------------------
+v1.4
+29.05.2020
++ tabela terminarz
++ widok terminarz_full_info
++ procedura terminarz_klasy
++ uzupe³nione dane terminarza przyjk³adowymi danymi
