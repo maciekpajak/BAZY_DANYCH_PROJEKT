@@ -38,6 +38,10 @@
 		
 		</form>
 
+        <form action="wyloguj.php" >
+
+		<button type="submit">Wstecz</button>
+		</form>
 
 		<div id="footer">
 		e-dziennik
