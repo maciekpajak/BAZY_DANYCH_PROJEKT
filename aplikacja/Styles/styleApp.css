@@ -83,3 +83,8 @@ color: white;
 text-align: center;
 padding:20px;
 }
+
+table
+{
+min-width:850px;
+}
