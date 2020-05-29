@@ -140,17 +140,13 @@ session_start();
 		<button type="submit">wyloguj</button>
 		</form>
 
-		
+        
 		<div id="footer">
 		e-dziennik
 		</div>
 
 	
 	</div>
-	
-
-	
-	
 
 </div>
   

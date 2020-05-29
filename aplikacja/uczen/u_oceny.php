@@ -10,6 +10,7 @@ session_start();
 	<title>Konto ucznia</title>
 	<META http-equiv="content-type" content="text/html; charset=utf-8">
 	<link rel="stylesheet" href="../Styles/styleApp.css" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="../Styles/tooltip.css">
 	<link rel="Shortcut icon" href="favicon.ico" />
 	
 	<meta name="description" content="opis w google"/>
@@ -97,20 +98,48 @@ session_start();
 		<div id="lewy">
 			
 			<B> Oceny: </B><br/>	
-		
+
 		<?php
 		    
+		    echo "<table border=5><tr><td>";
+		    
 		    if($result3->num_rows > 0) {
+		        
+		        $firstrow = $result3->fetch_assoc();
+		        echo $firstrow['przedmiot'];
+		        echo '</td><td>
+					<div class="tooltip">
+							'.$firstrow['stopien'].'
+							<span class="tooltiptext">
+								waga: '.$firstrow['waga'].' <br>
+								nauczyciel: '.$firstrow['imie'].' '.$firstrow['nazwisko'].' <br>
+								opis: '.$firstrow['opis'].'
+							</span>
+					</div></td>';
+		        
 		        while($row3 = $result3->fetch_assoc()) {
-
-                    $nazwap = $row3['przedmiot'];
-		            echo $nazwap;
-		            echo " ";
-		            echo $row3['stopien'];
-		            echo "<br/>";
+					
+					if($row3['przedmiot'] != $firstrow['przedmiot']) {
+		                
+		                echo "</tr><tr><td>";
+		                echo $row3['przedmiot'];
+		                //echo "</td><td>";
+		                $firstrow = $row3;
+					}
+		            
+		            echo '</td><td>
+					<div class="tooltip">
+							'.$row3['stopien'].'
+							<span class="tooltiptext">
+								waga: '.$row3['waga'].' <br>
+								nauczyciel: '.$row3['imie'].' '.$row3['nazwisko'].' <br>
+								opis: '.$row3['opis'].'
+							</span>
+					</div></td>';
 		        }
 		    }
-		    
+		   
+		   echo "</tr></table>"; 
 		?>
 		
 		</div>
