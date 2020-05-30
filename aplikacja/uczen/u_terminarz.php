@@ -1,5 +1,32 @@
 <?php
-session_start();
+
+
+    session_start();
+	
+	if(!isset($_SESSION['uzytkownik_login']) || !isset($_SESSION['haslo']))
+	{
+		session_destroy();
+		session_start();
+		header('Location: ../index.php');
+	}
+	
+	
+	$timeout = 10; // w sekundach
+	
+	if(isset($_SESSION['timeout'])) 
+	{
+		$duration = time() - (int)$_SESSION['timeout'];
+			if($duration > $timeout) 
+			{
+				session_destroy();
+				session_start();
+				header('Location: ../index.php');
+			}
+	}
+ 
+	$_SESSION['timeout'] = time();
+
+
 ?>
 
 <!DOCTYPE HTML>
@@ -107,25 +134,31 @@ session_start();
 		echo $calendar->show();
 		?>
 		<?php
-		    
+		    date_default_timezone_set('Europe/Warsaw');
+			$date = date('Y-m-d', time());
+			#$date = "2020-10-10"; //data do testowania
 		    if($result3->num_rows > 0) {
 		        while($row3 = $result3->fetch_assoc()) {
 					
-		            echo $row3['data'];
-		            echo " ";
-					echo $row3['godz'];
-		            echo " ";
-					$przedmiot= $row3['przedmiot'] . "\n";
-		            echo '
-					<div class="tooltip">
-							'.$row3['typ'].'
-							<span class="tooltiptext">
-								'.$przedmiot.' <br>
-								'.$row3['imie'].' '.$row3['nazwisko'].' <br>
-								'.$row3['opis'].'
-							</span>
-					</div>';
-		            echo "<br/>";
+					if ( $row3['data'] > $date || ( $row3['data'] == $date  && $row3['godz'] > time()))
+					{
+						echo " ";
+						echo $row3['data'];
+						echo " ";
+						echo $row3['godz'];
+						echo " ";
+						$przedmiot= $row3['przedmiot'] . "\n";
+						echo '
+						<div class="tooltip">
+								'.$row3['typ'].'
+								<span class="tooltiptext">
+									'.$przedmiot.' <br>
+									'.$row3['imie'].' '.$row3['nazwisko'].' <br>
+									'.$row3['opis'].'
+								</span>
+						</div>';
+						echo "<br/>";
+					}
 		        }
 		    }
 		    

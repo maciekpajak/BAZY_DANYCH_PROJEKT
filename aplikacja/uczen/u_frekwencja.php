@@ -1,5 +1,29 @@
 <?php
-session_start();
+
+    session_start();
+	
+	if(!isset($_SESSION['uzytkownik_login']) || !isset($_SESSION['haslo']))
+	{
+		session_destroy();
+		session_start();
+		header('Location: ../index.php');
+	}
+	
+	
+	$timeout = 10; // w sekundach
+	
+	if(isset($_SESSION['timeout'])) 
+	{
+		$duration = time() - (int)$_SESSION['timeout'];
+			if($duration > $timeout) 
+			{
+				session_destroy();
+				session_start();
+				header('Location: ../index.php');
+			}
+	}
+ 
+	$_SESSION['timeout'] = time();
 ?>
 
 <!DOCTYPE HTML>
