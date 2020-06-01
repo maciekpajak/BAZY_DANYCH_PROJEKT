@@ -6,43 +6,37 @@
 	{
 		session_unset(); 
 		session_destroy();
+		session_start();
 		header('Location: ../index.php');
 	}
-	
-
 	
 	if(isset($_SESSION['action'])) 
 	{
 		$duration = time() - (int)$_SESSION['action'];
 			if($duration > $_SESSION['timeout']) 
 			{
-				session_unset(); 
 				session_destroy();
+				session_start();
 				header('Location: ../index.php');
 			}
 	}
  
 	$_SESSION['action'] = time();
-	
 ?>
 
 <script type="text/javascript">
 setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload(); }, 180*1000);
-
 </script>
 
-<!--------------------------------------------------------------------------------------------->
 <!DOCTYPE HTML>
 
 <html lang="pl">
-
 <head>
 	
 	<title>Konto ucznia</title>
 	<META http-equiv="content-type" content="text/html; charset=utf-8">
 	<link rel="stylesheet" href="../Styles/styleApp.css" type="text/css" />
 	<link rel="stylesheet" type="text/css" href="../Styles/tooltip.css">
-	<link rel="stylesheet"  type="text/css" href="../Styles/calendar.css" />
 	<link rel="Shortcut icon" href="favicon.ico" />
 	
 	<meta name="description" content="opis w google"/>
@@ -60,36 +54,37 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	
 		<div id="logo">
 		
-			<h1>Zalogowano jako uczeń</h1>
+			<h1>Zalogowano jako rodzic</h1>
 		
 		</div>
 		
-		<a href="u_konto.php">
+		<a href="r_konto.php">
 		<div id="inne">
 		Zarządzanie kontem
 		</div>
 		</a>
 		
 		
-		<a href="u_oceny.php">
+		<a href="r_oceny.php">
 		<div id="inne">
 		 Oceny 
 		</div></a>
 		
 		
-		<a href="u_frekwencja.php">
-		<div id="inne">
+		<a href="r_frekwencja.php">
+		<div id="teraz">
 		 Frekwencja
 		</div> </a>	
 		
 		
-		<a href="u_terminarz.php">
-		<div id="teraz">
+		<a href="r_terminarz.php">
+		<div id="inne">
 		 Terminarz 
 		</div>
 		</a>	
 		
-				<?php 
+		
+		<?php 
 	unset($_SESSION['blad']);
 	
 	require_once "../connect.php";
@@ -110,14 +105,18 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		$sql="SELECT * FROM uzytkownik WHERE uzytkownik_login='$login' AND haslo='$haslo'";
 		$result = @$conn->query($sql);
 	
-		$sql2="SELECT * FROM uczen WHERE uzytkownik_login='$login' ";
+		$sql2="SELECT * FROM rodzic WHERE uzytkownik_login='$login' ";
 		$result2 = @$conn->query($sql2);
 		
 		$dane_uzytkowanika=@mysqli_fetch_assoc($result);
-		$dane_ucznia=@mysqli_fetch_assoc($result2);
+		$dane_rodzica=@mysqli_fetch_assoc($result2);
 		
-		$result3 = $conn->query("CALL terminarz_klasy('$dane_ucznia[klasa_id]')");
-		
+		if($_SESSION['wybrane_dziecko_id'] != 0 )
+			{
+				
+				$uczen_id = $_SESSION['wybrane_dziecko_id'];
+				$result3 = $conn->query("CALL frekwencja_ucznia($uczen_id)");
+			}
 		$conn->close();
 	}
 	
@@ -126,67 +125,106 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		
 		<div id="tresc">
 		<div id="lewy">
+			<B> Frekwencja: </B><br/>
 			
-			<B> Terminarz: </B><br/>	
+
+		<?php
+		
+		if($_SESSION['wybrane_dziecko_id'] != 0 )
+			{
+			echo "<table border=5>";
 			
-		<?php
-		include '../calendar.php';
-		 
-		$calendar = new Calendar();
-		 
-		echo $calendar->show();
-		?>
-		<?php
-		    date_default_timezone_set('Europe/Warsaw');
-			$date = date('Y-m-d', time());
-			#$date = "2020-10-10"; //data do testowania
-		    if($result3->num_rows > 0) {
-		        while($row3 = $result3->fetch_assoc()) {
-					
-					if ( $row3['data'] > $date || ( $row3['data'] == $date  && $row3['godz'] > time()))
-					{
-						echo " ";
-						echo $row3['data'];
-						echo " ";
-						echo $row3['godz'];
-						echo " ";
-						$przedmiot= $row3['przedmiot'] . "\n";
-						echo '
-						<div class="tooltip">
-								'.$row3['typ'].'
+				
+				if($result3->num_rows > 0) {
+				
+					$data=0;
+					while($row3 = $result3->fetch_assoc())
+					{		
+						
+						
+						if ($row3['status']=='obecny')
+							{
+							}
+
+						else
+						{	
+							if($row3['status']=='spóźniony')
+							{$status='S';}
+							if($row3['status']=='nieobecny')
+							{$status='N';}
+							$start = $row3['godz_start'];
+							$koniec = $row3['godz_koniec'];
+							
+							
+							if($row3['data']==$data)
+							{
+								echo '</td><td>
+								<div class="tooltip">
+								'.$status.'
 								<span class="tooltiptext">
-									'.$przedmiot.' <br>
-									'.$row3['imie'].' '.$row3['nazwisko'].' <br>
-									'.$row3['opis'].'
+								'.$row3['przedmiot'].
+								'<br>'
+								.$start.
+								'-'
+								.$koniec.
+								'
 								</span>
-						</div>';
-						echo "<br/>";
+								</div></td>';
+								
+								
+								
+							}
+							else{
+								echo "<tr><td>";
+								echo $row3['data'];
+								$data=$row3['data'];
+								
+								
+								echo '</td><td>
+								<div class="tooltip">
+								'.$status.'
+								<span class="tooltiptext">
+								'.$row3['przedmiot'].
+								'<br>'
+								.$start.
+								'-'
+								.$koniec.
+								'
+								</span>
+								</div></td>';
+								
+							}
+							
+						}
+						
+					
 					}
-		        }
-		    }
-		    
-		?>
+				}	
+			
+			echo "</tr></table>"; 	
+			}
+			?>
+			
+			
 		
 		</div>
 		</div>
-		
 		
 		<form action="../wyloguj.php" >
 
 		<button type="submit">wyloguj</button>
 		</form>
-
-        
+		
+		
 		<div id="footer">
 		e-dziennik
 		</div>
-
+	
+	
 	
 	</div>
-
-</div>
-  
 	
 </body>
 
 </html>
+

@@ -1,20 +1,44 @@
 <?php
-session_start();
+
+    session_start();
+	
+	if(!isset($_SESSION['uzytkownik_login']) || !isset($_SESSION['haslo']))
+	{
+		session_unset(); 
+		session_destroy();
+		header('Location: ../index.php');
+	}
+	
+	if(isset($_SESSION['action'])) 
+	{
+		$duration = time() - (int)$_SESSION['action'];
+			if($duration > $_SESSION['timeout']) 
+			{
+				session_unset(); 
+				session_destroy();
+				header('Location: ../index.php');
+			}
+	}
+ 
+	$_SESSION['action'] = time();
 ?>
 
+<script type="text/javascript">
+setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload(); }, 180*1000);
+</script>
 
 <!DOCTYPE HTML>
 
 <html lang="pl">
 <head>
-    
 	<meta charset="utf-8" />
 	<title>Zarządzanie kontem</title>
-	<meta name="description" content="opis w google"/>
-	<meta name="keywords" content="słowa po których google szuka"/>
-	
+
 	<link rel="stylesheet" href="../Styles/styleApp.css" type="text/css" />
 	<link rel="Shortcut icon" href="favicon.ico" />
+	
+	<meta name="description" content="opis w google"/>
+	<meta name="keywords" content="słowa po których google szuka"/>
 
 	<meta http-equiv="X-UA_Compatible" content="IE=edge,chrome=1" />
 	<meta name="author" content="Kowalski, Mielniczek, Pająk" />
@@ -22,13 +46,51 @@ session_start();
 </head>
 
 
-<body>
+
+<script>
+// Set the date we're counting down to
+	var countDownDate = new Date().getTime();
+	countDownDate.setMinutes(now.getMinutes() + 30);
+	alert(countDownDate);
 	
+	// Update the count down every 1 second
+	var x = setInterval(function() {
+
+	  // Get today's date and time
+	  var now = new Date().getTime();
+
+	  // Find the distance between now and the count down date
+	  var distance = countDownDate - now;
+
+	  // Time calculations for days, hours, minutes and seconds
+	  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+	  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+	  // Display the result in the element with id="demo"
+	  document.getElementById("demo").innerHTML = minutes + "m " + seconds + "s ";
+
+	  // If the count down is finished, write some text
+	  if (distance < 0) {
+		clearInterval(x);
+		document.getElementById("demo").innerHTML = "EXPIRED";
+	  }
+}, 1000);
+</script>
+
+
+
+<body>
+
+	<p id="demo"></p>
+
+
+
 	<div id="container">
 	
 		<div id="logo">
 		
 			<h1>Zalogowano jako rodzic</h1>
+		
 		
 		</div>
 		
@@ -45,26 +107,23 @@ session_start();
 		</div></a>
 		
 		
-		<a href="r_uwagi.php">
+		<a href="r_frekwencja.php">
 		<div id="inne">
-		Dziennik uwag
+		 Frekwencja
 		</div> </a>	
 		
 		
-		<a href="r_platnosci.php">
+		<a href="r_terminarz.php">
 		<div id="inne">
-		Płatności
+		 Terminarz 
 		</div>
-		</a>
-		<a href="r_usprawiedliwienia.php">
-		<div id="inne">
-		Usprawiedliwienia
-		</div>
-		</a>		
-	    
-	    <!-- ------------------------------------------------------- -->
-	    
-		<?php 
+		</a>	
+		
+		
+		
+		
+		
+				<?php 
 	unset($_SESSION['blad']);
 	
 	require_once "../connect.php";
@@ -91,14 +150,44 @@ session_start();
 		
 		$dane_uzytkowanika=@mysqli_fetch_assoc($result);
 		$dane_rodzica=@mysqli_fetch_assoc($result2);
+				
+		$result3 = $conn->query("CALL dzieci_rodzica('$dane_rodzica[rodzic_ID]')");
 		
-			$conn->close();
-			}
+		$conn->close();
+	}
+
 	
 	
 	?>
 		<div id="tresc">
 			<div id="lewy">
+			
+			<form method="POST" >
+			<label for="Manufacturer"> Uczeń : </label>
+			  <select id="cmbMake" name="Make"  onchange="document.getElementById('selected_text').value=this.options[this.selectedIndex].text">
+				 <option value = 0 > ---Wybierz ucznia--- </option>
+				 <?php
+				 while($dzieci = $result3 ->fetch_assoc() )
+							 {
+							   echo '<option value="'.$dzieci['uczen_ID'].'">'.$dzieci['imie']. ' ' .$dzieci['nazwisko'].' ' .$dzieci['oddzial'].'</option>';
+							 }
+							 ?>
+			</select>
+			<input type="hidden" name="selected_text" id="selected_text" value="" />
+			<input type="submit" name="search" value="Zatwierdź"/>
+			</form>
+			
+			
+			<?php
+
+			if(isset($_POST['search']))
+			{
+
+				$makerValue = $_POST['Make']; // make value
+				$_SESSION['wybrane_dziecko_id']= $_POST['Make'];
+			}
+			 ?>
+			
 			
 			<B> Dane: </B><br/>
 			<div id="dane">
@@ -107,13 +196,15 @@ session_start();
 				Nr tel: <?php echo $dane_rodzica['nr_telefonu'] ; ?>  <br/>
 				login: <?php echo $dane_uzytkowanika['uzytkownik_login'] ; ?><br/>
 				email: <?php echo $dane_uzytkowanika['email'] ; ?><br/>
+				
 			</div>
 			
-		</div>
 			
-	
+
 			
-<form action="zmiana_hasla.php" method="post">
+			
+			</div>
+			<form action="../zmiana_hasla.php" method="post">
 			<div id="prawy">
 				<B> Zmiana hasła: </B><br/>
 				<div id="zmianahasla">
@@ -130,23 +221,37 @@ session_start();
 				</div>
 				
 			</div>
-	
-		<!-- ------------------------------------------------------- -->
-		
 		
 		</div>
+		
+		
+		
+		
+		
+		
 		<form action="../wyloguj.php" >
 
 		<button type="submit">wyloguj</button>
 		</form>
-
+		
+		
 		
 		<div id="footer">
 		e-dziennik
 		</div>
-
+	
+	
+	
+	
+	
+	
+	
 	</div>
 	
 </body>
+
+
+
+
 
 </html>

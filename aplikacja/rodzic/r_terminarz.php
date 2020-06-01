@@ -60,30 +60,30 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	
 		<div id="logo">
 		
-			<h1>Zalogowano jako uczeń</h1>
+			<h1>Zalogowano jako rodzic</h1>
 		
 		</div>
 		
-		<a href="u_konto.php">
+		<a href="r_konto.php">
 		<div id="inne">
 		Zarządzanie kontem
 		</div>
 		</a>
 		
 		
-		<a href="u_oceny.php">
+		<a href="r_oceny.php">
 		<div id="inne">
 		 Oceny 
 		</div></a>
 		
 		
-		<a href="u_frekwencja.php">
+		<a href="r_frekwencja.php">
 		<div id="inne">
 		 Frekwencja
 		</div> </a>	
 		
 		
-		<a href="u_terminarz.php">
+		<a href="r_terminarz.php">
 		<div id="teraz">
 		 Terminarz 
 		</div>
@@ -110,14 +110,21 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		$sql="SELECT * FROM uzytkownik WHERE uzytkownik_login='$login' AND haslo='$haslo'";
 		$result = @$conn->query($sql);
 	
-		$sql2="SELECT * FROM uczen WHERE uzytkownik_login='$login' ";
+		$sql2="SELECT * FROM rodzic WHERE uzytkownik_login='$login' ";
 		$result2 = @$conn->query($sql2);
 		
 		$dane_uzytkowanika=@mysqli_fetch_assoc($result);
-		$dane_ucznia=@mysqli_fetch_assoc($result2);
+		$dane_rodzica=@mysqli_fetch_assoc($result2);
 		
-		$result3 = $conn->query("CALL terminarz_klasy('$dane_ucznia[klasa_id]')");
-		
+		if($_SESSION['wybrane_dziecko_id'] != 0 )
+			{
+				
+				$uczen_id = $_SESSION['wybrane_dziecko_id'];
+				$result4 = @$conn->query("SELECT * FROM uczen WHERE uczen_ID=$uczen_id ");
+				
+				$dane_ucznia=@mysqli_fetch_assoc($result4);
+				$result3 = $conn->query("CALL terminarz_klasy('$dane_ucznia[klasa_id]')");
+			}
 		$conn->close();
 	}
 	
@@ -137,6 +144,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		echo $calendar->show();
 		?>
 		<?php
+		if($_SESSION['wybrane_dziecko_id'] != 0 )
+			{
+				
 		    date_default_timezone_set('Europe/Warsaw');
 			$date = date('Y-m-d', time());
 			#$date = "2020-10-10"; //data do testowania
@@ -164,7 +174,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 					}
 		        }
 		    }
-		    
+		}
 		?>
 		
 		</div>
