@@ -4,18 +4,16 @@
 	
 	if(!isset($_SESSION['uzytkownik_login']) || !isset($_SESSION['haslo']))
 	{
+		session_unset(); 
 		session_destroy();
 		session_start();
 		header('Location: ../index.php');
 	}
 	
-	
-	$timeout = 10; // w sekundach
-	
-	if(isset($_SESSION['timeout'])) 
+	if(isset($_SESSION['action'])) 
 	{
-		$duration = time() - (int)$_SESSION['timeout'];
-			if($duration > $timeout) 
+		$duration = time() - (int)$_SESSION['action'];
+			if($duration > $_SESSION['timeout']) 
 			{
 				session_destroy();
 				session_start();
@@ -23,8 +21,12 @@
 			}
 	}
  
-	$_SESSION['timeout'] = time();
+	$_SESSION['action'] = time();
 ?>
+
+<script type="text/javascript">
+setTimeout( function() { alert("Your session expired."); location.reload(); }, 180*1000);
+</script>
 
 <!DOCTYPE HTML>
 
