@@ -111,7 +111,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		$dane_uzytkowanika=@mysqli_fetch_assoc($result);
 		$dane_rodzica=@mysqli_fetch_assoc($result2);
 		
-		if($_SESSION['wybrane_dziecko_id'] != 0 )
+		if(isset($_SESSION['wybrane_dziecko_id']) and $_SESSION['wybrane_dziecko_id'] != 0)
 			{
 				
 				$uczen_id = $_SESSION['wybrane_dziecko_id'];
@@ -130,7 +130,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 
 		<?php
 		
-		if($_SESSION['wybrane_dziecko_id'] != 0 )
+		if(isset($_SESSION['wybrane_dziecko_id']) and $_SESSION['wybrane_dziecko_id'] != 0  )
 			{
 			echo "<table border=5>";
 			
@@ -158,7 +158,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 							
 							if($row3['data']==$data)
 							{
+								
 								echo '</td><td>
+								<button> 
 								<div class="tooltip">
 								'.$status.'
 								<span class="tooltiptext">
@@ -169,18 +171,21 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 								.$koniec.
 								'
 								</span>
-								</div></td>';
+								</div></button></td>';
 								
 								
 								
 							}
 							else{
+								
 								echo "<tr><td>";
+
 								echo $row3['data'];
 								$data=$row3['data'];
 								
 								
 								echo '</td><td>
+								<button> 
 								<div class="tooltip">
 								'.$status.'
 								<span class="tooltiptext">
@@ -191,7 +196,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 								.$koniec.
 								'
 								</span>
-								</div></td>';
+								</div></button></td>';
 								
 							}
 							

@@ -35,6 +35,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	<title>Zarządzanie kontem</title>
 
 	<link rel="stylesheet" href="../Styles/styleApp.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/combobox.css" type="text/css" />
 	<link rel="Shortcut icon" href="favicon.ico" />
 	
 	<meta name="description" content="opis w google"/>
@@ -45,7 +46,23 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 
 </head>
 
+<style>
+.button {
+	position: absolute;
+	  top: 130px;
+	  right: 180px;
+	  color: white;
+	  padding: 9px 30px;
+	  text-align: center;
+	  text-decoration: none;
+	  display: inline-block;
+	  font-size: 16px;
+	  cursor: pointer;
+	  background-color: #555;
+	  border: none;
+}
 
+</style>
 
 <script>
 // Set the date we're counting down to
@@ -129,7 +146,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	require_once "../connect.php";
 	
 	$conn=@new mysqli($IP, $username, $password, $DB_name); 
-		                                   /*("adres IP", "username","password", "DB_name")*/
+		                                  
 	if ($conn->connect_errno!=0)
 	{
 		echo "Error: ".$conn->connect_errno;
@@ -159,34 +176,41 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	
 	
 	?>
-		<div id="tresc">
-			<div id="lewy">
+
+	<div >
+	<form method="POST" >
 			
-			<form method="POST" >
-			<label for="Manufacturer"> Uczeń : </label>
-			  <select id="cmbMake" name="Make"  onchange="document.getElementById('selected_text').value=this.options[this.selectedIndex].text">
-				 <option value = 0 > ---Wybierz ucznia--- </option>
-				 <?php
-				 while($dzieci = $result3 ->fetch_assoc() )
-							 {
-							   echo '<option value="'.$dzieci['uczen_ID'].'">'.$dzieci['imie']. ' ' .$dzieci['nazwisko'].' ' .$dzieci['oddzial'].'</option>';
-							 }
-							 ?>
-			</select>
-			<input type="hidden" name="selected_text" id="selected_text" value="" />
-			<input type="submit" name="search" value="Zatwierdź"/>
-			</form>
+		<div class="custom-select" style="width:400px;">
+		  <select id="cmbMake" name="Make"  onchange="document.getElementById('selected_text').value=this.options[this.selectedIndex].text">
+			 <option value = 0 > ---Wybierz ucznia--- </option>
+			 <?php
+			 while($dzieci = $result3 ->fetch_assoc() )
+				 {
+				   echo '<option value="'.$dzieci['uczen_ID'].'">'.$dzieci['imie']. ' ' .$dzieci['nazwisko'].' ' .$dzieci['oddzial'].'</option>';
+				 }
+			 ?>
+		</select>
+		</div>
+		<button class ="button" type="submit" name="search" > Zatwierdź </button>
+	</form>
+			 <script type="text/javascript" src="../combobox.js"></script>
 			
 			
 			<?php
 
 			if(isset($_POST['search']))
+			//if(isset($_POST['Make']))
 			{
-
-				$makerValue = $_POST['Make']; // make value
 				$_SESSION['wybrane_dziecko_id']= $_POST['Make'];
 			}
 			 ?>
+	</div>
+	
+	
+		<div id="tresc">
+			<div id="lewy">
+			
+			
 			
 			
 			<B> Dane: </B><br/>

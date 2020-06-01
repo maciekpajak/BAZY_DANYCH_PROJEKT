@@ -116,7 +116,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		$dane_uzytkowanika=@mysqli_fetch_assoc($result);
 		$dane_rodzica=@mysqli_fetch_assoc($result2);
 		
-		if($_SESSION['wybrane_dziecko_id'] != 0 )
+		if(isset($_SESSION['wybrane_dziecko_id']) and $_SESSION['wybrane_dziecko_id'] != 0  )
 			{
 				
 				$uczen_id = $_SESSION['wybrane_dziecko_id'];
@@ -144,7 +144,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		echo $calendar->show();
 		?>
 		<?php
-		if($_SESSION['wybrane_dziecko_id'] != 0 )
+		if(isset($_SESSION['wybrane_dziecko_id']) and $_SESSION['wybrane_dziecko_id'] != 0  )
 			{
 				
 		    date_default_timezone_set('Europe/Warsaw');

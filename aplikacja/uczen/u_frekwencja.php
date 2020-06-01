@@ -6,7 +6,6 @@
 	{
 		session_unset(); 
 		session_destroy();
-		session_start();
 		header('Location: ../index.php');
 	}
 	
@@ -25,7 +24,7 @@
 ?>
 
 <script type="text/javascript">
-setTimeout( function() { alert("Your session expired."); location.reload(); }, 180*1000);
+setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload(); }, 180*1000);
 </script>
 
 <!DOCTYPE HTML>
