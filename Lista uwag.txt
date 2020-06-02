@@ -31,7 +31,8 @@ Php:
 -nauczyciel wychowawca - potwierdzanie usprawiedliwień,
 -admin lista uczniów,
 -admin lista nauczycieli,
--admin lista rodziców.
+-admin lista rodziców,
+-szyfrowanie hasła w aplikacji.
 
 ETAP 5:
 -Prezentacja PowerPoint (wzór: http://roman.ptak.staff.iiar.pwr.wroc.pl/prezentacje_bd_v2.pdf)
