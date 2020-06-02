@@ -23,16 +23,16 @@ proszę opisać następujące punkty:
 
 Php:
 -nauczyciel terminarz (Michał),
--nauczyciel dodawanie do terminarza,
--nauczyciel dodawanie tematu,
--nauczyciel dodawanie obecności,
--nauczyciel przegląd ocen,
--nauczyciel dodawanie ocen,
--nauczyciel wychowawca - potwierdzanie usprawiedliwień,
--admin lista uczniów,
--admin lista nauczycieli,
--admin lista rodziców,
--szyfrowanie hasła w aplikacji.
+-nauczyciel dodawanie do terminarza (Adam),
+-nauczyciel dodawanie tematu (Maciek),
+-nauczyciel dodawanie obecności (Maciek),
+-nauczyciel przegląd ocen (Maciek),
+-nauczyciel dodawanie ocen (Maciek),
+-nauczyciel wychowawca - potwierdzanie usprawiedliwień (Maciek),
+-admin lista uczniów (Adam),
+-admin lista nauczycieli (Adam),
+-admin lista rodziców (Adam),
+-szyfrowanie hasła w aplikacji (Adam).
 
 ETAP 5:
 -Prezentacja PowerPoint (wzór: http://roman.ptak.staff.iiar.pwr.wroc.pl/prezentacje_bd_v2.pdf) (Michał)
