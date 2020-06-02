@@ -8,7 +8,7 @@ ETAP 3: ZAKOŃCZONY
 
 ETAP 4:
 
-Sprawko:
+Sprawko: (Michał całe to)
 Jak pokazano w pliku http://roman.ptak.staff.iiar.pwr.wroc.pl/struktura_dokumentacji.doc
 proszę opisać następujące punkty:
 5. Implementacja i testy aplikacji
@@ -22,7 +22,7 @@ proszę opisać następujące punkty:
 - tutaj posiłkując się fragmentami kodu należy pokazać najważniejsze aspekty programistyczne.
 
 Php:
--nauczyciel terminarz,
+-nauczyciel terminarz (Michał),
 -nauczyciel dodawanie do terminarza,
 -nauczyciel dodawanie tematu,
 -nauczyciel dodawanie obecności,
@@ -35,6 +35,4 @@ Php:
 -szyfrowanie hasła w aplikacji.
 
 ETAP 5:
--Prezentacja PowerPoint (wzór: http://roman.ptak.staff.iiar.pwr.wroc.pl/prezentacje_bd_v2.pdf)
-
-Ten etap też proszę zdokumentować. 
+-Prezentacja PowerPoint (wzór: http://roman.ptak.staff.iiar.pwr.wroc.pl/prezentacje_bd_v2.pdf) (Michał)
