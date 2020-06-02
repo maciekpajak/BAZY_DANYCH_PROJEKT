@@ -2,53 +2,38 @@ UWAGI stan 13.5.2020
 
 ETAP 1: ZAKOŃCZONY
 
-ETAP 2:
+ETAP 2: ZAKOŃCZONY
 
-Dziękuje za przesłanie poprawionej wersji modelu.
+ETAP 3: ZAKOŃCZONY
 
-Procedury:
--Zmiana hasła IN(login, hasło),
--Dodanie do lekcji tematu IN(temat, lekcja_id),
--Dodanie do lekcji frekwencji IN(frekwencja, lekcja_id, uczen_id),
--Frekwencja ucznia,
--Frekwencja na lekcji,
--Klasa z grupy lekcji,
--Lekcje nauczyciela,
--Ocena ucznia,
--Rodzice ucznia,
--Dzieci rodziców,
--Nauczyciele przedmiotu IN(przedmiot),
--Plan lekcji klasy,
--Dane ucznia,
--Dane nauczyciela,
--Dane rodzica,
--Dane instancji,
--Lista rodziców uczniów klasy,
+ETAP 4:
 
+Sprawko:
+Jak pokazano w pliku http://roman.ptak.staff.iiar.pwr.wroc.pl/struktura_dokumentacji.doc
+proszę opisać następujące punkty:
+5. Implementacja i testy aplikacji
+5.1. Instalacja i konfigurowanie systemu
+- tutaj proszę przybliżyć w jaki sposób wdraża się Panów aplikację na serwerze docelowym u klienta. Ma to być instrukcja dla informatyka wdrożeniowca.
+5.2. Instrukcja użytkowania aplikacji
+- to ma być rodzaj tutoriala dla użytkownika aplikacji dostępowej, proszę posłużyć się zrzutami ekranowymi interfejsu aplikacji
+5.3. Testowanie opracowanych funkcji systemu
+- tutaj należy pokazać działanie aplikacji posługująć się zrzutami. ten punkt można połączyć z 5.2.
+5.4. Omówienie wybranych rozwiązań programistycznych
+- tutaj posiłkując się fragmentami kodu należy pokazać najważniejsze aspekty programistyczne.
 
-Widoki:
--Lista użytkowników,
--Lista rodziców,
--Lista uczniów,
--Lista nauczycieli,
--Lista ocen ucznia (z podziałem na przedmioty),
--Lista klas danego nauczyciela (danej grupy przedmiotu),
--Lista uczniów w danej klasie,
--Info na temat lekcji,
+Php:
+-nauczyciel terminarz,
+-nauczyciel dodawanie do terminarza,
+-nauczyciel dodawanie tematu,
+-nauczyciel dodawanie obecności,
+-nauczyciel przegląd ocen,
+-nauczyciel dodawanie ocen,
+-nauczyciel wychowawca - potwierdzanie usprawiedliwień,
+-admin lista uczniów,
+-admin lista nauczycieli,
+-admin lista rodziców.
 
-Indeksy:
--W ocenach,
--W lekcjach,
--W obecnościach,
--W ulicach miejscowości.
+ETAP 5:
+-Prezentacja PowerPoint (wzór: http://roman.ptak.staff.iiar.pwr.wroc.pl/prezentacje_bd_v2.pdf)
 
-Sekwencje:
--Autoincrement,
-
-Wyzwalacze:
--
-
-Przypadki użycia:
-
-UWAGI:
-Brakuje Państwu projektu zabezpieczeń bazy danych oraz informacji o sposobie podłączania się do bazy danych. Czy to będzie np. ODBC, JDBC, OLE itd.?
+Ten etap też proszę zdokumentować. 
