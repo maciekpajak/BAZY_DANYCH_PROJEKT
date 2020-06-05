@@ -20,3 +20,11 @@ v1.4
 + widok terminarz_full_info
 + procedura terminarz_klasy
 + uzupe³nione dane terminarza przyjk³adowymi danymi
+------------------------------------
+v1.5
+5.06.2020
++ usprwaiedliwienia do obecnosci
++ procedura dodaj¹ca nauczyciela
++ zmiany w procedurach dodaj¹cych ucznia, rodzica (teraz nale¿y podaæ has³o (niezaszyfrowane) i login w procedurze)
++ dadany admin do danych testowych
++ dodany uczen testowy sprawdzaj¹cy dzia³anie po³¹czenia kilku uczniów do jednego rodzica
