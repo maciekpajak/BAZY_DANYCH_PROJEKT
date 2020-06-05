@@ -107,11 +107,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		
 		$haslo = $_SESSION['haslo'];
 		
-		$sql="SELECT * FROM uzytkownik WHERE uzytkownik_login='$login' AND haslo='$haslo'";
-		$result = @$conn->query($sql);
+		$result = @$conn->query("SELECT * FROM uzytkownik WHERE uzytkownik_login='$login' AND haslo='$haslo'");
 	
-		$sql2="SELECT * FROM rodzic WHERE uzytkownik_login='$login' ";
-		$result2 = @$conn->query($sql2);
+		$result2 = @$conn->query("SELECT * FROM rodzic WHERE uzytkownik_login='$login' ");
 		
 		$dane_uzytkowanika=@mysqli_fetch_assoc($result);
 		$dane_rodzica=@mysqli_fetch_assoc($result2);

@@ -28,3 +28,7 @@ v1.5
 + zmiany w procedurach dodaj¹cych ucznia, rodzica (teraz nale¿y podaæ has³o (niezaszyfrowane) i login w procedurze)
 + dadany admin do danych testowych
 + dodany uczen testowy sprawdzaj¹cy dzia³anie po³¹czenia kilku uczniów do jednego rodzica
+------------------------------------
+v1.6
+5.06.2020
+drobna poprawka w procedurze frekwencja_ucznia
