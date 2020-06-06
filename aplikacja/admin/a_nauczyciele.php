@@ -228,21 +228,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 				}
 		</script>
 		
-		
-		
-					<form action="a_nauczyciele.php" method="post">
 
-				
-
-					
-					
-					
-					</form>
-		
-		
-		
-		
-		
 		
 		
 		<div>

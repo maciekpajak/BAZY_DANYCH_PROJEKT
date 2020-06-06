@@ -121,6 +121,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		
 		
 		
+		
 				<?php 
 	unset($_SESSION['blad']);
 	
@@ -144,18 +145,19 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	
 		
 		
+		//-----------------Szukanie--------------------------
 		
-		
-		if(isset($_POST['ID_n']) OR isset($_POST['imie_n']) OR isset($_POST['nazwisko_n']) OR isset($_POST['nrtel_n']) OR isset($_POST['przedmiot_n']))
+		if(isset($_POST['ID_r']) OR isset($_POST['imie_r']) OR isset($_POST['nazwisko_r']) OR isset($_POST['nrtel_r']) OR isset($_POST['email_r']) OR isset($_POST['opiekunowie_id_r']))
 	{	
 
-		$ID=$_POST['ID_n'];
-		$imie=$_POST['imie_n'];
-		$nazwisko=$_POST['nazwisko_n'];
-		$nr_tel=$_POST['nrtel_n'];
+		$ID=$_POST['ID_r'];
+		$imie=$_POST['imie_r'];
+		$nazwisko=$_POST['nazwisko_r'];
+		$nr_tel=$_POST['nrtel_r'];
+		$email=$_POST['email_r'];
+		$opiekunowie_id=$_POST['opiekunowie_id_r'];
 		
-		
-		$sql="SELECT * FROM rodzic_full_info WHERE rodzic_ID='$ID' OR imie='$imie' OR nazwisko='$nazwisko' OR nr_telefonu='$nr_tel'";
+		$sql="SELECT * FROM rodzic_full_info WHERE rodzic_ID='$ID' OR imie='$imie' OR nazwisko='$nazwisko' OR nr_telefonu='$nr_tel' OR email='$email' OR opiekunowie_id='$opiekunowie_id'";
 		$result = @$conn->query($sql);
 		
 		
@@ -169,27 +171,8 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	{
 		
 	}
-			if(isset($_POST['add_ID_n']) OR isset($_POST['add_imie_n']) OR isset($_POST['add_nazwisko_n']) OR isset($_POST['add_nrtel_n']) OR isset($_POST['add_przedmiot_n']))
-	{	
+	
 
-		$ID=$_POST['add_ID_n'];
-		$imie=$_POST['add_imie_n'];
-		$nazwisko=$_POST['add_nazwisko_n'];
-		$nr_tel=$_POST['add_nrtel_n'];
-		$przedmiot=$_POST['add_przedmiot_n'];
-		
-		$sql2="SELECT * FROM nauczyciel_full_info WHERE ID='$ID' OR imie='$imie' OR nazwisko='$nazwisko' OR nr_tel='$nr_tel' OR przedmiot='$przedmiot'";
-		$result2 = @$conn->query($sql2);
-	
-	}
-	
-	else
-	{
-		
-	}		
-		
-		
-	
 		
 		
 			$conn->close();
@@ -198,22 +181,86 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	
 	?>
 		<div id="tresc">
-			<br/>
-			<B> Szukaj rodzica: </B><br/>
+			
+		
+
+
+
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+			<script language="javascript" type="text/javascript" >
+		
+				function dodaj_r() {
+					
+				 $.ajax({
+					url: "dodaj_rodzica.php",
+					data: {
+						login: $('#login').val(),
+						haslo: $('#haslo').val(),
+						imie: $('#imie').val(),
+						nazwisko: $('#nazwisko').val(),
+						nr_tel: $('#nr_tel').val(),
+						email: $('#email').val(),
+						opiekunowie_id: $('#opiekunowie_id').val(),
+						
+						}, 
+				});
+				window.alert("Rodzic został dodany");
+				
+				}
+		</script>
+		
+
+		<div>
+		
+		
+		  <form onSubmit="dodaj_r()" class="form-container" method="POST" >
+			
+			
+			<h1>Dodaj rodzica:</h1>
+			
+			
+					<input id="login" name="login" placeholder="login" required>
+					
+					<input id="haslo" name="haslo" placeholder="hasło" type="password" required>
+					
+					<input id="imie" name="imie" placeholder="imię" required>
+					
+					<input id="nazwisko" name="nazwisko" placeholder="nazwisko" required>
+					
+					<input id="nr_tel" name="nr_tel" placeholder="nr telefonu" required>
+					
+					<input id="email" name="email" placeholder="e-mail" required>
+					
+					<input id="opiekunowie_id" name="opiekunowie_id" placeholder="ID opiekunów">
+					
+
+			
+			<button id="btn" type="submit" name="uspr"  >Dodaj</button>
+			
+		  </form>
+		</div>
+		
+		
+
+			
+			<h3> Szukaj rodzica: </h3>
 			
 			
 			
 			<form action="a_rodzice.php" method="post">
 
 				
-					<input name="ID_n" placeholder="ID">
+					<input name="ID_r" placeholder="ID rodzica">
 					
-					<input name="imie_n" placeholder="imię">
+					<input name="imie_r" placeholder="imię">
 					
-					<input name="nazwisko_n" placeholder="nazwisko">
+					<input name="nazwisko_r" placeholder="nazwisko">
 					
-					<input name="nrtel_n" placeholder="nr telefonu">
-				
+					<input name="nrtel_r" placeholder="nr telefonu">
+					
+					<input name="email_r" placeholder="e-mail">
+					
+					<input name="opiekunowie_id_r" placeholder="ID opiekunów">
 					
 					<button type="submit">Szukaj</button>
 					
@@ -226,45 +273,34 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 
 		$sprawdzanie=0;
 	if(isset($result)) {
-		while($dane_nauczyciela = $result->fetch_assoc()) {
+		
+		
+		echo "<table border=5><tr><td>ID rodzica</td><td>nazwisko</td><td>imię</td><td>nr telefonu</td><td>email</td><td>ID opiekunów";
+		while($dane_rodzica = $result->fetch_assoc()) {
 					
-		if($sprawdzanie!=	$dane_nauczyciela['rodzic_ID'])
-		{
-			echo "ID: ".$dane_nauczyciela['rodzic_ID']." ";
-			echo "nazwisko: ".$dane_nauczyciela['nazwisko']." ";
-			echo "imię: ".$dane_nauczyciela['imie']." ";
-			echo "nr telefonu: ".$dane_nauczyciela['nr_telefonu']." ";
-			echo "opiekun ID: ".$dane_nauczyciela['opiekunowie_id']." ";
-			echo "email: ".$dane_nauczyciela['email']."<br/>";
-			$sprawdzanie=$dane_nauczyciela['rodzic_ID'];
+		if($sprawdzanie!=	$dane_rodzica['rodzic_ID'])
+		{	echo "</td></tr><tr>";
+			$sprawdzanie=$dane_rodzica['rodzic_ID'];
+			echo 
+							
+			"<td>".$dane_rodzica['rodzic_ID']."</td>".
+			"<td>".$dane_rodzica['nazwisko']."</td>".
+			"<td>".$dane_rodzica['imie']."</td>".
+			"<td>".$dane_rodzica['nr_telefonu']."</td>".
+			"<td>".$dane_rodzica['email']."</td>".
+			"<td>".$dane_rodzica['opiekunowie_id'];
+			
 		}
+		else
+		{
+		
+		}
+		
 					}
+					echo "</td></tr><br/></table>";
 		        }
-?>			
-		<br/><br/><B> Dodaj rodzica: </B><br/>
-					<form action="a_nauczyciele.php" method="post">
-
-				
-					<input name="add_ID_n" placeholder="ID">
-					
-					<input name="add_imie_n" placeholder="imię">
-					
-					<input name="add_nazwisko_n" placeholder="nazwisko">
-					
-					<input name="add_nrtel_n" placeholder="nr telefonu">
-					
-					<input name="add_przedmiot_n" placeholder="przedmiot">
-					
-					<button type="submit">Dodaj</button>
-					
-					</form>
-<?php
-if(isset($result2)) {
-	echo "Nauczyciel został dodany prawidłowo";
-	}
-
-
 ?>
+
 		
 		
 		
