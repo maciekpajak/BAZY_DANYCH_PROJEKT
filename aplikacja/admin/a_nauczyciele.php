@@ -94,7 +94,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		</div>
 		
 		<a href="a_konto.php">
-		<div id="teraz">
+		<div id="inne">
 		Zarządzanie kontem
 		</div>
 		</a>
@@ -113,12 +113,16 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		
 		
 		<a href="a_nauczyciele.php">
-		<div id="inne">
+		<div id="teraz">
 		Edycja nauczycieli
 		</div>
 		</a>	
 		
-		<?php 
+		
+		
+		
+		
+				<?php 
 	unset($_SESSION['blad']);
 	
 	require_once "../connect.php";
@@ -137,18 +141,61 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		$haslo = $_SESSION['haslo'];
 		
 		
-		$sql="SELECT * FROM uzytkownik WHERE uzytkownik_login='$login' AND haslo='$haslo'";
-		$result = @$conn->query($sql);
+		
 	
-		$sql2="SELECT * FROM rodzic WHERE uzytkownik_login='$login' ";
-		$result2 = @$conn->query($sql2);
 		
-		$dane_uzytkowanika=@mysqli_fetch_assoc($result);
-		$dane_rodzica=@mysqli_fetch_assoc($result2);
-				
-
 		
+		//-----------------Szukanie--------------------------
+		
+		if(isset($_POST['ID_n']) OR isset($_POST['imie_n']) OR isset($_POST['nazwisko_n']) OR isset($_POST['nrtel_n']) OR isset($_POST['przedmiot_n']))
+	{	
 
+		$ID=$_POST['ID_n'];
+		$imie=$_POST['imie_n'];
+		$nazwisko=$_POST['nazwisko_n'];
+		$nr_tel=$_POST['nrtel_n'];
+		$przedmiot=$_POST['przedmiot_n'];
+		
+		$sql="SELECT * FROM nauczyciel_full_info WHERE ID='$ID' OR imie='$imie' OR nazwisko='$nazwisko' OR nr_tel='$nr_tel' OR przedmiot='$przedmiot'";
+		$result = @$conn->query($sql);
+		
+		
+		
+		
+		
+		
+	}
+	
+	else
+	{
+		
+	}
+	
+	//--------------------Dodawanie--------------------------------------------------
+	
+			if(isset($_POST['login']) and isset($_POST['haslo']) and isset($_POST['imie']) and isset($_POST['nazwisko']) and isset($_POST['email']) and isset($_POST['nr_tel']) and isset($_POST['czy_wych']))
+	{	
+
+		$login=$_POST['login'];
+		$haslo=$_POST['haslo'];
+		$imie=$_POST['imie'];
+		$nazwisko=$_POST['nazwisko'];
+		$email=$_POST['email'];
+		$nr_tel=$_POST['nr_tel'];
+		$czy_wych=$_POST['czy_wych'];
+		
+		$result2 = $conn->query("CALL dodaj_nauczyciela('$login','$haslo','$imie','$nazwisko','$email','$nr_tel','$czy_wych')");
+		
+	
+	}
+	
+	else
+	{
+		
+	}		
+		
+		
+	
 		
 		
 			$conn->close();
@@ -157,50 +204,92 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	
 	?>
 		<div id="tresc">
-			<div id="lewy">
-			
-			<B> Dane: </B><br/>
-			<div id="dane">
-				imie:  <?php echo $dane_uzytkowanika['imie'] ; ?>  <br/>
-				nazwisko: <?php echo $dane_uzytkowanika['nazwisko'] ; ?>   <br/>
-				login: <?php echo $dane_uzytkowanika['uzytkownik_login'] ; ?><br/>
-				email: <?php echo $dane_uzytkowanika['email'] ; ?><br/>
-			</div>
-			
-			</div>
+			<br/>
+			<B> Szukaj nauczyciela: </B><br/>
 			
 			
 			
-			
-			
-<form action="zmiana_hasla.php" method="post">
-			<div id="prawy">
-				<B> Zmiana hasła: </B><br/>
-				<div id="zmianahasla">
-					stare hasło:<br/>
-					<input type="password" name="stare"> <br/>
-					nowe hasło:<br/>
-					<input type="password" name="nowe"><br/>
-					powtórz nowe hasło:<br/>
-					<input type="password" name="p_nowe"><br/>
-					<button type="submit">Zatwierdź</button>
+			<form action="a_nauczyciele.php" method="post">
+
+				
+					<input name="ID_n" placeholder="ID">
 					
+					<input name="imie_n" placeholder="imię">
+					
+					<input name="nazwisko_n" placeholder="nazwisko">
+					
+					<input name="nrtel_n" placeholder="nr telefonu">
+					
+					<input name="przedmiot_n" placeholder="przedmiot">
+					
+					<button type="submit">Szukaj</button>
 					
 					</form>
-				</div>
-				
-			</div>
-				
 
+
+<?php
+
+
+
+		$sprawdzanie=0;
+	if(isset($result)) {
+		while($dane_nauczyciela = $result->fetch_assoc()) {
+					
+		if($sprawdzanie!=	$dane_nauczyciela['ID'])
+		{
+			echo "ID: ".$dane_nauczyciela['ID']." ";
+			echo "nazwisko: ".$dane_nauczyciela['nazwisko']." ";
+			echo "imię: ".$dane_nauczyciela['imie']." ";
+			echo "nr telefonu: ".$dane_nauczyciela['nr_tel']." ";
+			echo "email: ".$dane_nauczyciela['email']."<br/>";
+			$sprawdzanie=$dane_nauczyciela['ID'];
+		}
+					}
+		        }
+?>			
+		<B> Dodaj nauczyciela: </B><br/>
+					<form action="a_nauczyciele.php" method="post">
+
+				
+					<input name="login" placeholder="login">
+					
+					<input type="password" name="haslo" placeholder="hasło">
+					
+					<input name="imie" placeholder="imię">
+					
+					<input name="nazwisko" placeholder="nazwisko">
+					
+					<input name="email" placeholder="e-mail">
+					
+					<input name="nr_tel" placeholder="nr telefonu">
+					
+					<input name="czy_wych" placeholder="czy wychowawca(Y/N)">
+					
+					<button type="submit">Dodaj</button>
+					
+					</form>
+<?php
+if(isset($result2)) {
+	echo "Coś zrobiło";
+	}
+
+
+?>
+		
+		
+		
+		
 		</div>
+		
+		
+		
+		
+		
+		
 		<form action="../wyloguj.php" >
 
 		<button type="submit">wyloguj</button>
 		</form>
-		
-		
-		
-		
 		
 		
 		
