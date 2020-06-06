@@ -1178,14 +1178,22 @@ CREATE PROCEDURE `dodaj_nauczyciela`(
 	IN `imie` VARCHAR(20),
 	IN `nazwisko` VARCHAR(30),
 	IN `email` VARCHAR(50),
-	IN `tel` CHAR(50),
-	IN `czy_wych` ENUM('Y','N')
+	IN `tel` VARCHAR(12),
+	IN `czy_wych` ENUM('Y','N'),
+	IN `przedmiot_in` VARCHAR(30)
 )
 BEGIN 
+	DECLARE n_id INT;
 	call dodaj_uzytkownika(login, haslo, imie, nazwisko, 'N', email);
 	
-	INSERT INTO rodzic (rodzic.uzytkownik_login,nauczyciel.nr_tel, nauczyciel.czy_wych)
-	VALUES (login,nr_tel, czy_wych);
+	INSERT INTO nauczyciel (nauczyciel.uzytkownik_login, nauczyciel.nr_tel, nauczyciel.czy_wych)
+	VALUES (login, tel, czy_wych);
+	
+	SET n_id = LAST_INSERT_ID();
+	
+	INSERT INTO nauczyciel_przedmiotu (nauczyciel_przedmiotu.nauczyciel_id, nauczyciel_przedmiotu.przedmiot_nazwa)
+	VALUES (n_id, przedmiot_in);
+	
  END//
 DELIMITER ;
 
@@ -1266,7 +1274,7 @@ CREATE PROCEDURE `dodaj_uzytkownika`(
 	IN `rodzaj` ENUM('U','R','N','I','A'),
 	IN `email` VARCHAR(32)
 )
-INSERT INTO uzytkownik (uzytkownik.uzytkownik_login,uzytkownik.haslo, uzytkownik.imie, uzytkownik.nazwisko, uzytkownik.rodzaj, uzytkownik.email) VALUES (login, MD5(haslo), imie, nazwisko, rodzaj,email)//
+INSERT INTO uzytkownik (uzytkownik.uzytkownik_login,uzytkownik.haslo, uzytkownik.imie, uzytkownik.nazwisko, uzytkownik.rodzaj, uzytkownik.email) VALUES (login, haslo, imie, nazwisko, rodzaj,email)//
 DELIMITER ;
 
 -- Zrzut struktury procedura id13767441_dziennik.dzieci_rodzica
@@ -6042,15 +6050,15 @@ REPLACE INTO `miejscowosc` (`miejscowosc_ID`, `nazwa`) VALUES
 CREATE TABLE IF NOT EXISTS `nauczyciel` (
   `nauczyciel_ID` int(2) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `uzytkownik_login` varchar(16) COLLATE utf8_polish_ci NOT NULL,
-  `nr_tel` char(50) COLLATE utf8_polish_ci DEFAULT NULL,
+  `nr_tel` varchar(12) COLLATE utf8_polish_ci DEFAULT NULL,
   `czy_wych` enum('Y','N') COLLATE utf8_polish_ci NOT NULL DEFAULT 'N',
   PRIMARY KEY (`nauczyciel_ID`),
   UNIQUE KEY `ID` (`nauczyciel_ID`),
   UNIQUE KEY `uzytkownik_login` (`uzytkownik_login`),
   CONSTRAINT `FK_nauczyciel_uzytkownik_2` FOREIGN KEY (`uzytkownik_login`) REFERENCES `uzytkownik` (`uzytkownik_login`)
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
--- Zrzucanie danych dla tabeli id13767441_dziennik.nauczyciel: ~60 rows (około)
+-- Zrzucanie danych dla tabeli id13767441_dziennik.nauczyciel: ~61 rows (około)
 /*!40000 ALTER TABLE `nauczyciel` DISABLE KEYS */;
 REPLACE INTO `nauczyciel` (`nauczyciel_ID`, `uzytkownik_login`, `nr_tel`, `czy_wych`) VALUES
 	(01, 'Qq0Nf1Qv9', '697572400', 'Y'),
@@ -6141,7 +6149,7 @@ CREATE TABLE `nauczyciel_full_info` (
 	`ID` INT(2) UNSIGNED ZEROFILL NOT NULL,
 	`nazwisko` VARCHAR(30) NOT NULL COLLATE 'utf8_polish_ci',
 	`imie` VARCHAR(20) NOT NULL COLLATE 'utf8_polish_ci',
-	`nr_tel` CHAR(50) NULL COLLATE 'utf8_polish_ci',
+	`nr_tel` VARCHAR(12) NULL COLLATE 'utf8_polish_ci',
 	`email` VARCHAR(50) NULL COLLATE 'utf8_polish_ci',
 	`przedmiot` VARCHAR(32) NULL COLLATE 'utf8_polish_ci',
 	`nauczyciel_przedmiotu_ID` INT(3) UNSIGNED ZEROFILL NOT NULL
@@ -6158,7 +6166,7 @@ CREATE TABLE IF NOT EXISTS `nauczyciel_przedmiotu` (
   KEY `FK_nauczyciel_przedmiotu_nauczyciel` (`nauczyciel_id`),
   CONSTRAINT `FK_nauczyciel_przedmiotu_nauczyciel` FOREIGN KEY (`nauczyciel_id`) REFERENCES `nauczyciel` (`nauczyciel_ID`),
   CONSTRAINT `FK_nauczyciel_przedmiotu_przedmiot` FOREIGN KEY (`przedmiot_nazwa`) REFERENCES `przedmiot` (`przedmiot_nazwa`)
-) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- Zrzucanie danych dla tabeli id13767441_dziennik.nauczyciel_przedmiotu: ~66 rows (około)
 /*!40000 ALTER TABLE `nauczyciel_przedmiotu` DISABLE KEYS */;
@@ -9880,7 +9888,7 @@ CREATE TABLE IF NOT EXISTS `opiekunowie` (
   `opiekunowie_ID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`opiekunowie_ID`),
   UNIQUE KEY `ID` (`opiekunowie_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=300 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=302 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- Zrzucanie danych dla tabeli id13767441_dziennik.opiekunowie: ~299 rows (około)
 /*!40000 ALTER TABLE `opiekunowie` DISABLE KEYS */;
@@ -10636,7 +10644,7 @@ CREATE TABLE IF NOT EXISTS `uczen` (
   CONSTRAINT `FK_uczen_uzytkownik` FOREIGN KEY (`uzytkownik_login`) REFERENCES `uzytkownik` (`uzytkownik_login`)
 ) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
--- Zrzucanie danych dla tabeli id13767441_dziennik.uczen: ~101 rows (około)
+-- Zrzucanie danych dla tabeli id13767441_dziennik.uczen: ~100 rows (około)
 /*!40000 ALTER TABLE `uczen` DISABLE KEYS */;
 REPLACE INTO `uczen` (`uczen_ID`, `pesel`, `adres_id`, `klasa_id`, `opiekunowie_id`, `uzytkownik_login`) VALUES
 	(001, '25247707723', 001, 01, 001, 'Eq0At0Uo2'),
@@ -11342,7 +11350,7 @@ CREATE TABLE IF NOT EXISTS `wersja` (
   `minor` int(10) unsigned DEFAULT 0,
   `data` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 -- Zrzucanie danych dla tabeli id13767441_dziennik.wersja: ~6 rows (około)
 /*!40000 ALTER TABLE `wersja` DISABLE KEYS */;
@@ -11353,7 +11361,8 @@ REPLACE INTO `wersja` (`id`, `major`, `minor`, `data`) VALUES
 	(4, 1, 3, '2020-05-27 10:07:30'),
 	(5, 1, 4, '2020-05-29 13:48:17'),
 	(6, 1, 5, '2020-06-05 14:49:21'),
-	(7, 1, 6, '2020-06-05 21:19:39');
+	(7, 1, 6, '2020-06-05 21:19:39'),
+	(8, 1, 7, '2020-06-06 10:56:55');
 /*!40000 ALTER TABLE `wersja` ENABLE KEYS */;
 
 -- Zrzut struktury procedura id13767441_dziennik.zmiana_hasla_admin
