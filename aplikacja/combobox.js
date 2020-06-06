@@ -40,6 +40,9 @@ for (i = 0; i < l; i++) {
 		  }
 		}
 		h.click();
+		
+		window.alert(h.value);
+		
 	});
 	b.appendChild(c);
   }
@@ -52,6 +55,7 @@ for (i = 0; i < l; i++) {
 	  this.nextSibling.classList.toggle("select-hide");
 	  this.classList.toggle("select-arrow-active");
 	});
+	window.alert(a);
 }
 
 function closeAllSelect(elmnt) {

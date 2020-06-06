@@ -35,7 +35,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	<title>Zarządzanie kontem</title>
 
 	<link rel="stylesheet" href="../Styles/styleApp.css" type="text/css" />
-	<link rel="stylesheet" href="../Styles/combobox.css" type="text/css" />
+	<!--><link rel="stylesheet" href="../Styles/combobox.css" type="text/css" /></!-->
 	<link rel="Shortcut icon" href="favicon.ico" />
 	
 	<meta name="description" content="opis w google"/>
@@ -177,36 +177,55 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	
 	?>
 
+
+	
 	<div >
+	
+	
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script language="javascript" type="text/javascript">
+
+				function onChangeCmb() {
+					
+				var element = document.getElementById("cmbMake");
+				var value = element.options[element.selectedIndex].value;
+				 $.ajax({
+					url: "cmbChange.php",
+					data: {
+						id: value
+						}, 
+				});
+				window.alert("Zmianiono ucznia");
+				}
+	</script>
+	
+	
 	<form method="POST" >
 			
-		<div class="custom-select" style="width:400px;">
-		  <select id="cmbMake" name="Make"  onchange="document.getElementById('selected_text').value=this.options[this.selectedIndex].text">
-			 <option value = 0 > ---Wybierz ucznia--- </option>
+		  <select id="cmbMake" name="Make"  onchange="onChangeCmb()">
 			 <?php
+			 echo '<option value = 0 > ---Wybierz ucznia--- </option>';
 			 while($dzieci = $result3 ->fetch_assoc() )
+
 				 {
 				   echo '<option value="'.$dzieci['uczen_ID'].'">'.$dzieci['imie']. ' ' .$dzieci['nazwisko'].' ' .$dzieci['oddzial'].'</option>';
 				 }
 			 ?>
 		</select>
-		</div>
-		<button class ="button" type="submit" name="search" > Zatwierdź </button>
 	</form>
-			 <script type="text/javascript" src="../combobox.js"></script>
-			
+			 
 			
 			<?php
 
 			if(isset($_POST['search']))
-			//if(isset($_POST['Make']))
 			{
 				$_SESSION['wybrane_dziecko_id']= $_POST['Make'];
 			}
 			 ?>
 	</div>
 	
-	
+			
+			
 		<div id="tresc">
 			<div id="lewy">
 			

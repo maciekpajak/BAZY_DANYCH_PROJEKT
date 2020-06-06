@@ -189,7 +189,34 @@ setTimeout( function() { alert("Your session expired."); location.reload(); }, 1
 		   
 		?>
 		
-		
+		<div >
+		<form method="POST" >
+				
+			<div class="custom-select" style="width:400px;">
+			  <select id="cmbMake" name="Make"  onchange="document.getElementById('selected_text').value=this.options[this.selectedIndex].text">
+				 <option value = 0 > ---Wybierz ucznia--- </option>
+				 <?php
+				 while($dzieci = $result3 ->fetch_assoc() )
+					 {
+					   echo '<option value="'.$dzieci['uczen_ID'].'">'.$dzieci['imie']. ' ' .$dzieci['nazwisko'].' ' .$dzieci['oddzial'].'</option>';
+					 }
+				 ?>
+			</select>
+			</div>
+			<button class ="button" type="submit" name="search" > Zatwierdź </button>
+		</form>
+			 <script type="text/javascript" src="../combobox.js"></script>
+			
+			
+			<?php
+
+			if(isset($_POST['search']))
+			//if(isset($_POST['Make']))
+			{
+				$_SESSION['wybrane_dziecko_id']= $_POST['Make'];
+			}
+			 ?>
+	</div>
 		
 			
 			

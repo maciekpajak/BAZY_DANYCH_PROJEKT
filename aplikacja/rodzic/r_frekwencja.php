@@ -279,7 +279,13 @@ textarea {
 			}
 			?>
 			
-			<script language="javascript" type="text/javascript">
+
+		</div>
+		</div>
+		
+		
+		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+			<script language="javascript" type="text/javascript" >
 			  function openForm(id , status, godzina, przedmiot, nauczyciel) {
 				  
 				  $id_obecnosci_do_uspr = id;
@@ -304,15 +310,12 @@ textarea {
 						tresc: $('#textarea').val()
 						}, 
 				});
-				document.getElementById("demo").innerHTML = $id_obecnosci_do_uspr ;
+				window.alert("Usprawiedliwienie zostało pomyślnie wysłane");
 				document.getElementById("myForm").style.display = "none";
 				}
-			</script>
+		</script>
 		
-		</div>
-		</div>
 		
-		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 		
 		<div class="form-popup" id="myForm">
 		  <form onSubmit="usprawiedliw()" class="form-container" method="POST" >
@@ -328,7 +331,6 @@ textarea {
 		  </form>
 		</div>
 		
-		<p id="demo">Dem</p>
 		<form action="../wyloguj.php" >
 
 		<button type="submit">wyloguj</button>
