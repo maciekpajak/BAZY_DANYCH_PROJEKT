@@ -14,7 +14,7 @@
 		}
 		else
 		{
-			echo $id ;
+			
 			$conn->query("UPDATE obecnosc AS o SET o.czy_do_uspr = 'Y', o.tresc_uspr = '$tresc' WHERE o.obecnosc_ID = '$id'");
 				
 			

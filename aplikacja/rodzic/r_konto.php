@@ -136,7 +136,11 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		</div>
 		</a>	
 		
-		
+		<a href="r_dane_ucznia.php">
+		<div id="inne">
+		 Dane ucznia
+		</div>
+		</a>
 		
 		
 		
