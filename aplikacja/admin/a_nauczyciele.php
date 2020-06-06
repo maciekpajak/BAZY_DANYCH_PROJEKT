@@ -172,19 +172,15 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	}
 	
 	//--------------------Dodawanie--------------------------------------------------
-	/*
-			if(isset($_POST['login']) and isset($_POST['haslo']) and isset($_POST['imie']) and isset($_POST['nazwisko']) and isset($_POST['email']) and isset($_POST['nr_tel']) and isset($_POST['czy_wych']))
+	
+			if(isset($_POST['add_ID_n']) and isset($_POST['add_przedmiot_n']))
 	{	
 
-		$login=$_POST['login'];
-		$haslo=$_POST['haslo'];
-		$imie=$_POST['imie'];
-		$nazwisko=$_POST['nazwisko'];
-		$email=$_POST['email'];
-		$nr_tel=$_POST['nr_tel'];
-		$czy_wych=$_POST['czy_wych'];
+		$add_ID_n=$_POST['add_ID_n'];
+		$add_przedmiot_n=$_POST['add_przedmiot_n'];
+
 		
-		$result2 = $conn->query("CALL dodaj_nauczyciela('$login','$haslo','$imie','$nazwisko','$email','$nr_tel','$czy_wych')");
+		$conn->query("INSERT INTO nauczyciel_przedmiotu (nauczyciel_przedmiotu.nauczyciel_id,nauczyciel_przedmiotu.przedmiot_nazwa) VALUES ('$add_ID_n', '$add_przedmiot_n')");
 		
 	
 	}
@@ -194,7 +190,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		
 	}		
 		
-		*/
+		
 	
 		
 		
@@ -204,49 +200,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	
 	?>
 		<div id="tresc">
-			<br/>
-			<B> Szukaj nauczyciela: </B><br/>
 			
-			
-			
-			<form action="a_nauczyciele.php" method="post">
-
-				
-					<input name="ID_n" placeholder="ID">
-					
-					<input name="imie_n" placeholder="imię">
-					
-					<input name="nazwisko_n" placeholder="nazwisko">
-					
-					<input name="nrtel_n" placeholder="nr telefonu">
-					
-					<input name="przedmiot_n" placeholder="przedmiot">
-					
-					<button type="submit">Szukaj</button>
-					
-					</form>
-
-
-<?php
-
-
-
-		$sprawdzanie=0;
-	if(isset($result)) {
-		while($dane_nauczyciela = $result->fetch_assoc()) {
-					
-		if($sprawdzanie!=	$dane_nauczyciela['ID'])
-		{
-			echo "ID: ".$dane_nauczyciela['ID']." ";
-			echo "nazwisko: ".$dane_nauczyciela['nazwisko']." ";
-			echo "imię: ".$dane_nauczyciela['imie']." ";
-			echo "nr telefonu: ".$dane_nauczyciela['nr_tel']." ";
-			echo "email: ".$dane_nauczyciela['email']."<br/>";
-			$sprawdzanie=$dane_nauczyciela['ID'];
-		}
-					}
-		        }
-?>			
 		
 
 
@@ -314,16 +268,81 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 			
 		  </form>
 		</div>
+		
+		
+		
+		<form action="a_nauczyciele.php" method="post">
+				<h2>Dodaj przedmiot nauczycielowi:</h2>
+				
+					<input name="add_ID_n" placeholder="ID nauczyciela" required>
+
+					<input name="add_przedmiot_n" placeholder="przedmiot" required>
+					
+					<button type="submit">Dodaj</button>
+					
+		</form>
+			
+			<h3> Szukaj nauczyciela: </h3>
+			
+			
+			
+			<form action="a_nauczyciele.php" method="post">
+
+				
+					<input name="ID_n" placeholder="ID">
+					
+					<input name="imie_n" placeholder="imię">
+					
+					<input name="nazwisko_n" placeholder="nazwisko">
+					
+					<input name="nrtel_n" placeholder="nr telefonu">
+					
+					<input name="przedmiot_n" placeholder="przedmiot">
+					
+					<button type="submit">Szukaj</button>
+					
+					</form>
 
 
 <?php
-/*
-if(isset($result2)) {
-	echo "Coś zrobiło";
-	}
 
-*/
+
+
+		$sprawdzanie=0;
+	if(isset($result)) {
+		
+		
+		echo "<table border=5><tr><td>ID</td><td>nazwisko</td><td>imię</td><td>nr telefonu</td><td>email</td><td>przedmiot nauczania";
+		while($dane_nauczyciela = $result->fetch_assoc()) {
+					
+		if($sprawdzanie!=	$dane_nauczyciela['ID'])
+		{	echo "</td></tr><tr>";
+			$sprawdzanie=$dane_nauczyciela['ID'];
+			echo 
+							
+			"<td>".$dane_nauczyciela['ID']."</td>".
+			"<td>".$dane_nauczyciela['nazwisko']."</td>".
+			"<td>".$dane_nauczyciela['imie']."</td>".
+			"<td>".$dane_nauczyciela['nr_tel']."</td>".
+			"<td>".$dane_nauczyciela['email']."</td>".
+			"<td>".$dane_nauczyciela['przedmiot'];
+			
+			
+			
+			
+		}
+		else
+		{
+			
+			echo ", ".$dane_nauczyciela['przedmiot'];
+			
+		}
+		
+					}
+					echo "</td></tr><br/></table>";
+		        }
 ?>
+
 		
 		
 		
