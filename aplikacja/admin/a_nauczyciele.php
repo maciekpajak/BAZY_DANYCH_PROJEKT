@@ -172,7 +172,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	}
 	
 	//--------------------Dodawanie--------------------------------------------------
-	
+	/*
 			if(isset($_POST['login']) and isset($_POST['haslo']) and isset($_POST['imie']) and isset($_POST['nazwisko']) and isset($_POST['email']) and isset($_POST['nr_tel']) and isset($_POST['czy_wych']))
 	{	
 
@@ -194,7 +194,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		
 	}		
 		
-		
+		*/
 	
 		
 		
@@ -247,33 +247,82 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 					}
 		        }
 ?>			
-		<B> Dodaj nauczyciela: </B><br/>
+		
+
+
+
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+			<script language="javascript" type="text/javascript" >
+		
+				function dodaj_n() {
+					
+				 $.ajax({
+					url: "dodaj_nauczyciela.php",
+					data: {
+						login: $('#login').val(),
+						haslo: $('#haslo').val(),
+						imie: $('#imie').val(),
+						nazwisko: $('#nazwisko').val(),
+						email: $('#email').val(),
+						nr_tel: $('#nr_tel').val(),
+						czy_wych: $('#czy_wych').val(),
+						przedmiot_in: $('#przedmiot_in').val()
+						}, 
+				});
+				window.alert("Nauczyciel został dodoany");
+				
+				}
+		</script>
+		
+		
+		
 					<form action="a_nauczyciele.php" method="post">
 
 				
-					<input name="login" placeholder="login">
+
 					
-					<input type="password" name="haslo" placeholder="hasło">
 					
-					<input name="imie" placeholder="imię">
-					
-					<input name="nazwisko" placeholder="nazwisko">
-					
-					<input name="email" placeholder="e-mail">
-					
-					<input name="nr_tel" placeholder="nr telefonu">
-					
-					<input name="czy_wych" placeholder="czy wychowawca(Y/N)">
-					
-					<button type="submit">Dodaj</button>
 					
 					</form>
+		
+		
+		
+		
+		
+		
+		
+		<div>
+		  <form onSubmit="dodaj_n()" class="form-container" method="POST" >
+			<h1>Dodaj nauczyciela:</h1>
+					<input id="login" name="login" placeholder="login" required>
+					
+					<input id="haslo" name="haslo" placeholder="hasło" type="password" required>
+					
+					<input id="imie" name="imie" placeholder="imię" required>
+					
+					<input id="nazwisko" name="nazwisko" placeholder="nazwisko" required>
+					
+					<input id="email" name="email" placeholder="e-mail" required>
+					
+					<input id="nr_tel" name="nr_tel" placeholder="nr telefonu" required>
+					
+					<input id="czy_wych" name="czy_wych" placeholder="czy wychowawca(Y/N)" required>
+					
+					<input id="przedmiot_in" name="przedmiot_in" placeholder="przedmiot nauczania" required>
+			
+			<button id="btn" type="submit" name="uspr"  >Dodaj</button>
+			
+		  </form>
+		</div>
+
+
 <?php
+/*
 if(isset($result2)) {
 	echo "Coś zrobiło";
 	}
 
-
+*/
 ?>
 		
 		
