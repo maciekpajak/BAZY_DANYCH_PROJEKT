@@ -1323,6 +1323,20 @@ where o.uczen_id = uczen_id
 order by l.`data`, l.godz_start//
 DELIMITER ;
 
+-- Zrzut struktury procedura id13767441_dziennik.frekwencja_z_przedmiotu_klasy
+DELIMITER //
+CREATE PROCEDURE `frekwencja_z_przedmiotu_klasy`(
+	IN `klasa_id` INT,
+	IN `przedmiot_in` VARCHAR(32)
+)
+SELECT *
+from obecnosc as o
+join lekcja_full_info as l on l.lekcja_ID = o.lekcja_id
+JOIN uczen_full_info AS u ON o.uczen_id=u.uczen_ID
+WHERE u.klasa_id = klasa_id AND l.przedmiot = przedmiot_in
+order BY u.nazwisko//
+DELIMITER ;
+
 -- Zrzut struktury tabela id13767441_dziennik.grupa_lekcji
 CREATE TABLE IF NOT EXISTS `grupa_lekcji` (
   `grupa_lekcji_ID` int(5) unsigned NOT NULL AUTO_INCREMENT,
@@ -6260,9 +6274,9 @@ CREATE TABLE IF NOT EXISTS `obecnosc` (
   KEY `lekcja` (`lekcja_id`),
   CONSTRAINT `FK_obecnosc_lekcja` FOREIGN KEY (`lekcja_id`) REFERENCES `lekcja` (`lekcja_ID`),
   CONSTRAINT `FK_obecnosc_uczen` FOREIGN KEY (`uczen_id`) REFERENCES `uczen` (`uczen_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3026 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3049 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
--- Zrzucanie danych dla tabeli id13767441_dziennik.obecnosc: ~3 025 rows (około)
+-- Zrzucanie danych dla tabeli id13767441_dziennik.obecnosc: ~3 024 rows (około)
 /*!40000 ALTER TABLE `obecnosc` DISABLE KEYS */;
 INSERT IGNORE INTO `obecnosc` (`obecnosc_ID`, `status`, `uczen_id`, `lekcja_id`, `czy_do_uspr`, `czy_uspr`, `tresc_uspr`) VALUES
 	(1, 'spóźniony', 100, 02297, 'N', 'N', NULL),
@@ -9289,7 +9303,18 @@ INSERT IGNORE INTO `obecnosc` (`obecnosc_ID`, `status`, `uczen_id`, `lekcja_id`,
 	(3022, 'spóźniony', 020, 00833, 'N', 'N', NULL),
 	(3023, 'obecny', 038, 04001, 'N', 'N', NULL),
 	(3024, 'spóźniony', 008, 01549, 'N', 'N', NULL),
-	(3025, 'nieobecny', 042, 02063, 'N', 'N', NULL);
+	(3025, 'nieobecny', 042, 02063, 'N', 'N', NULL),
+	(3038, 'nieobecny', 067, 04303, 'N', 'N', NULL),
+	(3039, 'nieobecny', 036, 04303, 'N', 'N', NULL),
+	(3040, 'nieobecny', 011, 04303, 'N', 'N', NULL),
+	(3041, 'nieobecny', 018, 04303, 'N', 'N', NULL),
+	(3042, 'nieobecny', 062, 04303, 'N', 'N', NULL),
+	(3043, 'nieobecny', 015, 04303, 'N', 'N', NULL),
+	(3044, 'nieobecny', 075, 00802, 'N', 'N', NULL),
+	(3045, 'obecny', 035, 00802, 'N', 'N', NULL),
+	(3046, 'nieobecny', 101, 00802, 'N', 'N', NULL),
+	(3047, 'obecny', 068, 00802, 'N', 'N', NULL),
+	(3048, 'nieobecny', 017, 00802, 'N', 'N', NULL);
 /*!40000 ALTER TABLE `obecnosc` ENABLE KEYS */;
 
 -- Zrzut struktury tabela id13767441_dziennik.ocena
@@ -9311,7 +9336,7 @@ CREATE TABLE IF NOT EXISTS `ocena` (
   CONSTRAINT `FK_ocena_uczen` FOREIGN KEY (`uczen_id`) REFERENCES `uczen` (`uczen_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=571 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
--- Zrzucanie danych dla tabeli id13767441_dziennik.ocena: ~549 rows (około)
+-- Zrzucanie danych dla tabeli id13767441_dziennik.ocena: ~550 rows (około)
 /*!40000 ALTER TABLE `ocena` DISABLE KEYS */;
 INSERT IGNORE INTO `ocena` (`ocena_ID`, `stopien`, `waga`, `opis`, `data`, `czas`, `uczen_id`, `nauczyciel_przedmiotu_id`) VALUES
 	(1, '4', 8, '', '2020-10-03', '00:00:00', 024, 049),
@@ -9881,6 +9906,19 @@ CREATE TABLE `ocena_full_info` (
 	`przedmiot` VARCHAR(32) NULL COLLATE 'utf8_polish_ci'
 ) ENGINE=MyISAM;
 
+-- Zrzut struktury procedura id13767441_dziennik.oceny_nauczyciela_w_klasie
+DELIMITER //
+CREATE PROCEDURE `oceny_nauczyciela_w_klasie`(
+	IN `nauczyciel_id` INT,
+	IN `klasa_id` INT
+)
+SELECT *
+FROM ocena_full_info AS o
+JOIN uczen_full_info AS u ON o.uczen_id = u.uczen_ID
+WHERE u.klasa_ID = klasa_id AND o.ID = nauczyciel_id
+ORDER BY u.nazwisko, o.`data`//
+DELIMITER ;
+
 -- Zrzut struktury procedura id13767441_dziennik.oceny_ucznia
 DELIMITER //
 CREATE PROCEDURE `oceny_ucznia`(
@@ -9892,16 +9930,16 @@ where o.uczen_id = uczen_id
 ORDER BY o.`przedmiot`, o.`data` ASC//
 DELIMITER ;
 
--- Zrzut struktury procedura id13767441_dziennik.oceny_w_klasie
+-- Zrzut struktury procedura id13767441_dziennik.oceny_z_przedmiotu_w_klasie
 DELIMITER //
-CREATE PROCEDURE `oceny_w_klasie`(
-	IN `nauczyciel_id` INT,
-	IN `klasa_id` INT
+CREATE PROCEDURE `oceny_z_przedmiotu_w_klasie`(
+	IN `klasa_id` INT,
+	IN `przedmiot_in` VARCHAR(32)
 )
 SELECT *
 FROM ocena_full_info AS o
 JOIN uczen_full_info AS u ON o.uczen_id = u.uczen_ID
-WHERE u.klasa_ID = klasa_id AND o.ID = nauczyciel_id
+WHERE u.klasa_ID = klasa_id AND o.przedmiot=przedmiot_in
 ORDER BY u.nazwisko, o.`data`//
 DELIMITER ;
 

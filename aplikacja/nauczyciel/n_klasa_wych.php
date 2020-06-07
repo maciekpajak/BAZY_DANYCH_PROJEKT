@@ -145,8 +145,6 @@ textarea {
 	$sql3 = "CALL klasy_nauczyciela('$n_id')";
 	$result3 = $conn->query($sql3);
 	
-	
-	
 	$conn->close();
 		
 	
@@ -180,7 +178,7 @@ textarea {
 		</div> </a>
 		
 		<a href="n_oceny.php">
-		<div id="teraz">
+		<div id="inne">
 		Oceny 
 		</div></a>
 		
@@ -202,7 +200,7 @@ textarea {
 		if($dane_nauczyciela['czy_wych']=="Y")
 		
 		echo '<a href="n_klasa_wych.php">
-		<div id="inne">
+		<div id="teraz">
 		Klasa wychowawcza
 		</div></a>';	
 		
@@ -290,58 +288,105 @@ textarea {
 					
 				var element = document.getElementById("cmbMake");
 				var value = element.options[element.selectedIndex].value;
-				var v = JSON.parse(value);
 				 $.ajax({
-					url: "./wyborKlasy.php",
+					url: "./wyborTyp.php",
 					data: {
-						id_klasy: v.k_id,
-						np_klasy: v.np_id 
+						typ: value
+						}, 
+				});
+				setTimeout(function(){ window.location.reload(true); }, 100);
+				}
+				
+				function onChangeCmb2() {
+					
+				var element = document.getElementById("cmbMake2");
+				var value = element.options[element.selectedIndex].value;
+				 $.ajax({
+					url: "./wyborTyp.php",
+					data: {
+						przedmiot: value
 						}, 
 				});
 				setTimeout(function(){ window.location.reload(true); }, 100);
 				}
 				
 				
-				
 					
 	</script>
 		
-		
+		<div>
 		<div>
 			<form method="POST" >
 				  <select id="cmbMake" name="Make"  onchange="onChangeCmb()">
 					 <?php
-					 echo '<option value = 0 > ---Wybierz klasę--- </option>';
-					 while($klasy = $result3 ->fetch_assoc() )
-						 {
-							$id_klasy =$klasy['klasa_ID'];
-							$np_id = $klasy['nauczyciel_przedmiotu_ID'];
-						   $values = '{"k_id":' . $id_klasy . ',"np_id":' .$np_id . '}';
-						   echo '<option value='.$values.'>'.$klasy['oddzial'].' '.$klasy['przedmiot_nazwa'].'</option>';
-						 }
+					 echo '<option value = 0 > ---Wybierz typ--- </option>';
+					 echo '<option value="oceny">Oceny</option>';
+					 echo '<option value="frekwencja">Frekwencja</option>';
 					 ?>
 				</select>
 			</form>
+		</div>
+		<div>
+			<form method="POST" >
+				  <select id="cmbMake2" name="Make"  onchange="onChangeCmb2()">
+					 <?php
+					 $conn=new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
+					 $resultTMP = $conn->query("SELECT * FROM przedmiot");
+					$conn->close();
+					 echo '<option value = 0 > ---Wybierz przedmiot--- </option>';
+					 while($p = $resultTMP->fetch_assoc())
+					 {
+						  echo '<option value =\''.$p['przedmiot_nazwa'].'\' > '.$p['przedmiot_nazwa'].' </option>';
+					 }
+					 ?>
+				</select>
+			</form>
+		</div>
+		<div>
+			<form method="POST" >
+				  <select id="cmbMake3" name="Make"  onchange="onChangeCmb3()">
+					 <?php
+					 $conn=new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
+					 
+					$sql5 = "SELECT * FROM klasa WHERE nauczyciel_ID = '$n_id'";
+					$klasa_nauczyciela = $conn->query($sql5);
+					$klasa = $klasa_nauczyciela->fetch_assoc();
+
+					 $klasa_id= $klasa['klasa_ID'];
+					 $resultTMP = $conn->query("CALL lista_osob_w_klasie('$klasa_id')");
+					$conn->close();
+					
+					 echo '<option value = 0 > ---Wybierz ucznia--- </option>';
+					 while($u = $resultTMP->fetch_assoc())
+					 {
+						  echo '<option value ='.$u['uczen_ID'].' > '.$u['imie'].' '.$u['nazwisko'].' </option>';
+					 }
+					 ?>
+				</select>
+			</form>
+		</div>
 		</div>
 
 		<div id="tresc">
 			<div id="lewy">
 			
-			<B> Oceny: </B><br/>
+			
 			<?php	
-			if(isset($_SESSION['klasa_do_pokazu']) and $_SESSION['klasa_do_pokazu'] != 0)
-				{
+			if($_SESSION['typ'] == "oceny" )
+			{
+				echo "<B> Oceny: </B><br/>";
+				if(isset($_SESSION['klasa_do_pokazu']) and $_SESSION['klasa_do_pokazu'] != 0)
+					{
 					
 					$conn=new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
-					$k_id = $_SESSION['klasa_do_pokazu'];
-		
+					$k_id = $klasa_id;
 					$result = $conn->query("CALL lista_osob_w_klasie($k_id)");
 					$conn->close();
 					
 					$conn=new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
-					$k_id = $_SESSION['klasa_do_pokazu'];
-		
-					$result4 = $conn->query("CALL oceny_nauczyciela_w_klasie($n_id,$k_id)");
+					$k_id = $klasa_id;
+					$przedmiot_do_pokazu = $_SESSION['przedmiot'];
+					$result4 = $conn->query("CALL oceny_z_przedmiotu_w_klasie($k_id,'$przedmiot_do_pokazu')");
 					$conn->close();
 					
 					
@@ -400,13 +445,6 @@ textarea {
 								echo "<td headers='ocena' style='width:20px;font-size:15px;'></td>";
 								$i = $i + 1;
 							}
-							$np_id = $_SESSION['np_klasy'];
-							echo "<td><button 
-							onClick='openForm(\"".$ucz_id."\" ,\"".$imie."\" , \"" . $nazw ."\", \"" . $np_id ."\"  )'
-							style='display:inline-block;'>
-							+
-							</button></td>";
-							
 							
 							echo "</tr>";
 							$nr = $nr + 1;
@@ -414,89 +452,108 @@ textarea {
 					}
 					echo "</table>"; 
 				}
+				
+			}
+			if($_SESSION['typ'] == "frekwencja" )
+			{
+				$conn=new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
+				$k_id = $klasa_id;
+				$result = $conn->query("CALL lista_osob_w_klasie($k_id)");
+				$conn->close();
+				
+				$conn=new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
+				$k_id = $klasa_id;
+				$przedmiot_do_pokazu = $_SESSION['przedmiot'];
+				$result4 = $conn->query("CALL frekwencja_z_przedmiotu_klasy($k_id,'$przedmiot_do_pokazu')");
+				$conn->close();
+				echo "<table border=1 style='font-size:15px;'>";
+				if($result->num_rows > 0) {
+					$nr = 1;
+					
+					echo "<tr><td>";
+					echo "Nr";
+					echo "</td><td>";
+					echo "Imie i nazwisko";
+					echo "</td><td id='frekwencja' colspan=30>";
+					echo "Frekwencja";
+					
+					echo "</td></tr>";
+					
+					$uczen = $result4->fetch_assoc();
+					while($row = $result->fetch_assoc()) {
+						echo "<tr style:'hight:30px;'><td style='font-size:15px;'>";
+						echo $nr . '.';
+						echo "</td><td style='font-size:15px;'>";
+						echo $row['imie'];
+						echo " ";
+						echo $row['nazwisko'];
+						echo "</td>";
+						$ucz_id = $row['uczen_ID'];
+						$imie = $row['imie'];
+						$nazw = $row['nazwisko'];
+						$i = 0;
+						
+						
+						if(isset($uczen['uczen_ID']) and $row['uczen_ID'] == $uczen['uczen_ID'])
+						{
+							while( isset($uczen['uczen_ID']) and $row['uczen_ID'] == $uczen['uczen_ID'])
+							{
+								if ($uczen['status']=='obecny')
+								{
+									$status='O';
+									$color = "green";
+								}	
+								if($uczen['czy_uspr']=='Y')
+								{
+									$status='U';
+									$color = "blue";
+								}
+								else
+								{
+									if($uczen['status']=='spóźniony')
+									{
+										$status='S';
+									$color = "yellow";
+									}
+									if($uczen['status']=='nieobecny')
+									{
+										$status='N';
+									$color = "red";
+									}
+								}
+								
+								echo "<td headers='frekwencja' style='width:20px;font-size:15px;'>";
+								echo "
+									<button style=\"background-color:$color\" 
+									onClick='' > 
+									<div class=\"tooltip\">
+									$status
+										<span class=\"tooltiptext\">
+										
+										</span>
+									</div></button></td>";
+								$uczen = $result4->fetch_assoc();
+								$i = $i +1;
+							}
+						}
+						
+						while( $i < 30 )
+						{
+							echo "<td headers='frekwencja' style='width:20px;font-size:15px;'></td>";
+							$i = $i + 1;
+						}
+						
+						echo "</tr>";
+						$nr = $nr + 1;
+					}
+				}
+				echo "</table>";
+				
+			
+			echo "</tr></table>"; 	
+			}				
 				?>
-			
-			
-		
-			
-		<div class="form-popup" id="myForm">
-		  <form onSubmit="dodaj()" class="form-container" method="POST" >
-			<p>Nowa ocena</p>
 
-			<p id="form_uczen"></p>
-			<p id="form_przedmiot"></p>
-			<p id="form_data"></p>
-			<p> Stopień:
-			<select id="select_stopien" onchange="" required>
-			<option value= 0>0</option>
-			<option value= 1>1</option>
-			<option value= 2>2</option>
-			<option value= 3>3</option>
-			<option value= 4>4</option>
-			<option value= 5>5</option>
-			<option value= 6>6</option>
-			</select>
-			</p>
-			<p> Waga: 
-			<select id="select_waga" onchange="" required>
-			<option value= 0>0</option>
-			<option value= 1>1</option>
-			<option value= 2>2</option>
-			<option value= 3>3</option>
-			<option value= 4>4</option>
-			<option value= 5>5</option>
-			<option value= 6>6</option>
-			<option value= 3>7</option>
-			<option value= 4>8</option>
-			<option value= 5>9</option>
-			</select>
-			</p>
-			<textarea id="opis_oceny" style="width:300px;height:150px;resize: none;" maxlength=100 placeholder="Opis oceny"  > </textarea>
-			<button id="btn" type="submit" name="uspr"  >Zatwierdź</button>
-			<button type="button" onclick="closeForm()">Anuluj</button>
-		  </form>
-		</div>
-		
-		
-		<div class="form-popup" id="myForm2">
-		  <form onSubmit="edytuj()" class="form-container" method="POST" >
-			<p>Edycja oceny</p>
-
-			<p id="form2_uczen"></p>
-			<p id="form2_data"></p>
-			<p id="form2_ocena"></p>
-			<p id="form2_waga"></p>
-			<p> Stopień:
-			<select id="select2_stopien" onchange="" required>
-			<option value= 0>0</option>
-			<option value= 1>1</option>
-			<option value= 2>2</option>
-			<option value= 3>3</option>
-			<option value= 4>4</option>
-			<option value= 5>5</option>
-			<option value= 6>6</option>
-			</select>
-			</p>
-			<p> Waga: 
-			<select id="select2_waga" onchange="" required>
-			<option value= 0>0</option>
-			<option value= 1>1</option>
-			<option value= 2>2</option>
-			<option value= 3>3</option>
-			<option value= 4>4</option>
-			<option value= 5>5</option>
-			<option value= 6>6</option>
-			<option value= 7>7</option>
-			<option value= 8>8</option>
-			<option value= 9>9</option>
-			</select>
-			</p>
-			<textarea id="opis_oceny2" style="width:300px;height:150px;resize: none;" maxlength=100 placeholder="Opis oceny" > </textarea>
-			<button type="submit" >Zatwierdź</button>
-			<button type="button" onclick="closeForm2()">Anuluj</button>
-		  </form>
-		</div>
-		
 		
 		</div>
 			</div>	

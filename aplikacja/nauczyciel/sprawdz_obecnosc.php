@@ -22,7 +22,8 @@ session_start();
 
 
 <body>
-		
+
+	<div id="container">	
 		<div id="logo">
 		
 			<h1>Frekwencja na lekcji</h1>
@@ -51,7 +52,7 @@ session_start();
 	?>
 
 		
-	<div >
+	<div>
 		
 		
 
@@ -60,8 +61,11 @@ session_start();
 			
 		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 		<script type='text/javascript'>
-			var checkedValue = $('.checkbox:checked').val();
-			window.alert(checkedValue);
+			
+			function sprawdz(){
+				
+				
+			}
 		</script>
 			
 			<?php
@@ -95,7 +99,6 @@ session_start();
 				echo "<input type=\"checkbox\" id='checkall' /> Select All<br/>";
 				echo "</td></tr>";
 		        while($row = $result->fetch_assoc()) {
-					$boxes[] = $row['uczen_ID'];
 					echo "<tr><td>";
 					echo $nr . '.';
 					echo "</td><td>";
@@ -103,20 +106,21 @@ session_start();
 					echo " ";
 					echo $row['nazwisko'];
 					echo "</td><td>";
+					echo "<input type=\"hidden\" name=\"lista_uczniow[]\" value=".$row['uczen_ID']."></input>";
 					echo "<input type=\"checkbox\" class='checkbox' name=\"list[]\" value=" . $row['uczen_ID'] . "></input>";
 					echo "</td></tr>";
 					$nr = $nr + 1;
 		        }
 		    }
 			echo "</table>"; 
-			echo '<input type="submit" />';
+			echo '<input type="submit" /> Zatwierdź</input>';
 			echo '</form>';
 			
 			?>
 		
 
 		
-		
+		</div>
 		
 		
 		
@@ -132,6 +136,7 @@ session_start();
 
 	
 	
+		
 	</div>
 	
 </body>

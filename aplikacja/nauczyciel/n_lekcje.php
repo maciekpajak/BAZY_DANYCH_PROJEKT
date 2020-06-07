@@ -135,7 +135,12 @@ session_start();
 			
 			
 			
+			<?php
 			
+			
+			
+			
+			?>
 			
 			
 			<?php
@@ -145,20 +150,20 @@ session_start();
 		    if($result3->num_rows > 0) {
 		        while($row3 = $result3->fetch_assoc()) {
 					
-					echo '<table border=2>';
+					echo "<table border=2 style='font-size:15px;' >";
 					if ( $row3['data'] > $date || ( $row3['data'] == $date  && $row3['godz_start'] > time()))
 					{
-						echo '<tr><td>';
+						echo "<tr><td style:'width:10px;'>";
 						echo $row3['data'];
-						echo '</td><td>';
+						echo "</td><td style:'width:10px;'>";
 						echo $row3['godz_start'];
-						echo '</td><td>';
+						echo "</td><td style:'width:10px;'>";
 						echo $row3['przedmiot'];
-						echo '</td><td>';
+						echo "</td><td style:'width:10px;'>";
 						echo $row3['sala'];
-						echo '</td><td>';
+						echo "</td><td style:'width:10px;'>";
 						echo $row3['oddzial'];
-						echo '</td><td>';
+						echo "</td><td>";
 						
 						echo '
 						<button> 
