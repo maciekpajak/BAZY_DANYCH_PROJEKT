@@ -143,8 +143,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		
 		
 	
-		
-		
+		$result3=$conn->query("SELECT MAX(opiekunowie_id)+1 FROM rodzic_full_info");
+		$pisz=mysqli_fetch_assoc($result3);
+		$_SESSION['o_id']=$pisz['MAX(opiekunowie_id)+1'];
 		//-----------------Szukanie--------------------------
 		
 		if(isset($_POST['ID_r']) OR isset($_POST['imie_r']) OR isset($_POST['nazwisko_r']) OR isset($_POST['nrtel_r']) OR isset($_POST['email_r']) OR isset($_POST['opiekunowie_id_r']))
@@ -200,7 +201,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 						nazwisko: $('#nazwisko').val(),
 						nr_tel: $('#nr_tel').val(),
 						email: $('#email').val(),
-						opiekunowie_id: $('#opiekunowie_id').val(),
+						o_id: $('#o_id').val(),
 						
 						}, 
 				});
@@ -217,7 +218,11 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 			
 			
 			<h1>Dodaj rodzica:</h1>
-			
+				
+		
+		
+		
+	
 			
 					<input id="login" name="login" placeholder="login" required>
 					
@@ -231,7 +236,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 					
 					<input id="email" name="email" placeholder="e-mail" required>
 					
-					<input id="opiekunowie_id" name="opiekunowie_id" placeholder="ID opiekunów">
+					<input id="o_id" name="o_id" placeholder="ID opiekunów (nowy: <?php echo $_SESSION['o_id'];?>)" required>
 					
 
 			
@@ -307,11 +312,8 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		
 		</div>
 		
-		
-		
-		
-		
-		
+	
+	
 		<form action="../wyloguj.php" >
 
 		<button type="submit">wyloguj</button>
