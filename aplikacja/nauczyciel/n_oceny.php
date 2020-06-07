@@ -152,15 +152,6 @@ textarea {
 	
 	?>
 	<?php
-	$conn=new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
-	
-	#$result5 = $conn->query("SELECT * FROM nauczyciel_full_info AS n WHERE n.ID='$n_id'");
-	
-	#$tmp = $result5->fetch_assoc();
-	#echo $tmp->num_rows;
-	#$np_id = $tmp['nauczyciel_przedmiotu_ID'];
-	
-	$conn->close();
 
 
 	?>
@@ -261,10 +252,10 @@ textarea {
 				}
 
 
-				function openForm(id,imie, nazwisko) {
+				function openForm(id,imie, nazwisko, np_id) {
 			  
 				$ucz_id = id;
-				
+				$np_id = np_id;
 				  document.getElementById("form_uczen").innerHTML = imie + ' ' + nazwisko;
 				  document.getElementById("myForm").style.display = "block";
 				}
@@ -280,7 +271,6 @@ textarea {
 				window.alert(s);
 				var element_waga = document.getElementById("select_waga");
 				var w = element_waga.options[element_waga.selectedIndex].text;
-				var npid = 19;
 				 $.ajax({
 					url: "dodajOcene.php",
 					data: {
@@ -288,7 +278,7 @@ textarea {
 						waga: w,
 						opis: $('#opis_oceny').val(),
 						uczen_id: $ucz_id,
-						np_id:  npid
+						np_id:  $np_id 
 						}, 
 				});
 				window.alert("Ocena została dodana");
@@ -300,13 +290,15 @@ textarea {
 					
 				var element = document.getElementById("cmbMake");
 				var value = element.options[element.selectedIndex].value;
+				var v = JSON.parse(value);
 				 $.ajax({
 					url: "./wyborKlasy.php",
 					data: {
-						id_klasy: value
+						id_klasy: v.k_id,
+						np_klasy: v.np_id 
 						}, 
 				});
-				window.location.reload(true);
+				setTimeout(function(){ window.location.reload(true); }, 100);
 				}
 				
 				
@@ -322,7 +314,10 @@ textarea {
 					 echo '<option value = 0 > ---Wybierz klasę--- </option>';
 					 while($klasy = $result3 ->fetch_assoc() )
 						 {
-						   echo '<option value="'.$klasy['klasa_ID'].'">'.$klasy['klasa_ID'].' '.$klasy['oddzial'].'</option>';
+							$id_klasy =$klasy['klasa_ID'];
+							$np_id = $klasy['nauczyciel_przedmiotu_ID'];
+						   $values = '{"k_id":' . $id_klasy . ',"np_id":' .$np_id . '}';
+						   echo '<option value='.$values.'>'.$klasy['oddzial'].' '.$klasy['przedmiot_nazwa'].'</option>';
 						 }
 					 ?>
 				</select>
@@ -334,7 +329,6 @@ textarea {
 			
 			<B> Oceny: </B><br/>
 			<?php	
-			
 			if(isset($_SESSION['klasa_do_pokazu']) and $_SESSION['klasa_do_pokazu'] != 0)
 				{
 					
@@ -351,7 +345,7 @@ textarea {
 					$conn->close();
 					
 					
-					
+
 					
 					echo "<table border=1 style='font-size:15px;'>";
 					if($result->num_rows > 0) {
@@ -406,8 +400,9 @@ textarea {
 								echo "<td headers='ocena' style='width:20px;font-size:15px;'></td>";
 								$i = $i + 1;
 							}
+							$np_id = $_SESSION['np_klasy'];
 							echo "<td><button 
-							onClick='openForm(\"".$ucz_id."\" ,\"".$imie."\" , \"" . $nazw ."\" )'
+							onClick='openForm(\"".$ucz_id."\" ,\"".$imie."\" , \"" . $nazw ."\", \"" . $np_id ."\"  )'
 							style='display:inline-block;'>
 							+
 							</button></td>";
