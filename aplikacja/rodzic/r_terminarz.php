@@ -109,24 +109,27 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		
 		$result = @$conn->query("SELECT * FROM uzytkownik WHERE uzytkownik_login='$login' AND haslo='$haslo'");
 	
-		$result2 = @$conn->query("SELECT * FROM rodzic WHERE uzytkownik_login='$login' ");
+		$sql2="SELECT * FROM rodzic WHERE uzytkownik_login='$login' ";
+		$result2 = @$conn->query($sql2);
 		
 		$dane_uzytkowanika=@mysqli_fetch_assoc($result);
 		$dane_rodzica=@mysqli_fetch_assoc($result2);
 		
-		if(isset($_SESSION['wybrane_dziecko_id']) and $_SESSION['wybrane_dziecko_id'] != 0  )
+		if(isset($_SESSION['wybrane_dziecko_id']) and $_SESSION['wybrane_dziecko_id'] != 0   )
 			{
 				
 				$uczen_id = $_SESSION['wybrane_dziecko_id'];
-				$result4 = @$conn->query("SELECT * FROM uczen WHERE uczen_ID=$uczen_id ");
+				$tmp = @$conn->query("SELECT * FROM uczen WHERE uczen_ID=$uczen_id ");
 				
-				$dane_ucznia=@mysqli_fetch_assoc($result4);
+				$dane_ucznia=@mysqli_fetch_assoc($tmp);
 				$result3 = $conn->query("CALL terminarz_klasy('$dane_ucznia[klasa_id]')");
 			}
+			
 		$conn->close();
 	}
 	
 	?>
+
 		
 		
 		<div id="tresc">
@@ -142,7 +145,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		echo $calendar->show();
 		?>
 		<?php
-		if(isset($_SESSION['wybrane_dziecko_id']) and $_SESSION['wybrane_dziecko_id'] != 0  )
+		if(isset($_SESSION['wybrane_dziecko_id']) and $_SESSION['wybrane_dziecko_id'] != 0   )
 			{
 				
 		    date_default_timezone_set('Europe/Warsaw');

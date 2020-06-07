@@ -197,19 +197,20 @@ textarea {
 		$dane_uzytkowanika=@mysqli_fetch_assoc($result);
 		$dane_rodzica=@mysqli_fetch_assoc($result2);
 		
+		
+		
 		if(isset($_SESSION['wybrane_dziecko_id']) and $_SESSION['wybrane_dziecko_id'] != 0)
 			{
 				$uczen_id = $_SESSION['wybrane_dziecko_id'];
+				
 				$result3 = $conn->query("CALL frekwencja_ucznia($uczen_id)");
-			}
-			
-			
-		$conn->close();
+			}	
+		
+		
 	}
 	
 	?>
-		
-		
+	
 		<div id="tresc">
 		<div id="lewy">
 			<B> Frekwencja: </B><br/>
@@ -223,7 +224,6 @@ textarea {
 			
 				
 				if($result3->num_rows > 0) {
-				
 					$data=0;
 					while($row3 = $result3->fetch_assoc())
 					{		
@@ -294,7 +294,6 @@ textarea {
 				  document.getElementById("form_nauczyciel").innerHTML = nauczyciel;
 				  document.getElementById("form_godzina").innerHTML = godzina;
 				  document.getElementById("myForm").style.display = "block";
-				  
 				}
 
 				function closeForm() {
@@ -313,6 +312,20 @@ textarea {
 				window.alert("Usprawiedliwienie zostało pomyślnie wysłane");
 				document.getElementById("myForm").style.display = "none";
 				}
+				
+				
+				function onChangeCmb() {
+						
+					var element = document.getElementById("cmbMake");
+					var value = element.options[element.selectedIndex].value;
+					 $.ajax({
+						url: "cmbChange.php",
+						data: {
+							id_wysw_ucznia: value
+							}, 
+					});
+					window.alert("Zmianiono ucznia");
+					}
 		</script>
 		
 		

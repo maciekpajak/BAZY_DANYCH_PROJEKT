@@ -196,10 +196,11 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 				 $.ajax({
 					url: "cmbChange.php",
 					data: {
-						id: value
+						id_wysw_ucznia: value
 						}, 
 				});
 				window.alert("Zmianiono ucznia");
+				window.location.reload(true);
 				}
 	</script>
 	
@@ -210,31 +211,18 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 			 <?php
 			 echo '<option value = 0 > ---Wybierz ucznia--- </option>';
 			 while($dzieci = $result3 ->fetch_assoc() )
-
 				 {
 				   echo '<option value="'.$dzieci['uczen_ID'].'">'.$dzieci['imie']. ' ' .$dzieci['nazwisko'].' ' .$dzieci['oddzial'].'</option>';
 				 }
 			 ?>
 		</select>
 	</form>
-			 
-			
-			<?php
-
-			if(isset($_POST['search']))
-			{
-				$_SESSION['wybrane_dziecko_id']= $_POST['Make'];
-			}
-			 ?>
 	</div>
 	
 			
 			
 		<div id="tresc">
 			<div id="lewy">
-			
-			
-			
 			
 			<B> Dane: </B><br/>
 			<div id="dane">

@@ -51,8 +51,11 @@ session_start();
 		$dane_uzytkowanika=@mysqli_fetch_assoc($result);
 		$dane_nauczyciela=@mysqli_fetch_assoc($result2);
 		
-			$conn->close();
-			}
+		$result3 = $conn->query("CALL lekcje_nauczyciela($dane_nauczyciela[nauczyciel_ID])");
+		
+		$conn->close();
+			
+	}
 
 	?>
 
@@ -65,13 +68,13 @@ session_start();
 		</div>
 		
 		<a href="n_konto.php">
-		<div id="teraz">
+		<div id="inne">
 		Zarządzanie kontem
 		</div>
 		</a>
 				
 		<a href="n_lekcje.php">
-		<div id="inne">
+		<div id="teraz">
 		Lekcje
 		</div> </a>
 		
@@ -94,7 +97,6 @@ session_start();
 		<div id="inne">
 		Uwagi 
 		</div></a>
-		
 		<?php
 		if($dane_nauczyciela['czy_wych']=="Y")
 		
@@ -106,43 +108,86 @@ session_start();
 		?>
 
 
+	<div >
+		
+		
+
 		<div id="tresc">
 			<div id="lewy">
 			
-			<B> Dane: </B><br/>
-			<div id="dane">
-				imie:  <?php echo $dane_uzytkowanika['imie'] ; ?>  <br/>
-				nazwisko: <?php echo $dane_uzytkowanika['nazwisko'] ; ?>   <br/>
-				Nr tel: <?php echo $dane_nauczyciela['nr_tel'] ; ?>  <br/>
-				login: <?php echo $dane_uzytkowanika['uzytkownik_login'] ; ?><br/>
-				email: <?php echo $dane_uzytkowanika['email'] ; ?><br/>
-			</div>
 			
-			</div>
-	
-			
-	<form action="zmiana_hasla.php" method="post">
-			<div id="prawy">
-				<B> Zmiana hasła: </B><br/>
-				<div id="zmianahasla">
-					stare hasło:<br/>
-					<input type="password" name="stare"> <br/>
-					nowe hasło:<br/>
-					<input type="password" name="nowe"><br/>
-					powtórz nowe hasło:<br/>
-					<input type="password" name="p_nowe"><br/>
-					<button type="submit">Zatwierdź</button>
-					
-					
-					</form>
-				</div>
+			<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+			<script language="javascript" type="text/javascript" >
+			  function sprawdzObecnosc(id_klasy_in, id_lekcji_in, oddzial){
+				  
+				$.ajax({
+					url: "./wybrana_klasa.php",
+					data: {
+						id_klasy: id_klasy_in,
+						id_lekcji: id_lekcji_in
+						}, 
+				});
+				window.open('./sprawdz_obecnosc.php?obecnosc=' + oddzial);
 				
-			</div>
+				
+			  }
+			</script>
+			
+			
+			
+			
+			
+			
+			<?php
+			date_default_timezone_set('Europe/Warsaw');
+			$date = date('Y-m-d', time());
+			#$date = "2020-10-10"; //data do testowania
+		    if($result3->num_rows > 0) {
+		        while($row3 = $result3->fetch_assoc()) {
+					
+					echo '<table border=2>';
+					if ( $row3['data'] > $date || ( $row3['data'] == $date  && $row3['godz_start'] > time()))
+					{
+						echo '<tr><td>';
+						echo $row3['data'];
+						echo '</td><td>';
+						echo $row3['godz_start'];
+						echo '</td><td>';
+						echo $row3['przedmiot'];
+						echo '</td><td>';
+						echo $row3['sala'];
+						echo '</td><td>';
+						echo $row3['oddzial'];
+						echo '</td><td>';
+						
+						echo '
+						<button> 
+							Dodaj temat
+						</button>';
+						
+						$id_klasy = $row3['klasa_id'];
+						$id_lekcji = $row3['lekcja_ID'];
+						$oddzial_klasy = $row3['oddzial'];
+						echo '</td><td>';
+						echo "
+						<button onClick='sprawdzObecnosc(\"".$id_klasy."\" , \"".$id_lekcji."\" ,\"" . $oddzial_klasy."\",)'>
+							Sprawdź obecność
+						</button>";
+						
+						echo '</td></tr>';
+					}
+					echo '</table>';
+		        }
+		    }
+			
+			
+			?>
+			
 
+			</div>
 		</div>
-				<form action="../wyloguj.php" >
-	
 		
+		<form action="../wyloguj.php" >
 		<button type="submit">wyloguj</button>
 		
 		</form>

@@ -111,8 +111,6 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		$sql2="SELECT * FROM rodzic WHERE uzytkownik_login='$login' ";
 		$result2 = @$conn->query($sql2);
 		
-		
-		
 		$dane_uzytkowanika=@mysqli_fetch_assoc($result);
 		$dane_rodzica=@mysqli_fetch_assoc($result2);
 		
@@ -123,12 +121,46 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 				$sql3="select * from ocena_full_info as o where o.uczen_id = $uczen_id ORDER BY o.`przedmiot`, o.`data` ASC";
 				$result3 = @$conn->query($sql3);
 			}
+			
+		$result4 = $conn->query("CALL dzieci_rodzica('$dane_rodzica[rodzic_ID]')");
 		$conn->close();
 	}
 	
 	?>
 		
+	<div >
+		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+		<script language="javascript" type="text/javascript">
+
+					function onChangeCmb() {
+						
+					var element = document.getElementById("cmbMake");
+					var value = element.options[element.selectedIndex].value;
+					 $.ajax({
+						url: "cmbChange.php",
+						data: {
+							id_wysw_ucznia: value
+							}, 
+					});
+					window.alert("Zmianiono ucznia");
+					}
+		</script>
 		
+		
+		<form method="POST" >
+				
+			  <select id="cmbMake" name="Make"  onchange="onChangeCmb()">
+				 <?php
+				 echo '<option value = 0 > ---Wybierz ucznia--- </option>';
+				 while($dzieci = $result4 ->fetch_assoc() )
+					 {
+					   echo '<option value="'.$dzieci['uczen_ID'].'">'.$dzieci['imie']. ' ' .$dzieci['nazwisko'].' ' .$dzieci['oddzial'].'</option>';
+					 }
+				 ?>
+			</select>
+		</form>
+	</div>
+	
 		
 		
 		<div id="tresc">

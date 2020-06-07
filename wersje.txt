@@ -36,3 +36,7 @@ drobna poprawka w procedurze frekwencja_ucznia
 v1.7
 6.06.2020
 Poprawki w procedurach generuj¹cych ucznia, rodzica i nauczyciela
+------------------------------------
+v1.8
+7.06.2020
+Nowe procedury pomocnicze pod lepsze dzia³anie aplikacji
