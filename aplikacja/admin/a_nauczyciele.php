@@ -220,6 +220,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 						email: $('#email').val(),
 						nr_tel: $('#nr_tel').val(),
 						czy_wych: $('#czy_wych').val(),
+						klasa_wych: $('#klasa_wych').val(),
 						przedmiot_in: $('#przedmiot_in').val()
 						}, 
 				});
@@ -246,9 +247,13 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 					
 					<input id="nr_tel" name="nr_tel" placeholder="nr telefonu" required>
 					
-					<input id="czy_wych" name="czy_wych" placeholder="czy wychowawca(Y/N)" required>
-					
 					<input id="przedmiot_in" name="przedmiot_in" placeholder="przedmiot nauczania" required>
+					
+					<input id="czy_wych" name="czy_wych" placeholder="czy wychowawca" required>
+					
+					<input id="klasa_wych" name="klasa_wych" placeholder="klasa wychowawcza">
+					
+					
 			
 			<button id="btn" type="submit" name="uspr"  >Dodaj</button>
 			
@@ -335,9 +340,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		
 		</div>
 		
-		
-		
-		
+	
 		
 		
 		<form action="../wyloguj.php" >

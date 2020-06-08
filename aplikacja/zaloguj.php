@@ -13,9 +13,10 @@
 	{
 		$login = $_POST['login'];
 		$haslo = $_POST['haslo'];
+		$haslo_md5=md5($haslo);
 		
 		echo "1";
-		$sql="SELECT * FROM uzytkownik WHERE uzytkownik_login='$login' AND haslo='$haslo'";
+		$sql="SELECT * FROM uzytkownik WHERE uzytkownik_login='$login' AND haslo='$haslo_md5'";
 		
 		if($result = @$conn->query($sql))
 			{
@@ -61,7 +62,9 @@
 			{
 				echo "7";
 				$_SESSION['blad']='<span style="font-size:20px; color:red">Nieprawidłowy login lub hasło</span>';
+				$_SESSION['haslo2']=$haslo_md5;
 				header('Location: index.php');
+				
 			}
 
 		echo "8";

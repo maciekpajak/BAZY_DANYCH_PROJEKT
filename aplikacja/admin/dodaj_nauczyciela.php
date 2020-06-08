@@ -1,10 +1,5 @@
 <?php 
-	
-    //if(isset($_GET['id']) and isset($_GET['tresc'])) {
-		//$id = $_GET['id'];
-		//$tresc = $_GET['tresc'];
-		
-		
+	session_start();
 		
 		$login=$_GET['login'];
 		$haslo=$_GET['haslo'];
@@ -16,13 +11,9 @@
 		$przedmiot_in=$_GET['przedmiot_in'];
 		
 		
-		
 		require_once "../connect.php";
 		
 		$conn=@new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
-		
-		
-		
 		
 		if ($conn->connect_errno!=0)
 		{
@@ -31,10 +22,35 @@
 		else
 		{
 			
-			//$conn->query("UPDATE obecnosc AS o SET o.czy_do_uspr = 'Y', o.tresc_uspr = '$tresc' WHERE o.obecnosc_ID = '$id'");
-				
-			$conn->query("CALL dodaj_nauczyciela('$login','$haslo','$imie','$nazwisko','$email','$nr_tel','$czy_wych','$przedmiot_in')");
-			$conn->close();
+		$conn->query("CALL dodaj_nauczyciela('$login','$haslo','$imie','$nazwisko','$email','$nr_tel','$czy_wych','$przedmiot_in')");
+
+		$conn->close();
 		}
-	//}
+		
+		
+		if(isset($_GET['klasa_wych']))
+		{
+		$klasa_wych=$_GET['klasa_wych'];
+		 
+		
+		require_once "../connect.php";
+		
+		$conn=@new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
+		
+		if ($conn->connect_errno!=0)
+		{
+			echo "Error: ".$conn->connect_errno;
+		}
+		else
+		{
+		
+			
+			$conn->query("UPDATE klasa SET nauczyciel_id=(SELECT MAX(ID) FROM nauczyciel_full_info) WHERE oddzial='$klasa_wych'");
+			
+			$conn->close();
+			
+		}
+		}
+	
+	
 	?>
