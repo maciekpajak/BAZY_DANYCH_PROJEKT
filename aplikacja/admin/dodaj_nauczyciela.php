@@ -21,11 +21,21 @@
 		}
 		else
 		{
-			
+		
+		$sql11="SELECT * FROM uzytkownik WHERE uzytkownik_login='$login'";
+		$result11= @$conn->query($sql11);
+		
+		if($result11->num_rows > 0){
+		$_SESSION['blad_login']='Login już istnieje, spróbuj inny!!!';
+		}
+		
+		else
+		{
 		$conn->query("CALL dodaj_nauczyciela('$login','$haslo','$imie','$nazwisko','$email','$nr_tel','$czy_wych','$przedmiot_in')");
 
 		$conn->close();
-		}
+		$_SESSION['blad_login']='Nauczyciel został dodany pomyślnie.';
+		
 		
 		
 		if(isset($_GET['klasa_wych']))
@@ -44,11 +54,13 @@
 		else
 		{
 		
+		
 			
 			$conn->query("UPDATE klasa SET nauczyciel_id=(SELECT MAX(ID) FROM nauczyciel_full_info) WHERE oddzial='$klasa_wych'");
 			
 			$conn->close();
-			
+		}
+		}
 		}
 		}
 	

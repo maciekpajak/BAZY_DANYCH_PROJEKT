@@ -136,7 +136,17 @@ session_start();
 					
 					</form>
 				</div>
-				
+				<br/><B> Zmiana loginu: </B><br/>
+				<form action="../zmiana_login.php" method="post">
+				<div id="zmianahasla">
+					nowy login:<br/>
+					<input name="nowy_login"><br/>
+					hasło:<br/>
+					<input type="password" name="haslo_L"><br/>
+					<button type="submit">Zatwierdź</button>
+					
+					</form>
+				</div>
 			</div>
 
 		</div>

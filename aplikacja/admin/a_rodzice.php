@@ -187,25 +187,27 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 
 
 
+
+
+
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 			<script language="javascript" type="text/javascript" >
 		
+
 				function dodaj_r() {
-					
-				 $.ajax({
-					url: "dodaj_rodzica.php",
-					data: {
-						login: $('#login').val(),
-						haslo: $('#haslo').val(),
-						imie: $('#imie').val(),
-						nazwisko: $('#nazwisko').val(),
-						nr_tel: $('#nr_tel').val(),
-						email: $('#email').val(),
-						o_id: $('#o_id').val()
-						
-						} 
+        $.ajax({
+            url: "dodaj_rodzica.php",
+            data: {
+                login: $('#login').val(),
+                haslo: $('#haslo').val(),
+                imie: $('#imie').val(),
+                nazwisko: $('#nazwisko').val(),
+                nr_tel: $('#nr_tel').val(),
+                email: $('#email').val(),
+                o_id: $('#o_id').val()
+ 	} 
 				});
-				window.alert("Rodzic został dodany");
+				
 				
 				}
 		</script>
@@ -238,10 +240,14 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 					
 					<input id="o_id" name="o_id" placeholder="ID opiekunów (nowy: <?php echo $_SESSION['o_id'];?>)" required>
 					
+					
 
 			
 			<button id="btn" type="submit" name="uspr"  >Dodaj</button>
-			
+			<?php 
+					if(isset($_SESSION['blad_login']))
+					echo "<br/>".$_SESSION['blad_login'];
+					$_SESSION['blad_login']='';?>
 		  </form>
 		</div>
 		

@@ -223,9 +223,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 						klasa_wych: $('#klasa_wych').val(),
 						przedmiot_in: $('#przedmiot_in').val()
 						} 
-				});
-				window.alert("Nauczyciel został dodoany");
-				
+					});
 				}
 		</script>
 		
@@ -256,7 +254,10 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 					
 			
 			<button id="btn" type="submit" name="uspr"  >Dodaj</button>
-			
+			<?php 
+					if(isset($_SESSION['blad_login']))
+					echo "<br/>".$_SESSION['blad_login'];
+					$_SESSION['blad_login']='';?>
 		  </form>
 		</div>
 		
