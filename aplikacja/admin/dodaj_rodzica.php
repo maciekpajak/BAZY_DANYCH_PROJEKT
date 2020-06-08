@@ -1,5 +1,5 @@
 <?php 
-	
+	session_start();
 		$login=$_GET['login'];
 		$haslo=$_GET['haslo'];
 		$imie=$_GET['imie'];
@@ -19,10 +19,22 @@
 		}
 		else
 		{
+		$sql11="SELECT * FROM uzytkownik WHERE uzytkownik_login='$login'";
+		$result11= @$conn->query($sql11);
 		
+		if($result11->num_rows > 0){
+		$_SESSION['blad_login']='Login już istnieje, spróbuj inny!!!';
+		}
+		
+		else
+		{
+			
+			
+			
 		$conn->query("CALL dodaj_rodzica('$login','$haslo','$imie','$nazwisko','$nr_tel','$email','$opiekunowie_id')");
 		$conn->close();
-		
+		$_SESSION['blad_login']='Rodzic został dodany pomyślnie.';
+		}
 		}
 		
 	?>

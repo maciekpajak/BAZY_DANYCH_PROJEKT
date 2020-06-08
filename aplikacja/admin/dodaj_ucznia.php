@@ -1,5 +1,5 @@
 <?php 
-	
+	session_start();
 		$login=$_GET['login'];
 		$haslo=$_GET['haslo'];
 		$pesel=$_GET['pesel'];
@@ -181,10 +181,21 @@
 		}
 		else
 		{
+			
+		$sql11="SELECT * FROM uzytkownik WHERE uzytkownik_login='$login'";
+		$result11= @$conn->query($sql11);
+		
+		if($result11->num_rows > 0){
+		$_SESSION['blad_login']='Login już istnieje, spróbuj inny!!!';
+		}
+		
+		else
+		{
 		
 		$conn->query("CALL dodaj_ucznia('$login','$haslo','$pesel','$id_adres','$id_klasa','$opiekunowie_id','$imie','$nazwisko','$email')");
 		$conn->close();
-		
+		$_SESSION['blad_login']='Uczeń został dodany pomyślnie.';
+		}
 		}
 		
 		

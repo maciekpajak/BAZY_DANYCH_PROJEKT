@@ -208,7 +208,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 						
 						} 
 				});
-				window.alert("uczeń został dodany");
+				
 				
 				}
 		</script>
@@ -256,7 +256,10 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 					
 			
 			<button id="btn" type="submit" name="uspr"  >Dodaj</button>
-			
+			<?php 
+					if(isset($_SESSION['blad_login']))
+					echo "<br/>".$_SESSION['blad_login'];
+					$_SESSION['blad_login']='';?>
 		  </form>
 		</div>
 		
