@@ -222,7 +222,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 						czy_wych: $('#czy_wych').val(),
 						klasa_wych: $('#klasa_wych').val(),
 						przedmiot_in: $('#przedmiot_in').val()
-						}, 
+						} 
 				});
 				window.alert("Nauczyciel został dodoany");
 				

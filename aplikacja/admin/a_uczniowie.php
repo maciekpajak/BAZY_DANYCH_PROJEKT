@@ -122,7 +122,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		
 		
 		
-					<?php 
+				<?php 
 	unset($_SESSION['blad']);
 	
 	require_once "../connect.php";
@@ -143,54 +143,34 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		
 		
 	
+		$result3=$conn->query("SELECT MAX(opiekunowie_id)+1 FROM rodzic_full_info");
+		$pisz=mysqli_fetch_assoc($result3);
+		$_SESSION['o_id']=$pisz['MAX(opiekunowie_id)+1'];
+		//-----------------Szukanie--------------------------
 		
-		
-		
-		
-		if(isset($_POST['ID_n']) OR isset($_POST['imie_n']) OR isset($_POST['nazwisko_n']) OR isset($_POST['nrtel_n']) OR isset($_POST['przedmiot_n']))
+		if(isset($_POST['ID_u']) OR isset($_POST['klasa_u']) OR isset($_POST['imie_u']) OR isset($_POST['nazwisko_u']) OR isset($_POST['pesel_u']) OR isset($_POST['email_u']) OR isset($_POST['opiekunowie_id_u']))
 	{	
 
-		$ID=$_POST['ID_n'];
-		$imie=$_POST['imie_n'];
-		$nazwisko=$_POST['nazwisko_n'];
-		$nr_tel=$_POST['nrtel_n'];
-		$przedmiot=$_POST['przedmiot_n'];
+		$ID=$_POST['ID_u'];
+		$klasa=$_POST['klasa_u'];
+		$imie=$_POST['imie_u'];
+		$nazwisko=$_POST['nazwisko_u'];
+		$pesel=$_POST['pesel_u'];
+		$email=$_POST['email_u'];
+		$opiekunowie_id=$_POST['opiekunowie_id_u'];
 		
-		$sql="SELECT * FROM nauczyciel_full_info WHERE ID='$ID' OR imie='$imie' OR nazwisko='$nazwisko' OR nr_tel='$nr_tel' OR przedmiot='$przedmiot'";
+		$sql="SELECT * FROM uczen_full_info WHERE uczen_ID='$ID' OR oddzial='$klasa' OR imie='$imie' OR nazwisko='$nazwisko' OR pesel='$pesel' OR email='$email' OR opiekunowie_id='$opiekunowie_id'";
 		$result = @$conn->query($sql);
 		
 		
-		
-		
-		
-		
 	}
 	
 	else
 	{
 		
 	}
-			if(isset($_POST['add_ID_n']) OR isset($_POST['add_imie_n']) OR isset($_POST['add_nazwisko_n']) OR isset($_POST['add_nrtel_n']) OR isset($_POST['add_przedmiot_n']))
-	{	
+	
 
-		$ID=$_POST['add_ID_n'];
-		$imie=$_POST['add_imie_n'];
-		$nazwisko=$_POST['add_nazwisko_n'];
-		$nr_tel=$_POST['add_nrtel_n'];
-		$przedmiot=$_POST['add_przedmiot_n'];
-		
-		$sql2="SELECT * FROM nauczyciel_full_info WHERE ID='$ID' OR imie='$imie' OR nazwisko='$nazwisko' OR nr_tel='$nr_tel' OR przedmiot='$przedmiot'";
-		$result2 = @$conn->query($sql2);
-	
-	}
-	
-	else
-	{
-		
-	}		
-		
-		
-	
 		
 		
 			$conn->close();
@@ -199,23 +179,110 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	
 	?>
 		<div id="tresc">
-			<br/>
-			<B> Szukaj nauczyciela: </B><br/>
+			
+		
+
+
+
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+			<script language="javascript" type="text/javascript" >
+		
+				function dodaj_u() {
+					
+				 $.ajax({
+					url: "dodaj_ucznia.php",
+					data: {
+						login: $('#login').val(),
+						haslo: $('#haslo').val(),
+						pesel: $('#pesel').val(),
+						imie: $('#imie').val(),
+						nazwisko: $('#nazwisko').val(),
+						klasa: $('#klasa').val(),
+						opiekunowie_id: $('#opiekunowie_id').val(),
+						email: $('#email').val(),
+						ulica: $('#ulica').val(),
+						miejscowosc: $('#miejscowosc').val(),
+						kod: $('#kod').val(),
+						nr_domu: $('#nr_domu').val(),
+						nr_mieszkania: $('#nr_mieszkania').val()
+						
+						} 
+				});
+				window.alert("uczeń został dodany");
+				
+				}
+		</script>
+		
+
+		<div>
+		
+		
+		  <form onSubmit="dodaj_u()" class="form-container" method="POST" >
+			
+			
+			<h1>Dodaj ucznia:</h1>
+				
+		
+		
+		
+	
+			
+					<input id="login" name="login" placeholder="login" required>
+					
+					<input id="haslo" name="haslo" placeholder="hasło" type="password" required>
+					
+					<input id="pesel" name="pesel" placeholder="pesel"  required>
+					
+					<input id="imie" name="imie" placeholder="imię" required>
+					
+					<input id="nazwisko" name="nazwisko" placeholder="nazwisko" required>
+					
+					<input id="klasa" name="klasa" placeholder="klasa" required>
+					
+					<input id="opiekunowie_id" name="opiekunowie_id" placeholder="ID opiekunów" required>
+					
+					<input id="email" name="email" placeholder="e-mail" required>
+					
+					<input id="ulica" name="ulica" placeholder="ulica" required>
+					
+					<input id="miejscowosc" name="miejscowosc" placeholder="miejscowość" required>
+					
+					<input id="kod" name="kod" placeholder="kod" required>
+					
+					<input id="nr_domu" name="nr_domu" placeholder="nr domu" required>
+					
+					<input id="nr_mieszkania" name="nr_mieszkania" placeholder="nr mieszkania" required>
+					
+					
+			
+			<button id="btn" type="submit" name="uspr"  >Dodaj</button>
+			
+		  </form>
+		</div>
+		
+		
+
+			
+			<h3> Szukaj ucznia: </h3>
 			
 			
 			
-			<form action="a_nauczyciele.php" method="post">
+			<form action="a_uczniowie.php" method="post">
 
 				
-					<input name="ID_n" placeholder="ID">
+					<input name="ID_u" placeholder="ID ucznia">
 					
-					<input name="imie_n" placeholder="imię">
+					<input name="klasa_u" placeholder="klasa">
 					
-					<input name="nazwisko_n" placeholder="nazwisko">
+					<input name="imie_u" placeholder="imię">
 					
-					<input name="nrtel_n" placeholder="nr telefonu">
+					<input name="nazwisko_u" placeholder="nazwisko">
 					
-					<input name="przedmiot_n" placeholder="przedmiot">
+					<input name="pesel_u" placeholder="pesel">
+					
+					<input name="email_u" placeholder="e-mail">
+					
+					<input name="opiekunowie_id_u" placeholder="ID opiekunów">
 					
 					<button type="submit">Szukaj</button>
 					
@@ -228,55 +295,39 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 
 		$sprawdzanie=0;
 	if(isset($result)) {
-		while($dane_nauczyciela = $result->fetch_assoc()) {
+		
+		
+		echo "<table border=5><tr><td>ID ucznia</td><td>klasa</td><td>nazwisko</td><td>imię</td><td>pesel</td><td>email</td><td>ID opiekunów</td><td>adres";
+		while($dane_ucznia= $result->fetch_assoc()) {
 					
-		if($sprawdzanie!=	$dane_nauczyciela['ID'])
-		{
-			echo "ID: ".$dane_nauczyciela['ID']." ";
-			echo "nazwisko: ".$dane_nauczyciela['nazwisko']." ";
-			echo "imię: ".$dane_nauczyciela['imie']." ";
-			echo "nr telefonu: ".$dane_nauczyciela['nr_tel']." ";
-			echo "email: ".$dane_nauczyciela['email']."<br/>";
-			$sprawdzanie=$dane_nauczyciela['ID'];
-		}
+		
+			echo "</td></tr><tr>";
+			
+			echo 
+							
+			"<td>".$dane_ucznia['uczen_ID']."</td>".
+			"<td>".$dane_ucznia['oddzial']."</td>".
+			"<td>".$dane_ucznia['nazwisko']."</td>".
+			"<td>".$dane_ucznia['imie']."</td>".
+			"<td>".$dane_ucznia['pesel']."</td>".
+			"<td>".$dane_ucznia['email']."</td>".
+			"<td>".$dane_ucznia['opiekunowie_id']."</td>".
+			"<td>".$dane_ucznia['ulica']." ".$dane_ucznia['nr_domu']."/".$dane_ucznia['nr_mieszkania']." ".$dane_ucznia['miejscowosc']." ".$dane_ucznia['kod'];
+			
+		
 					}
+					echo "</td></tr><br/></table>";
 		        }
-?>			
-		<B> Dodaj nauczyciela: </B><br/>
-					<form action="a_nauczyciele.php" method="post">
-
-				
-					<input name="add_ID_n" placeholder="ID">
-					
-					<input name="add_imie_n" placeholder="imię">
-					
-					<input name="add_nazwisko_n" placeholder="nazwisko">
-					
-					<input name="add_nrtel_n" placeholder="nr telefonu">
-					
-					<input name="add_przedmiot_n" placeholder="przedmiot">
-					
-					<button type="submit">Dodaj</button>
-					
-					</form>
-<?php
-if(isset($result2)) {
-	echo "Nauczyciel został dodany prawidłowo";
-	}
-
-
 ?>
+
 		
 		
 		
 		
 		</div>
 		
-		
-		
-		
-		
-		
+	
+	
 		<form action="../wyloguj.php" >
 
 		<button type="submit">wyloguj</button>

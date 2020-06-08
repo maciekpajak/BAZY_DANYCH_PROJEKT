@@ -201,9 +201,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 						nazwisko: $('#nazwisko').val(),
 						nr_tel: $('#nr_tel').val(),
 						email: $('#email').val(),
-						o_id: $('#o_id').val(),
+						o_id: $('#o_id').val()
 						
-						}, 
+						} 
 				});
 				window.alert("Rodzic został dodany");
 				
