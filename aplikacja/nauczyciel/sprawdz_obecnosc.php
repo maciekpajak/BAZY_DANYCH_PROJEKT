@@ -83,7 +83,7 @@ session_start();
 			echo '</br>';
 			echo $result2['imie'] . " " . $result2['nazwisko'];
 			echo '</br>';
-			echo "<textarea id='textarea' style='width:500px;height:50px;resize: none;' maxlength=250> " .$result2['temat']. "</textarea>";
+			echo "Temat: " . $result2['temat'];
 			}
 			
 			echo '<form action="zatwierdz_obecnosc.php" method="post">';

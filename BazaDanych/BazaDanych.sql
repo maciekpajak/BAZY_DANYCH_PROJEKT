@@ -1329,7 +1329,7 @@ CREATE PROCEDURE `frekwencja_z_przedmiotu_klasy`(
 	IN `klasa_id` INT,
 	IN `przedmiot_in` VARCHAR(32)
 )
-SELECT *
+SELECT o.obecnosc_ID,o.`status`,o.uczen_id,o.lekcja_id,o.czy_do_uspr,o.czy_uspr,o.tresc_uspr,l.imie AS n_imie, l.nazwisko AS n_nazwisko, l.`data`, l.godz_start, l.godz_koniec, l.przedmiot, l.nauczyciel_id, u.klasa_ID, u.imie AS u_imie, u.nazwisko AS u_nazwisko
 from obecnosc as o
 join lekcja_full_info as l on l.lekcja_ID = o.lekcja_id
 JOIN uczen_full_info AS u ON o.uczen_id=u.uczen_ID
@@ -1657,7 +1657,7 @@ CREATE TABLE IF NOT EXISTS `lekcja` (
 -- Zrzucanie danych dla tabeli id13767441_dziennik.lekcja: ~4 320 rows (około)
 /*!40000 ALTER TABLE `lekcja` DISABLE KEYS */;
 INSERT IGNORE INTO `lekcja` (`lekcja_ID`, `temat`, `sala`, `grupa_lekcji_id`, `czas_lekcji_id`) VALUES
-	(1, '\\0', 50, 001, 00124),
+	(1, 'aaaaaaaaa', 50, 001, 00124),
 	(2, '\\0', 10, 001, 00042),
 	(3, '\\0', 34, 001, 00013),
 	(4, '\\0', 49, 001, 00158),
@@ -5659,7 +5659,7 @@ INSERT IGNORE INTO `lekcja` (`lekcja_ID`, `temat`, `sala`, `grupa_lekcji_id`, `c
 	(4000, '\\0', 44, 223, 00116),
 	(4001, '\\0', 26, 223, 00027),
 	(4002, '\\0', 33, 223, 00135),
-	(4003, '\\0', 12, 223, 00021),
+	(4003, 'aaaaaaa', 12, 223, 00021),
 	(4004, '\\0', 21, 223, 00126),
 	(4005, '\\0', 45, 223, 00147),
 	(4006, '\\0', 27, 223, 00030),
@@ -5959,7 +5959,7 @@ INSERT IGNORE INTO `lekcja` (`lekcja_ID`, `temat`, `sala`, `grupa_lekcji_id`, `c
 	(4300, '\\0', 29, 239, 00140),
 	(4301, '\\0', 33, 239, 00006),
 	(4302, '\\0', 20, 239, 00109),
-	(4303, '\\0', 45, 240, 00002),
+	(4303, '1234567890123456789012345678901234567890123456789012345678901234567890', 45, 240, 00002),
 	(4304, '\\0', 45, 240, 00105),
 	(4305, '\\0', 15, 240, 00069),
 	(4306, '\\0', 31, 240, 00016),
@@ -6013,7 +6013,7 @@ DELIMITER //
 CREATE PROCEDURE `lekcje_nauczyciela`(
 	IN `nauczyciel_id` INT
 )
-SELECT l.lekcja_ID,l.`data`, l.godz_start, l.godz_koniec,l.klasa_id, l.oddzial,l.sala,l.przedmiot
+SELECT l.lekcja_ID,l.`data`, l.godz_start, l.godz_koniec,l.klasa_id, l.oddzial,l.sala,l.przedmiot, l.temat
 from nauczyciel_full_info as n
 join lekcja_full_info as l on n.ID = l.nauczyciel_id and `l`.`przedmiot` = `n`.`przedmiot`
 where n.ID = nauczyciel_id
@@ -6274,9 +6274,9 @@ CREATE TABLE IF NOT EXISTS `obecnosc` (
   KEY `lekcja` (`lekcja_id`),
   CONSTRAINT `FK_obecnosc_lekcja` FOREIGN KEY (`lekcja_id`) REFERENCES `lekcja` (`lekcja_ID`),
   CONSTRAINT `FK_obecnosc_uczen` FOREIGN KEY (`uczen_id`) REFERENCES `uczen` (`uczen_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3049 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3055 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
--- Zrzucanie danych dla tabeli id13767441_dziennik.obecnosc: ~3 024 rows (około)
+-- Zrzucanie danych dla tabeli id13767441_dziennik.obecnosc: ~3 030 rows (około)
 /*!40000 ALTER TABLE `obecnosc` DISABLE KEYS */;
 INSERT IGNORE INTO `obecnosc` (`obecnosc_ID`, `status`, `uczen_id`, `lekcja_id`, `czy_do_uspr`, `czy_uspr`, `tresc_uspr`) VALUES
 	(1, 'spóźniony', 100, 02297, 'N', 'N', NULL),
@@ -8554,7 +8554,7 @@ INSERT IGNORE INTO `obecnosc` (`obecnosc_ID`, `status`, `uczen_id`, `lekcja_id`,
 	(2273, 'nieobecny', 025, 03784, 'N', 'N', NULL),
 	(2274, 'nieobecny', 059, 03028, 'N', 'N', NULL),
 	(2275, 'obecny', 041, 00571, 'N', 'N', NULL),
-	(2276, 'nieobecny', 006, 03457, 'N', 'N', NULL),
+	(2276, 'nieobecny', 006, 03457, 'N', 'Y', 'Choroba'),
 	(2277, 'spóźniony', 062, 03275, 'N', 'N', NULL),
 	(2278, 'nieobecny', 039, 01261, 'N', 'N', NULL),
 	(2279, 'spóźniony', 030, 00050, 'N', 'N', NULL),
@@ -9314,7 +9314,13 @@ INSERT IGNORE INTO `obecnosc` (`obecnosc_ID`, `status`, `uczen_id`, `lekcja_id`,
 	(3045, 'obecny', 035, 00802, 'N', 'N', NULL),
 	(3046, 'nieobecny', 101, 00802, 'N', 'N', NULL),
 	(3047, 'obecny', 068, 00802, 'N', 'N', NULL),
-	(3048, 'nieobecny', 017, 00802, 'N', 'N', NULL);
+	(3048, 'nieobecny', 017, 00802, 'N', 'N', NULL),
+	(3049, 'nieobecny', 067, 04303, 'N', 'N', NULL),
+	(3050, 'nieobecny', 036, 04303, 'N', 'N', NULL),
+	(3051, 'nieobecny', 011, 04303, 'N', 'N', NULL),
+	(3052, 'nieobecny', 018, 04303, 'N', 'N', NULL),
+	(3053, 'obecny', 062, 04303, 'N', 'N', NULL),
+	(3054, 'nieobecny', 015, 04303, 'N', 'N', NULL);
 /*!40000 ALTER TABLE `obecnosc` ENABLE KEYS */;
 
 -- Zrzut struktury tabela id13767441_dziennik.ocena
@@ -9334,9 +9340,9 @@ CREATE TABLE IF NOT EXISTS `ocena` (
   KEY `data` (`data`,`czas`) USING BTREE,
   CONSTRAINT `FK_ocena_nauczyciel_przedmiotu` FOREIGN KEY (`nauczyciel_przedmiotu_id`) REFERENCES `nauczyciel_przedmiotu` (`nauczyciel_przedmiotu_ID`),
   CONSTRAINT `FK_ocena_uczen` FOREIGN KEY (`uczen_id`) REFERENCES `uczen` (`uczen_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=571 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=573 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
--- Zrzucanie danych dla tabeli id13767441_dziennik.ocena: ~550 rows (około)
+-- Zrzucanie danych dla tabeli id13767441_dziennik.ocena: ~552 rows (około)
 /*!40000 ALTER TABLE `ocena` DISABLE KEYS */;
 INSERT IGNORE INTO `ocena` (`ocena_ID`, `stopien`, `waga`, `opis`, `data`, `czas`, `uczen_id`, `nauczyciel_przedmiotu_id`) VALUES
 	(1, '4', 8, '', '2020-10-03', '00:00:00', 024, 049),
@@ -9731,7 +9737,7 @@ INSERT IGNORE INTO `ocena` (`ocena_ID`, `stopien`, `waga`, `opis`, `data`, `czas
 	(390, '4', 1, '', '2020-12-05', '00:00:00', 003, 062),
 	(391, '0', 6, '', '2020-11-28', '00:00:00', 046, 043),
 	(392, '0', 9, '', '2020-11-19', '00:00:00', 045, 057),
-	(393, '6', 7, '', '2020-11-28', '00:00:00', 010, 001),
+	(393, '1', 1, 'Brak opisu', '2020-11-28', '00:00:00', 010, 001),
 	(394, '5', 2, '', '2020-12-21', '00:00:00', 002, 058),
 	(395, '4', 0, '', '2020-11-21', '00:00:00', 066, 028),
 	(396, '3', 8, '', '2020-11-23', '00:00:00', 021, 006),
@@ -9888,7 +9894,9 @@ INSERT IGNORE INTO `ocena` (`ocena_ID`, `stopien`, `waga`, `opis`, `data`, `czas
 	(547, '5', 5, '', '2020-09-01', '00:00:00', 049, 025),
 	(548, '1', 1, '', '2020-10-06', '00:00:00', 006, 046),
 	(549, '0', 7, '', '2020-12-14', '00:00:00', 006, 018),
-	(570, '3', 5, ' Przyklad', '2020-06-07', '13:10:52', 075, 019);
+	(570, '3', 5, ' Przyklad', '2020-06-07', '13:10:52', 075, 019),
+	(571, '5', 1, ' Piątka', '2020-06-08', '00:57:47', 010, 001),
+	(572, '4', 3, ' ', '2020-06-08', '00:57:58', 010, 001);
 /*!40000 ALTER TABLE `ocena` ENABLE KEYS */;
 
 -- Zrzut struktury widok id13767441_dziennik.ocena_full_info
@@ -10649,13 +10657,13 @@ INSERT IGNORE INTO `terminarz` (`terminarz_ID`, `typ`, `data`, `godz`, `grupa_le
 	(44, 'Kartkówka', '2020-10-03', '15:00:00', 005, 'Brak opisu'),
 	(45, 'Kartkówka', '2020-10-13', '11:25:00', 224, 'Brak opisu'),
 	(46, 'Sprawdzian', '2020-09-28', '09:35:00', 010, 'Brak opisu'),
-	(47, 'Sprawdzian', '2020-09-27', '13:10:00', 199, 'Brak opisu'),
-	(48, 'Inne', '2020-10-31', '14:05:00', 096, 'Brak opisu'),
-	(49, 'Zadanie domowe', '2020-11-12', '14:05:00', 162, 'Brak opisu'),
-	(50, 'Kartkówka', '2020-10-10', '09:35:00', 113, 'Brak opisu'),
-	(51, 'Zadanie domowe', '2020-09-23', '15:50:00', 227, 'Brak opisu'),
-	(52, 'Inne', '2020-09-15', '15:00:00', 151, 'Brak opisu'),
-	(53, 'Inne', '2020-10-19', '15:50:00', 116, 'Brak opisu');
+	(47, 'Sprawdzian', '2020-09-27', '13:10:00', 240, 'Brak opisu'),
+	(48, 'Inne', '2020-10-31', '14:05:00', 211, 'Brak opisu'),
+	(49, 'Zadanie domowe', '2020-11-12', '14:05:00', 065, 'Brak opisu'),
+	(50, 'Kartkówka', '2020-10-10', '09:35:00', 065, 'Brak opisu'),
+	(51, 'Zadanie domowe', '2020-09-23', '15:50:00', 065, 'Brak opisu'),
+	(52, 'Inne', '2020-09-15', '15:00:00', 240, 'Brak opisu'),
+	(53, 'Inne', '2020-10-19', '15:50:00', 045, 'Brak opisu');
 /*!40000 ALTER TABLE `terminarz` ENABLE KEYS */;
 
 -- Zrzut struktury widok id13767441_dziennik.terminarz_full_info
@@ -10669,7 +10677,8 @@ CREATE TABLE `terminarz_full_info` (
 	`imie` VARCHAR(20) NOT NULL COLLATE 'utf8_polish_ci',
 	`nazwisko` VARCHAR(30) NOT NULL COLLATE 'utf8_polish_ci',
 	`przedmiot` VARCHAR(32) NULL COLLATE 'utf8_polish_ci',
-	`klasa_id` INT(2) UNSIGNED ZEROFILL NOT NULL
+	`klasa_id` INT(2) UNSIGNED ZEROFILL NOT NULL,
+	`ID` INT(2) UNSIGNED NOT NULL
 ) ENGINE=MyISAM;
 
 -- Zrzut struktury procedura id13767441_dziennik.terminarz_klasy
@@ -10681,6 +10690,18 @@ select *
 from terminarz_full_info as t
 where t.klasa_id = klasa_id
 order by t.`data`, t.godz ASC//
+DELIMITER ;
+
+-- Zrzut struktury procedura id13767441_dziennik.terminarz_nauczyciela
+DELIMITER //
+CREATE PROCEDURE `terminarz_nauczyciela`(
+	IN `nauczyciel_id` INT
+)
+SELECT *
+FROM terminarz_full_info AS t
+JOIN klasa AS k ON t.klasa_id = k.klasa_ID
+WHERE t.ID = nauczyciel_id
+ORDER BY t.`data`, t.godz//
 DELIMITER ;
 
 -- Zrzut struktury tabela id13767441_dziennik.uczen
@@ -11539,7 +11560,7 @@ LEFT JOIN `uzytkownik` `u` ON(`r`.`uzytkownik_login` = `u`.`uzytkownik_login`)) 
 -- Zrzut struktury widok id13767441_dziennik.terminarz_full_info
 -- Usuwanie tabeli tymczasowej i tworzenie ostatecznej struktury WIDOKU
 DROP TABLE IF EXISTS `terminarz_full_info`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `terminarz_full_info` AS SELECT t.terminarz_ID, t.typ, t.`data`,t.godz,  t.opis, n.imie, n.nazwisko, n.przedmiot, g.klasa_id
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `terminarz_full_info` AS SELECT t.terminarz_ID, t.typ, t.`data`,t.godz,  t.opis, n.imie, n.nazwisko, n.przedmiot, g.klasa_id,  n.ID
 from grupa_lekcji as g
 join terminarz as t on t.grupa_lekcji_id = g.grupa_lekcji_ID
 join nauczyciel_full_info as n on g.nauczyciel_przedmiot_id = n.nauczyciel_przedmiotu_ID ;

@@ -134,7 +134,6 @@ textarea {
 
 	$sql2="SELECT * FROM nauczyciel WHERE uzytkownik_login='$login' ";
 	$result2 = $conn->query($sql2);
-	
 	$dane_nauczyciela=@mysqli_fetch_assoc($result2);
 	$n_id = $dane_nauczyciela['nauczyciel_ID'];
 	
@@ -211,50 +210,15 @@ textarea {
 		<script language="javascript" type="text/javascript">
 
 
-				function openForm2(id, imie, nazwisko, ocena, waga, data, opis ) {
-							//id,imie, nazwisko, ocena, waga, data, opis  
-				$oc_id = id;
-				   document.getElementById("form2_uczen").innerHTML = imie + ' ' + nazwisko;
-				   
-				   document.getElementById("form2_data").innerHTML = data;
-				   document.getElementById("opis_oceny2").innerHTML = opis;
-				   
-				   document.getElementById('select2_stopien').value = ocena;
-				   document.getElementById('select2_waga').value = waga;
-				   
-				  document.getElementById("myForm2").style.display = "block";
-				}
-
-				function closeForm2() {
-				  document.getElementById("myForm2").style.display = "none";
-				}
-
-				function edytuj() {
-					
-				var element_stopien2 = document.getElementById("select2_stopien");
-				var s2 = element_stopien2.options[element_stopien2.selectedIndex].text;
-				window.alert($oc_id);
-				var element_waga2 = document.getElementById("select2_waga");
-				var w2 = element_waga2.options[element_waga2.selectedIndex].text;
-				 $.ajax({
-					url: "edytujOcene.php",
-					data: {
-						ocena_id: $oc_id,
-						stopien: s2,
-						waga: w2,
-						opis: $('#opis_oceny2').val()
-						}, 
-				});
-				window.alert("Ocena została edytowana");
-				document.getElementById("myForm2").style.display = "none";
-				}
-
-
-				function openForm(id,imie, nazwisko, np_id) {
-			  
-				$ucz_id = id;
-				$np_id = np_id;
-				  document.getElementById("form_uczen").innerHTML = imie + ' ' + nazwisko;
+				function openForm(id , status, godzina, przedmiot, nauczyciel, uczen, tresc_uspr) {
+				  
+				  $id_obecnosci_do_uspr = id;
+				  document.getElementById("form_uczen").innerHTML = uczen;
+				  document.getElementById("form_status").innerHTML = status;
+				  document.getElementById("form_przedmiot").innerHTML = przedmiot;
+				  document.getElementById("form_nauczyciel").innerHTML = nauczyciel;
+				  document.getElementById("form_godzina").innerHTML = godzina;
+				  document.getElementById("tresc_uspr").innerHTML = tresc_uspr;
 				  document.getElementById("myForm").style.display = "block";
 				}
 
@@ -262,24 +226,15 @@ textarea {
 				  document.getElementById("myForm").style.display = "none";
 				}
 				
-				function dodaj() {
-					
-				var element_stopien = document.getElementById("select_stopien");
-				var s = element_stopien.options[element_stopien.selectedIndex].text;
-				window.alert(s);
-				var element_waga = document.getElementById("select_waga");
-				var w = element_waga.options[element_waga.selectedIndex].text;
-				 $.ajax({
-					url: "dodajOcene.php",
+				function usprawiedliw() {
+				
+				$.ajax({
+					url: "./usprawiedliw.php",
 					data: {
-						stopien: s,
-						waga: w,
-						opis: $('#opis_oceny').val(),
-						uczen_id: $ucz_id,
-						np_id:  $np_id 
+						id: $id_obecnosci_do_uspr
 						}, 
 				});
-				window.alert("Ocena została dodana");
+				window.alert("Usprawiedliwienie zostało pomyślnie wysłane");
 				document.getElementById("myForm").style.display = "none";
 				}
 
@@ -328,7 +283,7 @@ textarea {
 		</div>
 		<div>
 			<form method="POST" >
-				  <select id="cmbMake2" name="Make"  onchange="onChangeCmb2()">
+				  <select id="cmbMake2" name="Make2"  onchange="onChangeCmb2()">
 					 <?php
 					 $conn=new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
 					 $resultTMP = $conn->query("SELECT * FROM przedmiot");
@@ -375,83 +330,80 @@ textarea {
 			if($_SESSION['typ'] == "oceny" )
 			{
 				echo "<B> Oceny: </B><br/>";
-				if(isset($_SESSION['klasa_do_pokazu']) and $_SESSION['klasa_do_pokazu'] != 0)
-					{
-					
-					$conn=new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
-					$k_id = $klasa_id;
-					$result = $conn->query("CALL lista_osob_w_klasie($k_id)");
-					$conn->close();
-					
-					$conn=new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
-					$k_id = $klasa_id;
-					$przedmiot_do_pokazu = $_SESSION['przedmiot'];
-					$result4 = $conn->query("CALL oceny_z_przedmiotu_w_klasie($k_id,'$przedmiot_do_pokazu')");
-					$conn->close();
-					
-					
+				$conn=new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
+				$k_id = $klasa_id;
+				$result = $conn->query("CALL lista_osob_w_klasie($k_id)");
+				$conn->close();
+				
+				$conn=new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
+				$k_id = $klasa_id;
+				$przedmiot_do_pokazu = $_SESSION['przedmiot'];
+				$result4 = $conn->query("CALL oceny_z_przedmiotu_w_klasie($k_id,'$przedmiot_do_pokazu')");
+				$conn->close();
+				
+				
 
+				
+				echo "<table border=1 style='font-size:15px;'>";
+				if($result->num_rows > 0) {
+					$nr = 1;
 					
-					echo "<table border=1 style='font-size:15px;'>";
-					if($result->num_rows > 0) {
-						$nr = 1;
-						
-						echo "<tr><td>";
-						echo "Nr";
-						echo "</td><td>";
-						echo "Imie i nazwisko";
-						echo "</td><td id='ocena' colspan=30>";
-						echo "Oceny";
-						
-						echo "</td></tr>";
-						
-						$uczen = $result4->fetch_assoc();
-						while($row = $result->fetch_assoc()) {
-							echo "<tr style:'hight:30px;'><td style='font-size:15px;'>";
-							echo $nr . '.';
-							echo "</td><td style='font-size:15px;'>";
-							echo $row['imie'];
-							echo " ";
-							echo $row['nazwisko'];
-							echo "</td>";
-							$ucz_id = $row['uczen_ID'];
-							$imie = $row['imie'];
-							$nazw = $row['nazwisko'];
-							$i = 0;
-							if(isset($uczen['uczen_ID']) and $row['uczen_ID'] == $uczen['uczen_ID'])
+					echo "<tr><td>";
+					echo "Nr";
+					echo "</td><td>";
+					echo "Imie i nazwisko";
+					echo "</td><td id='ocena' colspan=30>";
+					echo "Oceny";
+					
+					echo "</td></tr>";
+					
+					$uczen = $result4->fetch_assoc();
+					while($row = $result->fetch_assoc()) {
+						echo "<tr style:'hight:30px;'><td style='font-size:15px;'>";
+						echo $nr . '.';
+						echo "</td><td style='font-size:15px;'>";
+						echo $row['imie'];
+						echo " ";
+						echo $row['nazwisko'];
+						echo "</td>";
+						$ucz_id = $row['uczen_ID'];
+						$imie = $row['imie'];
+						$nazw = $row['nazwisko'];
+						$i = 0;
+						if(isset($uczen['uczen_ID']) and $row['uczen_ID'] == $uczen['uczen_ID'])
+						{
+							
+							while( isset($uczen['uczen_ID']) and $row['uczen_ID'] == $uczen['uczen_ID'])
 							{
 								
-								while( isset($uczen['uczen_ID']) and $row['uczen_ID'] == $uczen['uczen_ID'])
-								{
-									
-									echo "<td headers='ocena' style='width:20px;font-size:15px;'>";
-									echo "<button style='width:20px;font-size:15px;'
-									onClick='openForm2(\"".$uczen['ocena_ID']."\" , \"" . $imie ."\", \"" . $nazw."\", \"" . $uczen['stopien'] ."\", \"" . $uczen['waga'] ."\", \"" . $uczen['data'] ."\", \"" . $uczen['opis'] ."\")' > 
-									<div class=\"tooltip\">
-									".$uczen['stopien']."
-										<span class=\"tooltiptext\">
-										".$uczen['stopien']."<br>".$uczen['waga']."<br>".$uczen['opis']."<br>".$uczen['data']."
-										</span>
-									</div></button>";
-									echo "</td>";
-									$uczen = $result4->fetch_assoc();
-									$i = $i +1;
-									##\"".$uczen['ocena_ID']."\" , \"" . $imie ."\", \"" . $nazw."\", \"" . $uczen['stopien'] ."\", \"" . $uczen['waga'] ."\", \"" . $uczen['data'] ."\", \"" . $uczen['opis'] ."\"
-								}
+								echo "<td headers='ocena' style='width:20px;font-size:15px;'>";
+								echo "<button style='width:20px;font-size:15px;'
+								onClick='openForm2(\"".$uczen['ocena_ID']."\" , \"" . $imie ."\", \"" . $nazw."\", \"" . $uczen['stopien'] ."\", \"" . $uczen['waga'] ."\", \"" . $uczen['data'] ."\", \"" . $uczen['opis'] ."\")' > 
+								<div class=\"tooltip\">
+								".$uczen['stopien']."
+									<span class=\"tooltiptext\">
+									".$uczen['stopien']."<br>".$uczen['waga']."<br>".$uczen['opis']."<br>".$uczen['data']."
+									</span>
+								</div></button>";
+								echo "</td>";
+								$uczen = $result4->fetch_assoc();
+								$i = $i +1;
+								##\"".$uczen['ocena_ID']."\" , \"" . $imie ."\", \"" . $nazw."\", \"" . $uczen['stopien'] ."\", \"" . $uczen['waga'] ."\", \"" . $uczen['data'] ."\", \"" . $uczen['opis'] ."\"
 							}
-							
-							while( $i < 30 )
-							{
-								echo "<td headers='ocena' style='width:20px;font-size:15px;'></td>";
-								$i = $i + 1;
-							}
-							
-							echo "</tr>";
-							$nr = $nr + 1;
 						}
+						
+						while( $i < 30 )
+						{
+							echo "<td headers='ocena' style='width:20px;font-size:15px;'></td>";
+							$i = $i + 1;
+						}
+						
+						echo "</tr>";
+						$nr = $nr + 1;
 					}
-					echo "</table>"; 
 				}
+				echo "</table>"; 
+			
 				
 			}
 			if($_SESSION['typ'] == "frekwencja" )
@@ -494,44 +446,79 @@ textarea {
 						$i = 0;
 						
 						
-						if(isset($uczen['uczen_ID']) and $row['uczen_ID'] == $uczen['uczen_ID'])
+						if(isset($uczen['uczen_id']) and $row['uczen_ID'] == $uczen['uczen_id'])
 						{
-							while( isset($uczen['uczen_ID']) and $row['uczen_ID'] == $uczen['uczen_ID'])
+							while( isset($uczen['uczen_id']) and $row['uczen_ID'] == $uczen['uczen_id'])
 							{
+								
+								
 								if ($uczen['status']=='obecny')
 								{
 									$status='O';
 									$color = "green";
 								}	
-								if($uczen['czy_uspr']=='Y')
+								if($uczen['status']=='spóźniony')
 								{
-									$status='U';
-									$color = "blue";
+									$status='S';
+								$color = "yellow";
 								}
-								else
+								if($uczen['status']=='nieobecny')
 								{
-									if($uczen['status']=='spóźniony')
-									{
-										$status='S';
-									$color = "yellow";
-									}
-									if($uczen['status']=='nieobecny')
-									{
-										$status='N';
+									$status='N';
 									$color = "red";
-									}
 								}
 								
-								echo "<td headers='frekwencja' style='width:20px;font-size:15px;'>";
-								echo "
-									<button style=\"background-color:$color\" 
-									onClick='' > 
+								$id = $uczen['obecnosc_ID'];
+								$start = $uczen['godz_start'];
+								$koniec = $uczen['godz_koniec'];
+								$godzina = $start . "-" . $koniec;
+								$nauczyciel = $uczen['n_imie'] . " " . $uczen['n_nazwisko'] ;
+								$uczen_dane = $uczen['u_imie'] . " " . $uczen['u_nazwisko'] ;
+								$przedmiot = $uczen['przedmiot'];
+								$tresc_uspr = $uczen['tresc_uspr'];
+								
+								if($uczen['czy_do_uspr']=='Y')
+								{
+									$color = "blue";
+									$status .= '?';
+									echo "<td headers='frekwencja' style='width:20px;font-size:15px;background-color:$color;'>";
+									echo "
+									<button 
+									onClick='openForm(\"".$id."\" , \"" . $uczen['status'] ."\", \"" . $godzina ."\", \"" . $przedmiot ."\", \"" . $nauczyciel ."\", \"" . $uczen_dane ."\", \"" . $tresc_uspr ."\")' > 
 									<div class=\"tooltip\">
 									$status
 										<span class=\"tooltiptext\">
-										
+										$przedmiot<br>$godzina
 										</span>
 									</div></button></td>";
+								}
+								else if($uczen['czy_uspr']=='Y')
+								{
+									$color = "pink";
+									$status .= '*';
+									echo "<td headers='frekwencja' style='width:20px;font-size:15px;background-color:$color;'>";
+									echo "
+									<div class=\"tooltip\" >
+									$status
+										<span class=\"tooltiptext\">
+										$przedmiot<br>$godzina
+										</span>
+									</div></td>";
+								}
+								else
+								{
+									echo "<td headers='frekwencja' style='width:20px;font-size:15px;background-color:$color;'>";
+									echo "
+									<div class=\"tooltip\" >
+									$status
+										<span class=\"tooltiptext\">
+										$przedmiot<br>$godzina
+										</span>
+									</div></td>";
+								}
+								
+								
+								
 								$uczen = $result4->fetch_assoc();
 								$i = $i +1;
 							}
@@ -557,6 +544,25 @@ textarea {
 		
 		</div>
 			</div>	
+			
+			
+		<div class="form-popup" id="myForm">
+		  <form onSubmit="usprawiedliw()" class="form-container" method="POST" >
+			<h1>Usprawiedliwienie</h1>
+
+			<p id="form_uczen"></p>
+			<p id="form_status"></p>
+			<p id="form_przedmiot"></p>
+			<p id="form_nauczyciel"></p>
+			<p id="form_godzina"></p>
+			<textarea id="tresc_uspr" style="width:300px;height:150px;resize: none;" maxlength=250 readonly ></textarea>
+			<button id="btn" type="submit" name="uspr"  >Usprawiedliw</button>
+			<button type="button" onclick="closeForm()">Anuluj</button>
+		  </form>
+		</div>	
+			
+			
+		
 		<form action="../wyloguj.php" >
 	
 		
