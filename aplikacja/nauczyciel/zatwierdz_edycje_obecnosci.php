@@ -36,25 +36,20 @@ session_start();
 	
 	$conn=new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
 
-	$id_lekcji = $_SESSION['id_lekcji1'];
-	if(isset($_POST['lista_uczniow'])){
+	if(isset($_POST['wszyscy'])){
 		
-		foreach($_POST['lista_uczniow'] as $id_ucz) {
+		foreach($_POST['wszyscy'] as $ob_id) {
 			
 			$status = "nieobecny";
-			if(isset($_POST['list']) ){
+			if(isset($_POST['obecni']) ){
 				
-				if (in_array($id_ucz,$_POST['list']))
+				if (in_array($ob_id,$_POST['obecni']))
 				{
 					$status = "obecny";
 				}
 			}
-		$conn->query("CALL dodaj_obecnosc('$status','$id_ucz','$id_lekcji')");
+		$conn->query("UPDATE obecnosc SET status='$status' WHERE obecnosc_ID='$ob_id'");
 	}
-	
-	
-	$conn->query("UPDATE lekcja SET czy_spr_obec='Y' WHERE lekcja_ID='$id_lekcji'");
-	
 }
 
 
@@ -66,7 +61,7 @@ $conn->close();
 
 		<div id="tresc">
 			<div id="lewy">
-			Obecność została zatwierdzona. Kliknij 
+			Edycja została zatwierdzona. Kliknij 
 		<a  href="javascript:window.opener.location.reload(true);window.close();">tutaj</a>
 			aby zamknąć kartę.
 		</div>

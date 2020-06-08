@@ -44,7 +44,7 @@ session_start();
 	$klasa = $_SESSION['id_klasy1'];
 	$lekcja = $_SESSION['id_lekcji1'];
 	$result1 = $conn->query("SELECT  * FROM lekcja_full_info AS l WHERE l.lekcja_ID = $lekcja");
-	$result = $conn->query("CALL lista_osob_w_klasie($klasa)");
+	$result = $conn->query("CALL frekwencja_na_lekcji($lekcja )");
 	$result2 = @mysqli_fetch_array($result1);
 	$conn->close();
 		
@@ -86,7 +86,7 @@ session_start();
 			echo "Temat: " . $result2['temat'];
 			}
 			
-			echo '<form action="zatwierdz_obecnosc.php" method="post">';
+			echo '<form action="zatwierdz_edycje_obecnosci.php" method="post">';
 			echo "<table border=1>";
 		    if($result->num_rows > 0) {
 				$nr = 1;
@@ -106,8 +106,12 @@ session_start();
 					echo " ";
 					echo $row['nazwisko'];
 					echo "</td><td>";
-					echo "<input type=\"hidden\" name=\"lista_uczniow[]\" value=".$row['uczen_ID']."></input>";
-					echo "<input type=\"checkbox\" class='checkbox' name=\"list[]\" value=" . $row['uczen_ID'] . "></input>";
+					echo "<input type=\"hidden\" name=\"wszyscy[]\" value=".$row['obecnosc_ID']."></input>";
+					if($row['status']=='obecny'){
+						echo "<input type=\"checkbox\" class='checkbox' name=\"obecni[]\" value=" . $row['obecnosc_ID'] . " checked></input>";}
+					if($row['status']=='nieobecny'){
+						echo "<input type=\"checkbox\" class='checkbox' name=\"obecni[]\" value=" . $row['obecnosc_ID'] . "></input>";}
+					
 					echo "</td></tr>";
 					$nr = $nr + 1;
 		        }

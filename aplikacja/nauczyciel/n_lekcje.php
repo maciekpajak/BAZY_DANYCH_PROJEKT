@@ -13,100 +13,13 @@ session_start();
 	<meta name="keywords" content="słowa po których google szuka"/>
 
     <link rel="stylesheet" href="../Styles/styleApp.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/form.css" type="text/css" />
 	<link rel="Shortcut icon" href="favicon.ico" />
 
 	<meta http-equiv="X-UA_Compatible" content="IE=edge,chrome=1" />
 	<meta name="author" content="Kowalski, Mielniczek, Pająk" />
 
 </head>
-
-<style>
-body {font-family: Arial, Helvetica, sans-serif;}
-* {box-sizing: border-box;}
-
-/* Button used to open the contact form - fixed at the bottom of the page */
-.open-button {
-  background-color: #555;
-  color: white;
-  padding: 16px 20px;
-  border: none;
-  cursor: pointer;
-  opacity: 0.8;
-  position: fixed;
-  bottom: 23px;
-  right: 28px;
-  width: 280px;
-}
-
-/* The popup form - hidden by default */
-.form-popup {
-  display: none;
-  position: fixed;
-  top: 100px;
-  left: 500px;
-  border: 3px solid #f1f1f1;
-  z-index: 9;
-}
-
-/* Add styles to the form container */
-.form-container {
-  max-width: 300px;
-  width: 300px;
-  hight: 300px;
-  padding: 10px;
-  background-color: white;
-}
-
-/* Full-width input fields */
-.form-container input[type=text], .form-container input[type=password] {
-  width: 100%;
-  hight: 100px:
-  padding: 15px;
-  margin: 5px 0 22px 0;
-  border: none;
-  background: #f1f1f1;
-}
-
-/* When the inputs get focus, do something */
-.form-container input[type=text]:focus, .form-container input[type=password]:focus {
-  background-color: #ddd;
-  outline: none;
-}
-
-/* Set a style for the submit/login button */
-.form-container .btn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 16px 20px;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  margin-bottom:10px;
-  opacity: 0.8;
-}
-
-/* Add a red background color to the cancel button */
-.form-container .cancel {
-  background-color: red;
-}
-
-/* Add some hover effects to buttons */
-.form-container .btn:hover, .open-button:hover {
-  opacity: 1;
-  
-textarea {
-  width: 100%;
-  height: 200px;
-  padding: 12px 20px;
-  box-sizing: border-box;
-  border: 2px solid #ccc;
-  border-radius: 4px;
-  background-color: #f8f8f8;
-  resize: none;
-}
-}
-</style>
-
 
 <body>
 		
@@ -217,12 +130,25 @@ textarea {
 				});
 				window.open('./sprawdz_obecnosc.php?obecnosc=' + oddzial);
 				
+			  }
+			  
+			  function edytujObecnosc(id_klasy_in, id_lekcji_in, oddzial){
+				  
+				  
+				$.ajax({
+					url: "./wybrana_klasa.php",
+					data: {
+						id_klasy: id_klasy_in,
+						id_lekcji: id_lekcji_in
+						}, 
+				});
+				window.open('./edytuj_obecnosc.php?obecnosc=' + oddzial);
 				
 			  }
 			  
+			  
 			  function openForm(id , temat) {
 				  
-				  window.alert(temat);
 				  $id_lekcji = id;
 				  $temat= temat;
 				  document.getElementById("textarea_temat").innerHTML = temat;
@@ -242,7 +168,6 @@ textarea {
 						temat: $('#textarea_temat').val()
 					}, 
 				});
-				window.alert("temat edytowany");
 				document.getElementById("myForm").style.display = "none";
 			  }
 			  
@@ -262,7 +187,9 @@ textarea {
 			<?php
 			date_default_timezone_set('Europe/Warsaw');
 			$date = date('Y-m-d', time());
-			#$date = "2020-10-10"; //data do testowania
+			#$d=mktime(11, 40, 54, 8, 12, 2014);
+			#$date1 = date('G:i:s', $d);
+			#$date = "2020-09-02"; //data do testowania
 		    if($result3->num_rows > 0) {
 				
 				echo "<table border=2 style='font-size:15px;' >";
@@ -283,7 +210,7 @@ textarea {
 					
 					
 					
-					if ( $row3['data'] > $date || ( $row3['data'] == $date  && $row3['godz_start'] > time()))
+					if ( $row3['data'] > $date || ( $row3['data'] == $date))
 					{
 						echo "<tr><td style:'width:10px;'>";
 						echo $row3['data'];
@@ -296,7 +223,7 @@ textarea {
 						echo "</td><td style:'width:10px;'>";
 						echo $row3['oddzial'];
 						echo "</td><td style:'width:10px;'>";
-						echo '<textarea style="resize: vertical; width:200px;hight:20px; max-height: 300px; min-height: 20px;">' .$row3['temat'].'</textarea>';
+						echo '<textarea style="resize: vertical; width:200px;hight:20px; max-height: 300px; min-height: 20px;" disabled>' .$row3['temat'].'</textarea>';
 						echo "</td><td>";
 						$temat = $row3['temat'];
 						
@@ -310,11 +237,26 @@ textarea {
 						
 						
 						echo '</td><td>';
-						echo "
-						<button onClick='sprawdzObecnosc(\"".$id_klasy."\" , \"".$id_lekcji."\" ,\"" . $oddzial_klasy."\",)'>
-							Sprawdź obecność
-						</button>";
-						
+						if($row3['czy_spr_obec'] == 'N' )
+						{
+							if ( $row3['data'] == $date and $row3['godz_start'] <= time() ){
+							echo "
+							<button onClick='sprawdzObecnosc(\"".$id_klasy."\" , \"".$id_lekcji."\" ,\"" . $oddzial_klasy."\",)'>
+								Sprawdź obecność
+							</button>";}
+							else{
+								echo "
+							<button disabled>
+								Sprawdź obecność
+							</button>";}
+						}
+						else
+						{
+							echo "
+							<button onClick='edytujObecnosc(\"".$id_klasy."\" , \"".$id_lekcji."\" ,\"" . $oddzial_klasy."\",)'>
+								Edytuj obecność
+							</button>";
+						}
 						echo '</td></tr>';
 					}
 					
