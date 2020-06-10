@@ -1,6 +1,7 @@
 <?php
 
-if(isset($_GET['id_lekcji']) and isset($_GET['temat']))
+
+if(isset($_GET['id_lekcji']) and isset($_GET['opis']) and isset($_GET['typ']))
 {
 	require_once "../connect.php";
 		
@@ -11,9 +12,11 @@ if(isset($_GET['id_lekcji']) and isset($_GET['temat']))
 		echo "Error: ".$conn->connect_errno;
 	}
 	
+	
 	$id_lekcji = $_GET['id_lekcji'];
-	$temat= $_GET['temat'];
-	$conn->query("UPDATE lekcja SET temat='$temat' WHERE lekcja_ID='$id_lekcji'");
+	$opis = $_GET['opis'];
+	$typ = $_GET['typ'];
+	$conn->query("INSERT INTO terminarz (typ, lekcja_id, opis) VALUES ('$typ','$id_lekcji','$opis')");
 	$conn->close();
 }			 
 ?>

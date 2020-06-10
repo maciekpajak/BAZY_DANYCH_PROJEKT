@@ -12,101 +12,20 @@ session_start();
 	<meta name="description" content="opis w google"/>
 	<meta name="keywords" content="słowa po których google szuka"/>
 
+    
     <link rel="stylesheet" href="../Styles/styleApp.css" type="text/css" />
-	<link rel="stylesheet" type="text/css" href="../Styles/tooltip.css">
+	<link rel="stylesheet" href="../Styles/form.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/table.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/myInput.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/button.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/modal.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/tooltip.css" type="text/css" />
 	<link rel="Shortcut icon" href="favicon.ico" />
 
 	<meta http-equiv="X-UA_Compatible" content="IE=edge,chrome=1" />
 	<meta name="author" content="Kowalski, Mielniczek, Pająk" />
 
 </head>
-
-<style>
-body {font-family: Arial, Helvetica, sans-serif;}
-* {box-sizing: border-box;}
-
-/* Button used to open the contact form - fixed at the bottom of the page */
-.open-button {
-  background-color: #555;
-  color: white;
-  padding: 16px 20px;
-  border: none;
-  cursor: pointer;
-  opacity: 0.8;
-  position: fixed;
-  bottom: 23px;
-  right: 28px;
-  width: 280px;
-}
-
-/* The popup form - hidden by default */
-.form-popup {
-  display: none;
-  position: fixed;
-  top: 100px;
-  left: 500px;
-  border: 3px solid #f1f1f1;
-  z-index: 9;
-}
-
-/* Add styles to the form container */
-.form-container {
-  max-width: 300px;
-  width: 300px;
-  hight: 300px;
-  padding: 10px;
-  background-color: white;
-}
-
-/* Full-width input fields */
-.form-container input[type=text], .form-container input[type=password] {
-  width: 100%;
-  hight: 100px:
-  padding: 15px;
-  margin: 5px 0 22px 0;
-  border: none;
-  background: #f1f1f1;
-}
-
-/* When the inputs get focus, do something */
-.form-container input[type=text]:focus, .form-container input[type=password]:focus {
-  background-color: #ddd;
-  outline: none;
-}
-
-/* Set a style for the submit/login button */
-.form-container .btn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 16px 20px;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  margin-bottom:10px;
-  opacity: 0.8;
-}
-
-/* Add a red background color to the cancel button */
-.form-container .cancel {
-  background-color: red;
-}
-
-/* Add some hover effects to buttons */
-.form-container .btn:hover, .open-button:hover {
-  opacity: 1;
-  
-textarea {
-  width: 100%;
-  height: 200px;
-  padding: 12px 20px;
-  box-sizing: border-box;
-  border: 2px solid #ccc;
-  border-radius: 4px;
-  background-color: #f8f8f8;
-  resize: none;
-}
-}
-</style>
 
 <body>
 		
@@ -162,6 +81,10 @@ textarea {
 
 	<div id="container">
 	
+	
+		
+		
+	
 		<div id="logo">
 		
 			<h1>Zalogowano jako nauczyciel</h1>
@@ -184,20 +107,16 @@ textarea {
 		Oceny 
 		</div></a>
 		
-		<a href="n_oceny_koncowe.php">
-		<div id="inne">
-		Oceny końcowe 
-		</div></a>
 		
 		<a href="n_terminarz.php">
 		<div id="inne">
 		Terminarz
 		</div></a>
 		
-		<a href="n_uwagi.php">
-		<div id="inne">
-		Uwagi 
-		</div></a>
+		<form action="../wyloguj.php" >
+		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
+		</form>
+		
 		<?php
 		if($dane_nauczyciela['czy_wych']=="Y")
 		
@@ -307,27 +226,32 @@ textarea {
 	</script>
 		
 		
-		<div>
-			<form method="POST" >
-				  <select id="cmbMake" name="Make"  onchange="onChangeCmb()">
-					 <?php
-					 echo '<option value = 0 > ---Wybierz klasę--- </option>';
-					 while($klasy = $result3 ->fetch_assoc() )
-						 {
-							$id_klasy =$klasy['klasa_ID'];
-							$np_id = $klasy['nauczyciel_przedmiotu_ID'];
-						   $values = '{"k_id":' . $id_klasy . ',"np_id":' .$np_id . '}';
-						   echo '<option value='.$values.'>'.$klasy['oddzial'].' '.$klasy['przedmiot_nazwa'].'</option>';
-						 }
-					 ?>
-				</select>
-			</form>
-		</div>
-
 		<div id="tresc">
 			<div id="lewy">
+			<div>
+				<form method="POST" >
+					  <select class="myInput" style='  float: right; 'id="cmbMake" name="Make"  onchange="onChangeCmb()">
+						 <?php
+						 if(!isset($_SESSION['klasa_do_pokazu']))
+						 { echo "<option value='0' selected>--Wybierz klasę--</option>";	 }
+						 while($klasy = $result3 ->fetch_assoc() )
+							 {
+								$id_klasy =$klasy['klasa_ID'];
+								$np_id = $klasy['nauczyciel_przedmiotu_ID'];
+							   $values = '{"k_id":' . $id_klasy . ',"np_id":' .$np_id . '}';
+							   if(isset($_SESSION['klasa_do_pokazu']) and $_SESSION['klasa_do_pokazu'] == $klasy['klasa_ID']){
+							   echo '<option value='.$values.' selected>'.$klasy['oddzial'].' '.$klasy['przedmiot_nazwa'].'</option>';
+							   }
+							   else{
+								   echo '<option value='.$values.'>'.$klasy['oddzial'].' '.$klasy['przedmiot_nazwa'].'</option>';
+							   }
+							 }
+						 ?>
+					</select>
+				</form>
+			</div>
+			<br/><br/>
 			
-			<B> Oceny: </B><br/>
 			<?php	
 			if(isset($_SESSION['klasa_do_pokazu']) and $_SESSION['klasa_do_pokazu'] != 0)
 				{
@@ -347,15 +271,15 @@ textarea {
 					
 
 					
-					echo "<table border=1 style='font-size:15px;'>";
+					echo "<table >";
 					if($result->num_rows > 0) {
 						$nr = 1;
 						
-						echo "<tr><td>";
+						echo "<tr class='header'><th>";
 						echo "Nr";
-						echo "</td><td>";
+						echo "</th><th>";
 						echo "Imie i nazwisko";
-						echo "</td><td id='ocena' colspan=30>";
+						echo "</th><th id='ocena' colspan=30>";
 						echo "Oceny";
 						
 						echo "</td></tr>";
@@ -373,14 +297,23 @@ textarea {
 							$imie = $row['imie'];
 							$nazw = $row['nazwisko'];
 							$i = 0;
+							
+							
 							if(isset($uczen['uczen_ID']) and $row['uczen_ID'] == $uczen['uczen_ID'])
 							{
 								
 								while( isset($uczen['uczen_ID']) and $row['uczen_ID'] == $uczen['uczen_ID'])
 								{
 									
+									if($uczen['stopien'] == 6) {$color = "rgb(255, 0, 102)";}
+									if($uczen['stopien'] == 5) {$color = "rgb(153, 0, 0)";}
+									if($uczen['stopien'] == 4) {$color = "rgb(204, 102, 0)";}
+									if($uczen['stopien'] == 3) {$color = "rgb(0, 255, 0)";}
+									if($uczen['stopien'] == 2) {$color = "rgb(255, 255, 0)";}
+									if($uczen['stopien'] == 1) {$color = "rgb(0, 255, 255)";}
+									if($uczen['stopien'] == 0) {$color = "rgb(0, 0, 255)";}
 									echo "<td headers='ocena' style='width:20px;font-size:15px;'>";
-									echo "<button style='width:20px;font-size:15px;'
+									echo "<button class='button button3' style='background-color:$color;'
 									onClick='openForm2(\"".$uczen['ocena_ID']."\" , \"" . $imie ."\", \"" . $nazw."\", \"" . $uczen['stopien'] ."\", \"" . $uczen['waga'] ."\", \"" . $uczen['data'] ."\", \"" . $uczen['opis'] ."\")' > 
 									<div class=\"tooltip\">
 									".$uczen['stopien']."
@@ -401,7 +334,7 @@ textarea {
 								$i = $i + 1;
 							}
 							$np_id = $_SESSION['np_klasy'];
-							echo "<td><button 
+							echo "<td><button class='button button2' style='width:30px;height:30px;'
 							onClick='openForm(\"".$ucz_id."\" ,\"".$imie."\" , \"" . $nazw ."\", \"" . $np_id ."\"  )'
 							style='display:inline-block;'>
 							+
@@ -419,15 +352,14 @@ textarea {
 			
 		
 			
-		<div class="form-popup" id="myForm">
-		  <form onSubmit="dodaj()" class="form-container" method="POST" >
-			<p>Nowa ocena</p>
+		<div class="modal" id="myForm">
+		  <form onSubmit="dodaj()" class="modal-content" method="POST" >
+			<h1>Nowa ocena</h1>
 
-			<p id="form_uczen"></p>
-			<p id="form_przedmiot"></p>
-			<p id="form_data"></p>
-			<p> Stopień:
-			<select id="select_stopien" onchange="" required>
+			Uczeń: <p id="form_uczen" style="display:inline"></p><br>
+			Data: <p id="form_data" style="display:inline"></p><br>
+			<p style="display:inline"> Ocena:
+			<select class='myInput' id="select_stopien" onchange="" required>
 			<option value= 0>0</option>
 			<option value= 1>1</option>
 			<option value= 2>2</option>
@@ -436,9 +368,9 @@ textarea {
 			<option value= 5>5</option>
 			<option value= 6>6</option>
 			</select>
-			</p>
-			<p> Waga: 
-			<select id="select_waga" onchange="" required>
+			</p><br>
+			<p style="display:inline"> Waga: 
+			<select class='myInput'  id="select_waga" onchange="" required>
 			<option value= 0>0</option>
 			<option value= 1>1</option>
 			<option value= 2>2</option>
@@ -450,24 +382,22 @@ textarea {
 			<option value= 4>8</option>
 			<option value= 5>9</option>
 			</select>
-			</p>
-			<textarea id="opis_oceny" style="width:300px;height:150px;resize: none;" maxlength=100 placeholder="Opis oceny"  > </textarea>
-			<button id="btn" type="submit" name="uspr"  >Zatwierdź</button>
-			<button type="button" onclick="closeForm()">Anuluj</button>
+			</p><br>
+			<textarea id="opis_oceny" style="width:100%;height:150px;resize: none;" maxlength=100 placeholder="Opis oceny"  > </textarea>
+			<button class="button button2" style=" width:100px; height:30px; float: right;" type="button" onclick="closeForm()">Anuluj</button>
+			<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit"  >Zatwierdź</button>
 		  </form>
 		</div>
 		
 		
-		<div class="form-popup" id="myForm2">
-		  <form onSubmit="edytuj()" class="form-container" method="POST" >
-			<p>Edycja oceny</p>
+		<div class="modal" id="myForm2">
+		  <form onSubmit="edytuj()" class="modal-content" method="POST" >
+			<h1>Edycja oceny</h1>
 
-			<p id="form2_uczen"></p>
-			<p id="form2_data"></p>
-			<p id="form2_ocena"></p>
-			<p id="form2_waga"></p>
-			<p> Stopień:
-			<select id="select2_stopien" onchange="" required>
+			Uczeń: <p id="form2_uczen" style="display:inline"></p><br>
+			Data: <p id="form2_data" style="display:inline"></p><br>
+			<p style="display:inline"> Ocena:
+			<select class='myInput' id="select2_stopien" onchange="" required>
 			<option value= 0>0</option>
 			<option value= 1>1</option>
 			<option value= 2>2</option>
@@ -476,9 +406,9 @@ textarea {
 			<option value= 5>5</option>
 			<option value= 6>6</option>
 			</select>
-			</p>
-			<p> Waga: 
-			<select id="select2_waga" onchange="" required>
+			</p><br>
+			<p style="display:inline"> Waga: 
+			<select class='myInput' id="select2_waga" onchange="" required>
 			<option value= 0>0</option>
 			<option value= 1>1</option>
 			<option value= 2>2</option>
@@ -490,24 +420,17 @@ textarea {
 			<option value= 8>8</option>
 			<option value= 9>9</option>
 			</select>
-			</p>
-			<textarea id="opis_oceny2" style="width:300px;height:150px;resize: none;" maxlength=100 placeholder="Opis oceny" > </textarea>
-			<button type="submit" >Zatwierdź</button>
-			<button type="button" onclick="closeForm2()">Anuluj</button>
+			</p><br>
+			<textarea id="opis_oceny2" style="width:100%;height:150px;resize: none;" maxlength=100 placeholder="Opis oceny" > </textarea>
+			<button class="button button2" style=" width:100px; height:30px; float: right;" type="button" onclick="closeForm2()">Anuluj</button>
+			<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit"  >Zatwierdź</button>
 		  </form>
 		</div>
 		
 		
 		</div>
 			</div>	
-		<form action="../wyloguj.php" >
-	
 		
-		<button type="submit">wyloguj</button>
-		
-		</form>
-		
-
 		
 		<div id="footer">
 		e-dziennik

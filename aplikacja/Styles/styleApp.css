@@ -1,37 +1,49 @@
 #container
 {
-border:  solid ;
-width: 1000px;
+border:  2px solid ;
+border-radius: 4px;
+width: 100%;
 margin-left: auto;
 margin-right: auto;
 }
 
 #logo
 {
-background:gray;
+background:#999999;
 text-align: center;
 padding: 15px;
 }
 
 #teraz
 {
-border:  solid black;	
+border:  2px solid #555555;	
 float: left;
-background-color: lightgray;
+background-color: #555555;
 min-height: 25px;
 text-align: center;
 padding: 5px;
-color: black
+color: white;
+font-size: 20px;
+margin: 4px 2px;
+transition-duration: 0.4s;
+}
+
+#inne:hover {
+  background-color: #555555;
+  color: white;
 }
 
 #inne
 {
-border:  solid black;
+border: 2px solid #555555;
 float: left;
 min-height: 25px;
 text-align: center;
 padding: 5px;
-color: black
+color: black;
+font-size: 20px;
+margin: 4px 2px;
+transition-duration: 0.4s;
 }
 
 #tresc
@@ -84,7 +96,4 @@ text-align: center;
 padding:20px;
 }
 
-table
-{
-min-width:850px;
-}
+

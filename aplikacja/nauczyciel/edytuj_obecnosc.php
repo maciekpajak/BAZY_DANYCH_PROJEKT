@@ -8,11 +8,13 @@ session_start();
 <html lang="pl">
 <head>
 	<meta charset="utf-8" />
-	<title>Zarządzanie kontem</title>
+	<title>Edycja frekwencji</title>
 	<meta name="description" content="opis w google"/>
 	<meta name="keywords" content="słowa po których google szuka"/>
 
     <link rel="stylesheet" href="../Styles/styleApp.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/table.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/button.css" type="text/css" />
 	<link rel="Shortcut icon" href="favicon.ico" />
 
 	<meta http-equiv="X-UA_Compatible" content="IE=edge,chrome=1" />
@@ -70,55 +72,47 @@ session_start();
 			
 			<?php
 			
-			{
-			echo $result2['data'];
-			echo '</br>';
-			echo $result2['godz_start'] . "-" . $result2['godz_koniec'];
-			echo '</br>';
-			echo $result2['oddzial'];
-			echo '</br>';
-			echo "Sala: " . $result2['sala'];
-			echo '</br>';
-			echo $result2['przedmiot'];
-			echo '</br>';
-			echo $result2['imie'] . " " . $result2['nazwisko'];
-			echo '</br>';
-			echo "Temat: " . $result2['temat'];
-			}
-			
+			echo "<table>";
+			echo "<tr class='header'><td colspan=2>Informacje o lekcji</td></tr>";
+			echo "<tr><td style='width:30%'>Data</td><td>" . $result2['data'] .'</td></tr>';
+			echo "<tr><td style='width:30%'>Godzina</td><td> " . $result2['godz_start'] . "-" . $result2['godz_koniec'] . '</td></tr>';
+			echo "<tr><td style='width:30%'>Klasa</td><td> " . $result2['oddzial'] . '</td></tr>';
+			echo "<tr><td style='width:30%'>Sala</td><td> " . $result2['sala'] . '</td></tr>';
+			echo "<tr><td style='width:30%'>Przedmiot</td><td>" . $result2['przedmiot'] . '</td></tr>';
+			echo "<tr><td style='width:30%'>Nauczyciel</td><td> " . $result2['imie'] . " " . $result2['nazwisko'] . '</td></tr>';
+			echo "<tr><td style='width:30%'>Temat</td><td> " . $result2['temat'] . '</td></tr>';
+			echo "</table>";
+			echo "<br>";
 			echo '<form action="zatwierdz_edycje_obecnosci.php" method="post">';
-			echo "<table border=1>";
-		    if($result->num_rows > 0) {
-				$nr = 1;
-				
-				echo "<tr><td>";
-				echo "Nr";
-				echo "</td><td>";
-				echo "Imie i nazwisko";
-				echo "</td><td>";
-				echo "<input type=\"checkbox\" id='checkall' /> Select All<br/>";
-				echo "</td></tr>";
-		        while($row = $result->fetch_assoc()) {
-					echo "<tr><td>";
-					echo $nr . '.';
-					echo "</td><td>";
-					echo $row['imie'];
-					echo " ";
-					echo $row['nazwisko'];
-					echo "</td><td>";
-					echo "<input type=\"hidden\" name=\"wszyscy[]\" value=".$row['obecnosc_ID']."></input>";
-					if($row['status']=='obecny'){
-						echo "<input type=\"checkbox\" class='checkbox' name=\"obecni[]\" value=" . $row['obecnosc_ID'] . " checked></input>";}
-					if($row['status']=='nieobecny'){
-						echo "<input type=\"checkbox\" class='checkbox' name=\"obecni[]\" value=" . $row['obecnosc_ID'] . "></input>";}
+				echo "<table>";
+				if($result->num_rows > 0) {
+					$nr = 1;
 					
-					echo "</td></tr>";
-					$nr = $nr + 1;
-		        }
-		    }
-			echo "</table>"; 
-			echo '<button type="submit"> Zatwierdź</button>';
-			echo '<button type="button" onClick="javascript:window.close();"> Odrzuć</button>';
+					echo "<tr class='header'>";
+					echo "<td>Nr</td>";
+					echo "<td>Imie i nazwisko</td>";
+					echo "<td>Obecny/Nieobecny</td>";
+					echo '</tr>';
+					while($row = $result->fetch_assoc()) {
+						echo "<tr>";
+						echo "<td>" .$nr . ".</td>";
+						echo "<td style='text-align:left;'>";
+						echo $row['imie']. " " . $row['nazwisko'];
+						echo "</td><td>";
+						echo "<input type=\"hidden\" name=\"wszyscy[]\" value=".$row['obecnosc_ID']."></input>";
+						if($row['status']=='obecny'){
+							echo "<input type=\"checkbox\" class='checkbox' name=\"obecni[]\" value=" . $row['obecnosc_ID'] . " checked></input>";}
+						if($row['status']=='nieobecny'){
+							echo "<input type=\"checkbox\" class='checkbox' name=\"obecni[]\" value=" . $row['obecnosc_ID'] . "></input>";}
+						
+						echo "</td></tr>";
+						$nr = $nr + 1;
+					}
+				}
+				echo "</table>"; 
+				echo '<button class="button button2" style=" width:48%; height:30px;float: left;"  type="submit"> Zatwierdź</button>';
+				
+				echo '<button class="button button2" style=" width:48%; height:30px; float: right;" type="button" onClick="javascript:window.close();"> Odrzuć</button>';
 			echo '</form>';
 			
 			?>

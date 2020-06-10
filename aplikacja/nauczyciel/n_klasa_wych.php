@@ -1,5 +1,15 @@
 <?php
 session_start();
+
+
+
+
+if(!isset($_SESSION['typ'])){
+$_SESSION['typ'] = "oceny";
+}
+if(!isset($_SESSION['przedmiot'])){
+$_SESSION['przedmiot'] = "matematyka";
+}
 ?>
 
 
@@ -8,11 +18,18 @@ session_start();
 <html lang="pl">
 <head>
 	<meta charset="utf-8" />
-	<title>Zarządzanie kontem</title>
+	<title>Klasa wychowawcza</title>
 	<meta name="description" content="opis w google"/>
 	<meta name="keywords" content="słowa po których google szuka"/>
 
-    <link rel="stylesheet" href="../Styles/styleApp.css" type="text/css" />
+   <link rel="stylesheet" href="../Styles/styleApp.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/form.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/table.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/myInput.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/button.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/modal.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/tooltip.css" type="text/css" />
+	
 	<link rel="stylesheet" type="text/css" href="../Styles/tooltip.css">
 	<link rel="Shortcut icon" href="favicon.ico" />
 
@@ -20,93 +37,6 @@ session_start();
 	<meta name="author" content="Kowalski, Mielniczek, Pająk" />
 
 </head>
-
-<style>
-body {font-family: Arial, Helvetica, sans-serif;}
-* {box-sizing: border-box;}
-
-/* Button used to open the contact form - fixed at the bottom of the page */
-.open-button {
-  background-color: #555;
-  color: white;
-  padding: 16px 20px;
-  border: none;
-  cursor: pointer;
-  opacity: 0.8;
-  position: fixed;
-  bottom: 23px;
-  right: 28px;
-  width: 280px;
-}
-
-/* The popup form - hidden by default */
-.form-popup {
-  display: none;
-  position: fixed;
-  top: 100px;
-  left: 500px;
-  border: 3px solid #f1f1f1;
-  z-index: 9;
-}
-
-/* Add styles to the form container */
-.form-container {
-  max-width: 300px;
-  width: 300px;
-  hight: 300px;
-  padding: 10px;
-  background-color: white;
-}
-
-/* Full-width input fields */
-.form-container input[type=text], .form-container input[type=password] {
-  width: 100%;
-  hight: 100px:
-  padding: 15px;
-  margin: 5px 0 22px 0;
-  border: none;
-  background: #f1f1f1;
-}
-
-/* When the inputs get focus, do something */
-.form-container input[type=text]:focus, .form-container input[type=password]:focus {
-  background-color: #ddd;
-  outline: none;
-}
-
-/* Set a style for the submit/login button */
-.form-container .btn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 16px 20px;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  margin-bottom:10px;
-  opacity: 0.8;
-}
-
-/* Add a red background color to the cancel button */
-.form-container .cancel {
-  background-color: red;
-}
-
-/* Add some hover effects to buttons */
-.form-container .btn:hover, .open-button:hover {
-  opacity: 1;
-  
-textarea {
-  width: 100%;
-  height: 200px;
-  padding: 12px 20px;
-  box-sizing: border-box;
-  border: 2px solid #ccc;
-  border-radius: 4px;
-  background-color: #f8f8f8;
-  resize: none;
-}
-}
-</style>
 
 <body>
 		
@@ -116,7 +46,6 @@ textarea {
 	require_once "../connect.php";
 	
 	$conn=@new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
-	#$conn=new mysqli($IP, $username, $password, $DB_name); 
 	
 	if ($conn->connect_errno!=0)
 	{
@@ -181,20 +110,16 @@ textarea {
 		Oceny 
 		</div></a>
 		
-		<a href="n_oceny_koncowe.php">
-		<div id="inne">
-		Oceny końcowe 
-		</div></a>
 		
 		<a href="n_terminarz.php">
 		<div id="inne">
 		Terminarz
 		</div></a>
 		
-		<a href="n_uwagi.php">
-		<div id="inne">
-		Uwagi 
-		</div></a>
+		<form action="../wyloguj.php" >
+		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
+		</form>
+		
 		<?php
 		if($dane_nauczyciela['czy_wych']=="Y")
 		
@@ -269,37 +194,16 @@ textarea {
 					
 	</script>
 		
-		<div>
-		<div>
+		
+		<div id="tresc">
+			<div id="lewy">
+			
+			
+			<div>
+		
+		
 			<form method="POST" >
-				  <select id="cmbMake" name="Make"  onchange="onChangeCmb()">
-					 <?php
-					 echo '<option value = 0 > ---Wybierz typ--- </option>';
-					 echo '<option value="oceny">Oceny</option>';
-					 echo '<option value="frekwencja">Frekwencja</option>';
-					 ?>
-				</select>
-			</form>
-		</div>
-		<div>
-			<form method="POST" >
-				  <select id="cmbMake2" name="Make2"  onchange="onChangeCmb2()">
-					 <?php
-					 $conn=new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
-					 $resultTMP = $conn->query("SELECT * FROM przedmiot");
-					$conn->close();
-					 echo '<option value = 0 > ---Wybierz przedmiot--- </option>';
-					 while($p = $resultTMP->fetch_assoc())
-					 {
-						  echo '<option value =\''.$p['przedmiot_nazwa'].'\' > '.$p['przedmiot_nazwa'].' </option>';
-					 }
-					 ?>
-				</select>
-			</form>
-		</div>
-		<div>
-			<form method="POST" >
-				  <select id="cmbMake3" name="Make"  onchange="onChangeCmb3()">
+				  <select class='myInput' id="cmbMake3" name="Make"  onchange="onChangeCmb3()" style=" float: right;">
 					 <?php
 					 $conn=new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
 					 
@@ -314,22 +218,72 @@ textarea {
 					 echo '<option value = 0 > ---Wybierz ucznia--- </option>';
 					 while($u = $resultTMP->fetch_assoc())
 					 {
+						 if(isset($_SESSION['uczen']) and $_SESSION['uczen'] == $u['uczen_ID']){
 						  echo '<option value ='.$u['uczen_ID'].' > '.$u['imie'].' '.$u['nazwisko'].' </option>';
+						 }
+						 else{
+							echo '<option value ='.$u['uczen_ID'].' > '.$u['imie'].' '.$u['nazwisko'].' </option>';
+						 }
 					 }
 					 ?>
 				</select>
 			</form>
 		</div>
+		<div>
+			<form method="POST" >
+				  <select class='myInput' id="cmbMake2" name="Make2"  onchange="onChangeCmb2()" style=" float: right;">
+					 <?php
+					 $conn=new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
+					 $resultTMP = $conn->query("SELECT * FROM przedmiot");
+					$conn->close();
+					 while($p = $resultTMP->fetch_assoc())
+					 {
+						 if(isset($_SESSION['przedmiot']) and $_SESSION['przedmiot'] == $p['przedmiot_nazwa']){
+						 echo '<option value =\''.$p['przedmiot_nazwa'].'\' selected> '.$p['przedmiot_nazwa'].' </option>';
+						 }
+						 else{
+							echo '<option value =\''.$p['przedmiot_nazwa'].'\' > '.$p['przedmiot_nazwa'].' </option>'; 
+						 }
+					 }
+					 ?>
+				</select>
+			</form>
 		</div>
-
-		<div id="tresc">
-			<div id="lewy">
+		<div>
+		<div>
+			<form method="POST" >
+				  <select class='myInput' id="cmbMake" name="Make"  onchange="onChangeCmb()" style=" float: right;">
+					 <?php
+					 if(isset($_SESSION['typ']) and $_SESSION['typ'] == "oceny"){
+						 echo '<option value="oceny" selected>Oceny</option>';
+						}
+						else{
+						echo '<option value="oceny">Oceny</option>';
+						}
+					 if(isset($_SESSION['typ']) and $_SESSION['typ'] == "frekwencja"){
+						 echo '<option value="frekwencja" selected>Frekwencja</option>';
+						}
+						else{
+						echo '<option value="frekwencja">Frekwencja</option>';
+						}
+					 ?>
+				</select>
+			</form>
+		</div>
+		</div>
+		<br><br>
+			
+			
+			
+			
+			
+			
 			
 			
 			<?php	
 			if($_SESSION['typ'] == "oceny" )
 			{
-				echo "<B> Oceny: </B><br/>";
+				echo "<br/>";
 				$conn=new mysqli("localhost", "id13767441_dzienn", "bU#@]PEwH^DgS7cp", "id13767441_dziennik"); 
 				$k_id = $klasa_id;
 				$result = $conn->query("CALL lista_osob_w_klasie($k_id)");
@@ -344,24 +298,24 @@ textarea {
 				
 
 				
-				echo "<table border=1 style='font-size:15px;'>";
+				echo "<table>";
 				if($result->num_rows > 0) {
 					$nr = 1;
 					
-					echo "<tr><td>";
+					echo "<tr class='header'><th>";
 					echo "Nr";
-					echo "</td><td>";
+					echo "</th><th>";
 					echo "Imie i nazwisko";
-					echo "</td><td id='ocena' colspan=30>";
+					echo "</th><th id='ocena' colspan=30>";
 					echo "Oceny";
 					
 					echo "</td></tr>";
 					
 					$uczen = $result4->fetch_assoc();
 					while($row = $result->fetch_assoc()) {
-						echo "<tr style:'hight:30px;'><td style='font-size:15px;'>";
+						echo "<tr><td>";
 						echo $nr . '.';
-						echo "</td><td style='font-size:15px;'>";
+						echo "</td><td >";
 						echo $row['imie'];
 						echo " ";
 						echo $row['nazwisko'];
@@ -376,10 +330,16 @@ textarea {
 							while( isset($uczen['uczen_ID']) and $row['uczen_ID'] == $uczen['uczen_ID'])
 							{
 								
-								echo "<td headers='ocena' style='width:20px;font-size:15px;'>";
-								echo "<button style='width:20px;font-size:15px;'
-								onClick='openForm2(\"".$uczen['ocena_ID']."\" , \"" . $imie ."\", \"" . $nazw."\", \"" . $uczen['stopien'] ."\", \"" . $uczen['waga'] ."\", \"" . $uczen['data'] ."\", \"" . $uczen['opis'] ."\")' > 
-								<div class=\"tooltip\">
+								if($uczen['stopien'] == 6) {$color = "rgb(255, 0, 102)";}
+								if($uczen['stopien'] == 5) {$color = "rgb(153, 0, 0)";}
+								if($uczen['stopien'] == 4) {$color = "rgb(204, 102, 0)";}
+								if($uczen['stopien'] == 3) {$color = "rgb(0, 255, 0)";}
+								if($uczen['stopien'] == 2) {$color = "rgb(255, 255, 0)";}
+								if($uczen['stopien'] == 1) {$color = "rgb(0, 255, 255)";}
+								if($uczen['stopien'] == 0) {$color = "rgb(0, 0, 255)";}
+								echo "<td headers='ocena' >";
+								echo "<button class='button button3' style='background-color:$color;'>
+								<div class=\"tooltip\" >
 								".$uczen['stopien']."
 									<span class=\"tooltiptext\">
 									".$uczen['stopien']."<br>".$uczen['waga']."<br>".$uczen['opis']."<br>".$uczen['data']."
@@ -418,15 +378,15 @@ textarea {
 				$przedmiot_do_pokazu = $_SESSION['przedmiot'];
 				$result4 = $conn->query("CALL frekwencja_z_przedmiotu_klasy($k_id,'$przedmiot_do_pokazu')");
 				$conn->close();
-				echo "<table border=1 style='font-size:15px;'>";
+				echo "<table>";
 				if($result->num_rows > 0) {
 					$nr = 1;
 					
-					echo "<tr><td>";
+					echo "<tr class='header'><th>";
 					echo "Nr";
-					echo "</td><td>";
+					echo "</th><th>";
 					echo "Imie i nazwisko";
-					echo "</td><td id='frekwencja' colspan=30>";
+					echo "</th><th id='frekwencja' colspan=30>";
 					echo "Frekwencja";
 					
 					echo "</td></tr>";
@@ -455,17 +415,17 @@ textarea {
 								if ($uczen['status']=='obecny')
 								{
 									$status='O';
-									$color = "green";
+									$color = "rgb(153, 255, 153)";
 								}	
 								if($uczen['status']=='spóźniony')
 								{
 									$status='S';
-								$color = "yellow";
+								$color = "rgb(204, 255, 255)";
 								}
 								if($uczen['status']=='nieobecny')
 								{
 									$status='N';
-									$color = "red";
+									$color = "rgb(255, 102, 102)";
 								}
 								
 								$id = $uczen['obecnosc_ID'];
@@ -479,11 +439,11 @@ textarea {
 								
 								if($uczen['czy_do_uspr']=='Y')
 								{
-									$color = "blue";
+									$color = "rgb(255, 255, 128)";
 									$status .= '?';
-									echo "<td headers='frekwencja' style='width:20px;font-size:15px;background-color:$color;'>";
+									echo "<td headers='frekwencja' >";
 									echo "
-									<button 
+									<button class='button button3' style='background-color:$color;'
 									onClick='openForm(\"".$id."\" , \"" . $uczen['status'] ."\", \"" . $godzina ."\", \"" . $przedmiot ."\", \"" . $nauczyciel ."\", \"" . $uczen_dane ."\", \"" . $tresc_uspr ."\")' > 
 									<div class=\"tooltip\">
 									$status
@@ -494,27 +454,27 @@ textarea {
 								}
 								else if($uczen['czy_uspr']=='Y')
 								{
-									$color = "pink";
+									$color = "rgb(163, 102, 255)";
 									$status .= '*';
-									echo "<td headers='frekwencja' style='width:20px;font-size:15px;background-color:$color;'>";
-									echo "
+									echo "<td headers='frekwencja' >";
+									echo "<button class='button button3' style='background-color:$color;'>
 									<div class=\"tooltip\" >
 									$status
 										<span class=\"tooltiptext\">
 										$przedmiot<br>$godzina
 										</span>
-									</div></td>";
+									</div></button></td>";
 								}
 								else
 								{
-									echo "<td headers='frekwencja' style='width:20px;font-size:15px;background-color:$color;'>";
-									echo "
+									echo "<td headers='frekwencja' >";
+									echo "<button class='button button3' style='background-color:$color;'>
 									<div class=\"tooltip\" >
 									$status
 										<span class=\"tooltiptext\">
 										$przedmiot<br>$godzina
 										</span>
-									</div></td>";
+									</div></button></td>";
 								}
 								
 								
@@ -561,16 +521,7 @@ textarea {
 		  </form>
 		</div>	
 			
-			
 		
-		<form action="../wyloguj.php" >
-	
-		
-		<button type="submit">wyloguj</button>
-		
-		</form>
-		
-
 		
 		<div id="footer">
 		e-dziennik

@@ -13,6 +13,12 @@ session_start();
 	<meta name="keywords" content="słowa po których google szuka"/>
 
     <link rel="stylesheet" href="../Styles/styleApp.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/form.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/table.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/myInput.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/button.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/modal.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/tooltip.css" type="text/css" />
 	<link rel="Shortcut icon" href="favicon.ico" />
 
 	<meta http-equiv="X-UA_Compatible" content="IE=edge,chrome=1" />
@@ -58,6 +64,9 @@ session_start();
 
 	<div id="container">
 	
+	
+		
+		
 		<div id="logo">
 		
 			<h1>Zalogowano jako nauczyciel</h1>
@@ -80,20 +89,16 @@ session_start();
 		Oceny 
 		</div></a>
 		
-		<a href="n_oceny_koncowe.php">
-		<div id="inne">
-		Oceny końcowe 
-		</div></a>
 		
 		<a href="n_terminarz.php">
 		<div id="inne">
 		Terminarz
 		</div></a>
+
+		<form action="../wyloguj.php" >
+		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
+		</form>
 		
-		<a href="n_uwagi.php">
-		<div id="inne">
-		Uwagi 
-		</div></a>
 		
 		<?php
 		if($dane_nauczyciela['czy_wych']=="Y")
@@ -120,44 +125,49 @@ session_start();
 			
 			</div>
 	
-			
-	<form action="zmiana_hasla.php" method="post">
-			<div id="prawy">
-				<B> Zmiana hasła: </B><br/>
-				<div id="zmianahasla">
-					stare hasło:<br/>
-					<input type="password" name="stare"> <br/>
-					nowe hasło:<br/>
-					<input type="password" name="nowe"><br/>
-					powtórz nowe hasło:<br/>
-					<input type="password" name="p_nowe"><br/>
-					<button type="submit">Zatwierdź</button>
-					
-					
+				
+					<div id="prawy">	
+					</div>		
+				<div id="prawy">			
+						
 					</form>
-				</div>
-				<br/><B> Zmiana loginu: </B><br/>
-				<form action="../zmiana_login.php" method="post">
-				<div id="zmianahasla">
-					nowy login:<br/>
-					<input name="nowy_login"><br/>
-					hasło:<br/>
-					<input type="password" name="haslo_L"><br/>
-					<button type="submit">Zatwierdź</button>
-					
+					<B> Zmiana loginu: </B><br/>
+					<form action="../zmiana_login.php" method="post">
+						<div id="zmianahasla">
+							nowy login:<br/>
+							<input name="nowy_login"><br/>
+							hasło:<br/>
+							<input type="password" name="haslo_L"><br/>
+							<button type="submit">Zatwierdź</button>
+							
+							
+						</div>
 					</form>
-				</div>
-			</div>
+					</div>
+
+					<div id="prawy">	
+					</div>
+					  <div id="prawy">	
+					</div> 
+					<div id="prawy">
+					
+					<form action="zmiana_hasla.php" method="post">
+				
+						<B> Zmiana hasła: </B><br/>
+						<div id="zmianahasla">
+							stare hasło:<br/>
+							<input type="password" name="stare"> <br/>
+							nowe hasło:<br/>
+							<input type="password" name="nowe"><br/>
+							powtórz nowe hasło:<br/>
+							<input type="password" name="p_nowe"><br/>
+							<button type="submit">Zatwierdź</button>
+							
+						</div>
+				</div>	
 
 		</div>
-				<form action="../wyloguj.php" >
-	
 		
-		<button type="submit">wyloguj</button>
-		
-		</form>
-		
-
 		
 		<div id="footer">
 		e-dziennik
