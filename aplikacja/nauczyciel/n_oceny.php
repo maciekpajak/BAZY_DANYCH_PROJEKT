@@ -275,11 +275,11 @@ session_start();
 					if($result->num_rows > 0) {
 						$nr = 1;
 						
-						echo "<tr class='header'><th>";
+						echo "<tr class='header'><th style='width:1%;'>";
 						echo "Nr";
-						echo "</th><th>";
+						echo "</th><th style='width:20%;'>";
 						echo "Imie i nazwisko";
-						echo "</th><th id='ocena' colspan=30>";
+						echo "</th><th id='ocena' colspan=30 style='width:79%;'>";
 						echo "Oceny";
 						
 						echo "</td></tr>";
@@ -312,7 +312,7 @@ session_start();
 									if($uczen['stopien'] == 2) {$color = "rgb(255, 255, 0)";}
 									if($uczen['stopien'] == 1) {$color = "rgb(0, 255, 255)";}
 									if($uczen['stopien'] == 0) {$color = "rgb(0, 0, 255)";}
-									echo "<td headers='ocena' style='width:20px;font-size:15px;'>";
+									echo "<td headers='ocena' >";
 									echo "<button class='button button3' style='background-color:$color;'
 									onClick='openForm2(\"".$uczen['ocena_ID']."\" , \"" . $imie ."\", \"" . $nazw."\", \"" . $uczen['stopien'] ."\", \"" . $uczen['waga'] ."\", \"" . $uczen['data'] ."\", \"" . $uczen['opis'] ."\")' > 
 									<div class=\"tooltip\">

@@ -36,7 +36,13 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	<title>Konto ucznia</title>
 	<META http-equiv="content-type" content="text/html; charset=utf-8">
 	<link rel="stylesheet" href="../Styles/styleApp.css" type="text/css" />
-	<link rel="stylesheet" type="text/css" href="../Styles/tooltip.css">
+	<link rel="stylesheet" href="../Styles/form.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/table.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/myInput.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/button.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/modal.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/tooltip.css" type="text/css" />
+	
 	<link rel="Shortcut icon" href="favicon.ico" />
 	
 	<meta name="description" content="opis w google"/>
@@ -83,7 +89,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		</div>
 		</a>	
 		
-		
+		<form action="../wyloguj.php" >
+		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
+		</form>
 		<?php 
 	unset($_SESSION['blad']);
 	
@@ -122,47 +130,75 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		
 		<div id="tresc">
 		<div id="lewy">
-			
-			<B> Oceny: </B><br/>	
 
 		<?php
 		    
-		    echo "<table border=5><tr><td>";
+		    echo "<table >";
+			echo "<tr class='header'><th  style='width:20%;'>Przedmiot</th>";
+			echo "<th colspan=30 id='ocena' style='width:80%;'>Oceny</th></tr>";
 		    
 		    if($result3->num_rows > 0) {
 		        
 		        $firstrow = $result3->fetch_assoc();
+				echo "<tr><td>";
 		        echo $firstrow['przedmiot'];
-		        echo '</td><td>
-					<div class="tooltip">
-							'.$firstrow['stopien'].'
-							<span class="tooltiptext">
-								waga: '.$firstrow['waga'].' <br>
-								nauczyciel: '.$firstrow['imie'].' '.$firstrow['nazwisko'].' <br>
-								opis: '.$firstrow['opis'].'
+				if($firstrow['stopien'] == 6) {$color = "rgb(255, 0, 102)";}
+				if($firstrow['stopien'] == 5) {$color = "rgb(153, 0, 0)";}
+				if($firstrow['stopien'] == 4) {$color = "rgb(204, 102, 0)";}
+				if($firstrow['stopien'] == 3) {$color = "rgb(0, 255, 0)";}
+				if($firstrow['stopien'] == 2) {$color = "rgb(255, 255, 0)";}
+				if($firstrow['stopien'] == 1) {$color = "rgb(0, 255, 255)";}
+				if($firstrow['stopien'] == 0) {$color = "rgb(0, 0, 255)";}
+		        echo "</td><td>
+				<button class='button button3' style='background-color:$color;'>
+					<div class='tooltip'>
+							".$firstrow['stopien']."
+							<span class='tooltiptext'>
+								waga: ".$firstrow['waga']." <br>
+								nauczyciel: ".$firstrow['imie']." ".$firstrow['nazwisko']." <br>
+								opis: ".$firstrow['opis']."
 							</span>
-					</div></td>';
-		        
+					</div></button></td>";
+		        $i=0;
 		        while($row3 = $result3->fetch_assoc()) {
 					
 					if($row3['przedmiot'] != $firstrow['przedmiot']) {
 		                
+						while( $i < 30 )
+							{
+								echo "<td headers='ocena' style='width:20px;font-size:15px;'></td>";
+								$i = $i + 1;
+							}
+							$i=0;
 		                echo "</tr><tr><td>";
 		                echo $row3['przedmiot'];
 		                //echo "</td><td>";
 		                $firstrow = $row3;
 					}
-		            
-		            echo '</td><td>
-					<div class="tooltip">
-							'.$row3['stopien'].'
-							<span class="tooltiptext">
-								waga: '.$row3['waga'].' <br>
-								nauczyciel: '.$row3['imie'].' '.$row3['nazwisko'].' <br>
-								opis: '.$row3['opis'].'
+					if($row3['stopien'] == 6) {$color = "rgb(255, 0, 102)";}
+					if($row3['stopien'] == 5) {$color = "rgb(153, 0, 0)";}
+					if($row3['stopien'] == 4) {$color = "rgb(204, 102, 0)";}
+					if($row3['stopien'] == 3) {$color = "rgb(0, 255, 0)";}
+					if($row3['stopien'] == 2) {$color = "rgb(255, 255, 0)";}
+					if($row3['stopien'] == 1) {$color = "rgb(0, 255, 255)";}
+					if($row3['stopien'] == 0) {$color = "rgb(0, 0, 255)";}
+		            echo "</td><td>
+					<button class='button button3' style='background-color:$color;'>
+					<div class='tooltip'>
+							".$row3['stopien']."
+							<span class='tooltiptext'>
+								waga: ".$row3['waga']." <br>
+								nauczyciel: ".$row3['imie']." ".$row3['nazwisko']." <br>
+								opis: ".$row3['opis']."
 							</span>
-					</div></td>';
+					</div></buttn></td>";
+					$i = $i +1;
 		        }
+				while( $i < 30 )
+				{
+					echo "<td headers='ocena' style='width:20px;font-size:15px;'></td>";
+					$i = $i + 1;
+				}
 		    }
 		   
 		   echo "</tr></table>"; 

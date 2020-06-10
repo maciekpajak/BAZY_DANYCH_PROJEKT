@@ -35,7 +35,12 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	<title>Konto ucznia</title>
 	<META http-equiv="content-type" content="text/html; charset=utf-8">
 	<link rel="stylesheet" href="../Styles/styleApp.css" type="text/css" />
-	<link rel="stylesheet" type="text/css" href="../Styles/tooltip.css">
+	<link rel="stylesheet" href="../Styles/form.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/table.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/myInput.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/button.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/modal.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/tooltip.css" type="text/css" />
 	<link rel="Shortcut icon" href="favicon.ico" />
 	
 	<meta name="description" content="opis w google"/>
@@ -81,7 +86,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		 Terminarz 
 		</div>
 		</a>	
-		
+		<form action="../wyloguj.php" >
+		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
+		</form>
 		
 		<?php 
 	unset($_SESSION['blad']);
@@ -120,77 +127,65 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		
 		<div id="tresc">
 		<div id="lewy">
-			<B> Frekwencja: </B><br/>
 			
 
 <?php
-				echo "<table border=5>";
+				echo "<table>";
+				echo "<tr class='header'><th  style='width:20%;'>Data</th>";
+				echo "<th colspan=30 id='frekwencja' style='width:80%;'>Frekwencja</th></tr>";
 				if($result3->num_rows > 0) {
-				
+					
+					
 					$data=0;
+					
+					echo "<tr>";
+					$i=0;
 					while($row3 = $result3->fetch_assoc())
 					{		
 						
-						
-						if ($row3['status']=='obecny')
-							{
-							}
-
-						else
-						{	
-							if($row3['status']=='spóźniony')
-							{$status='S';}
-							if($row3['status']=='nieobecny')
-							{$status='N';}
-							$start = $row3['godz_start'];
-							$koniec = $row3['godz_koniec'];
+						if ($row3['status']=='obecny'){$status='O';$color = "rgb(153, 255, 153)";}	
+						if($row3['status']=='spóźniony'){$status='S'; $color = "rgb(204, 255, 255)";}
+						if($row3['status']=='nieobecny'){$status='N';$color="rgb(255,102,102)";}
+						if($row3['czy_do_uspr']=='Y'){$status .= '?';$color = "rgb(255, 255, 128)";}
+						if($row3['czy_uspr']=='Y'){$status .= '*'; $color = "rgb(163, 102, 255)"; }
+						$start= $row3['godz_start'];
+						$koniec = $row3['godz_koniec'];
 							
 							
-							if($row3['data']==$data)
+						if($row3['data']!=$data)
+						{while( $i < 30 )
 							{
-								echo '</td><td>
-								<div class="tooltip">
-								'.$status.'
-								<span class="tooltiptext">
-								'.$row3['przedmiot'].
-								'<br>'
-								.$start.
-								'-'
-								.$koniec.
-								'
-								</span>
-								</div></td>';
-								
-								
-								
+								echo "<td headers='frekwencja' style='width:20px;font-size:15px;'></td>";
+								$i = $i + 1;
 							}
-							else{
-								echo "<tr><td>";
+							$i=0;
+							echo "</tr><tr><td>";
 								echo $row3['data'];
-								$data=$row3['data'];
-								
-								
-								echo '</td><td>
-								<div class="tooltip">
-								'.$status.'
-								<span class="tooltiptext">
-								'.$row3['przedmiot'].
-								'<br>'
-								.$start.
-								'-'
-								.$koniec.
-								'
-								</span>
-								</div></td>';
-								
-							}
-							
+							$data= $row3['data'];
 						}
 						
-					
+						echo "</td><td>
+						<button class='button button3' style='background-color:$color;'>
+						<div class='tooltip'>
+						".$status."
+						<span class='tooltiptext'>
+						".$row3['przedmiot']."<br>"
+						.$start."-".$koniec."
+						</span>
+						</div></td>";
+							
+						
 					}
+						while( $i < 30 )
+						{
+							echo "<td headers='frekwencja' style='width:20px;font-size:15px;'></td>";
+							$i = $i + 1;
+						}
+						$i=0;
+					
+					
 				}	
-			echo "</tr></table>"; 	
+			echo "</table>"; 	
 			?>
 			
 			

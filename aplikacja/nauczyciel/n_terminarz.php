@@ -158,8 +158,18 @@ session_start();
 						echo "<td>" . $row3['oddzial'] . "</td>";
 						echo "<td>";
 						echo '<textarea style="resize: vertical; max-height: 300px; min-height: 20px;" disabled>' .$row3['opis'].'</textarea>';
-						echo "</td><td>";echo "</td><td>";
-						echo '</td></tr>';
+						echo "</td>";
+						echo "<td><button class='button button2' 
+							onClick=''
+							style='display:inline-block;'>
+							Edytuj
+						</button></td>";
+						echo "<td><button class='button button2' 
+							onClick=''
+							style='display:inline-block;'>
+							Usuń
+						</button></td>";
+						echo '</tr>';
 					}
 					
 		        }

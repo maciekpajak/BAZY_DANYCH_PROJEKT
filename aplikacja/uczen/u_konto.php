@@ -35,6 +35,12 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	<title>Zarządzanie kontem</title>
 
 	<link rel="stylesheet" href="../Styles/styleApp.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/form.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/table.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/myInput.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/button.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/modal.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/tooltip.css" type="text/css" />
 	<link rel="Shortcut icon" href="favicon.ico" />
 	
 	<meta name="description" content="opis w google"/>
@@ -118,7 +124,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		</div>
 		</a>	
 		
-		
+		<form action="../wyloguj.php" >
+		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
+		</form>
 		
 		
 		

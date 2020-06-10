@@ -35,7 +35,12 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	<title>Zarządzanie kontem</title>
 
 	<link rel="stylesheet" href="../Styles/styleApp.css" type="text/css" />
-	<!--><link rel="stylesheet" href="../Styles/combobox.css" type="text/css" /></!-->
+	<link rel="stylesheet" href="../Styles/form.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/table.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/myInput.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/button.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/modal.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/tooltip.css" type="text/css" />
 	<link rel="Shortcut icon" href="favicon.ico" />
 	
 	<meta name="description" content="opis w google"/>
@@ -46,23 +51,6 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 
 </head>
 
-<style>
-.button {
-	position: absolute;
-	  top: 130px;
-	  right: 180px;
-	  color: white;
-	  padding: 9px 30px;
-	  text-align: center;
-	  text-decoration: none;
-	  display: inline-block;
-	  font-size: 16px;
-	  cursor: pointer;
-	  background-color: #555;
-	  border: none;
-}
-
-</style>
 
 <script>
 // Set the date we're counting down to

@@ -36,7 +36,13 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	<title>Konto ucznia</title>
 	<META http-equiv="content-type" content="text/html; charset=utf-8">
 	<link rel="stylesheet" href="../Styles/styleApp.css" type="text/css" />
-	<link rel="stylesheet" type="text/css" href="../Styles/tooltip.css">
+	<link rel="stylesheet" href="../Styles/form.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/table.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/myInput.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/button.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/modal.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/tooltip.css" type="text/css" />
+	
 	<link rel="Shortcut icon" href="favicon.ico" />
 	
 	<meta name="description" content="opis w google"/>
@@ -47,92 +53,6 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 
 </head>
 
-<style>
-body {font-family: Arial, Helvetica, sans-serif;}
-* {box-sizing: border-box;}
-
-/* Button used to open the contact form - fixed at the bottom of the page */
-.open-button {
-  background-color: #555;
-  color: white;
-  padding: 16px 20px;
-  border: none;
-  cursor: pointer;
-  opacity: 0.8;
-  position: fixed;
-  bottom: 23px;
-  right: 28px;
-  width: 280px;
-}
-
-/* The popup form - hidden by default */
-.form-popup {
-  display: none;
-  position: fixed;
-  bottom: 100px;
-  right: 500px;
-  border: 3px solid #f1f1f1;
-  z-index: 9;
-}
-
-/* Add styles to the form container */
-.form-container {
-  max-width: 300px;
-  width: 300px;
-  hight: 300px;
-  padding: 10px;
-  background-color: white;
-}
-
-/* Full-width input fields */
-.form-container input[type=text], .form-container input[type=password] {
-  width: 100%;
-  hight: 100px:
-  padding: 15px;
-  margin: 5px 0 22px 0;
-  border: none;
-  background: #f1f1f1;
-}
-
-/* When the inputs get focus, do something */
-.form-container input[type=text]:focus, .form-container input[type=password]:focus {
-  background-color: #ddd;
-  outline: none;
-}
-
-/* Set a style for the submit/login button */
-.form-container .btn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 16px 20px;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  margin-bottom:10px;
-  opacity: 0.8;
-}
-
-/* Add a red background color to the cancel button */
-.form-container .cancel {
-  background-color: red;
-}
-
-/* Add some hover effects to buttons */
-.form-container .btn:hover, .open-button:hover {
-  opacity: 1;
-  
-textarea {
-  width: 100%;
-  height: 200px;
-  padding: 12px 20px;
-  box-sizing: border-box;
-  border: 2px solid #ccc;
-  border-radius: 4px;
-  background-color: #f8f8f8;
-  resize: none;
-}
-}
-</style>
 
 <body>
 	
@@ -213,69 +133,66 @@ textarea {
 	
 		<div id="tresc">
 		<div id="lewy">
-			<B> Frekwencja: </B><br/>
 			
-
 		<?php
 		
 		if(isset($_SESSION['wybrane_dziecko_id']) and $_SESSION['wybrane_dziecko_id'] != 0  )
 			{
-			echo "<table border=5>";
-			
-				
+				echo "<table>";
+				echo "<tr class='header'><th  style='width:20%;'>Data</th>";
+				echo "<th colspan=30 id='frekwencja' style='width:80%;'>Frekwencja</th></tr>";
 				if($result3->num_rows > 0) {
 					$data=0;
+					echo "<tr>";
+					$i=0;
 					while($row3 = $result3->fetch_assoc())
 					{		
-						if ($row3['status']!='obecny')
-						{	
-							if($row3['czy_uspr']=='Y')
+						if ($row3['status']=='obecny'){$status='O';$color = "rgb(153, 255, 153)";}	
+						if($row3['status']=='spóźniony'){$status='S'; $color = "rgb(204, 255, 255)";}
+						if($row3['status']=='nieobecny'){$status='N';$color="rgb(255,102,102)";}
+						if($row3['czy_do_uspr']=='Y'){$status .= '?';$color = "rgb(255, 255, 128)";}
+						if($row3['czy_uspr']=='Y'){$status .= '*'; $color = "rgb(163, 102, 255)"; }
+						
+						$start = $row3['godz_start'];
+						$koniec = $row3['godz_koniec'];
+						$godzina = $start . "-" . $koniec;
+						$nauczyciel = $row3['imie'] . " " . $row3['nazwisko'] ;
+						$przedmiot = $row3['przedmiot'];
+						
+						$id = $row3['obecnosc_ID'];
+						
+						if($row3['data']!=$data)
+						{while( $i < 30 )
 							{
-								$status='U';
-							$color = "green";
+								echo "<td headers='frekwencja' style='width:20px;font-size:15px;'></td>";
+								$i = $i + 1;
 							}
-							else
-							{
-								if($row3['status']=='spóźniony')
-								{
-									$status='S';
-								$color = "yellow";
-								}
-								if($row3['status']=='nieobecny')
-								{
-									$status='N';
-								$color = "red";
-								}
-							}
-							$start = $row3['godz_start'];
-							$koniec = $row3['godz_koniec'];
-							$godzina = $start . "-" . $koniec;
-							$nauczyciel = $row3['imie'] . " " . $row3['nazwisko'] ;
-							$przedmiot = $row3['przedmiot'];
-							
-							$id = $row3['obecnosc_ID'];
-							
-							if($row3['data']!=$data)
-							{
-								echo "<tr><td>";
+							$i=0;
+							echo "</tr><tr><td>";
 								echo $row3['data'];
-								$data=$row3['data'];
-							}	
-							echo "</td><td>
-							<button style=\"background-color:$color\" 
-							onClick='openForm(\"".$id."\" , \"" . $row3['status'] ."\", \"" . $godzina ."\", \"" . $przedmiot ."\", \"" . $nauczyciel ."\")' > 
-							<div class=\"tooltip\">
-							$status
-								<span class=\"tooltiptext\">
-								$przedmiot<br>$godzina
-								</span>
-							</div></button></td>";
-							
+							$data= $row3['data'];
 						}
+						echo "</td><td>
+						<button class='button button3' style='background-color:$color;' 
+						onClick='openForm(\"".$id."\" , \"" . $row3['status'] ."\", \"" . $godzina ."\", \"" . $przedmiot ."\", \"" . $nauczyciel ."\")' > 
+						<div class=\"tooltip\">
+						$status
+							<span class=\"tooltiptext\">
+							$przedmiot<br>$godzina
+							</span>
+						</div></button></td>";
+							
+						
+						
+					}
+					while( $i < 30 )
+					{
+						echo "<td headers='frekwencja' style='width:20px;font-size:15px;'></td>";
+						$i = $i + 1;
 					}
 				}	
 			
-			echo "</tr></table>"; 	
+				echo "</tr></table>"; 	
 			}
 			?>
 			
@@ -330,17 +247,17 @@ textarea {
 		
 		
 		
-		<div class="form-popup" id="myForm">
-		  <form onSubmit="usprawiedliw()" class="form-container" method="POST" >
+		<div class="modal" id="myForm">
+		  <form onSubmit="usprawiedliw()" class="modal-content" method="POST" >
 			<h1>Usprawiedliwienie</h1>
 
-			<p id="form_status"></p>
-			<p id="form_przedmiot"></p>
-			<p id="form_nauczyciel"></p>
-			<p id="form_godzina"></p>
-			<textarea id="textarea" style="width:300px;height:150px;resize: none;" maxlength=250 placeholder="Treść usprawiedliwienia" required ></textarea>
-			<button id="btn" type="submit" name="uspr"  >Login</button>
-			<button type="button" onclick="closeForm()">Close</button>
+			<p id="form_status" style="display:inline"></p><br><br>
+			Przedmiot: <p id="form_przedmiot" style="display:inline"></p><br><br>
+			Nauczyciel: <p id="form_nauczyciel" style="display:inline"></p><br><br>
+			Godzina: <p id="form_godzina" style="display:inline"></p><br><br>
+			<textarea id="textarea" style="width:100%;height:150px;resize: none;" maxlength=100 placeholder="Treść usprawiedliwienia..." required > </textarea>
+			<button class="button button2" style=" width:100px; height:30px; float: right;" type="button" onclick="closeForm()">Anuluj</button>
+			<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit"  >Zatwierdź</button>
 		  </form>
 		</div>
 		

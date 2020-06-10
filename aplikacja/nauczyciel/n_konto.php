@@ -138,7 +138,7 @@ session_start();
 							<input name="nowy_login"><br/>
 							hasło:<br/>
 							<input type="password" name="haslo_L"><br/>
-							<button type="submit">Zatwierdź</button>
+							<button class="button button2" style=" width:100px; height:30px; " id="btn" type="submit" >Zatwierdź</button>
 							
 							
 						</div>
@@ -161,7 +161,7 @@ session_start();
 							<input type="password" name="nowe"><br/>
 							powtórz nowe hasło:<br/>
 							<input type="password" name="p_nowe"><br/>
-							<button type="submit">Zatwierdź</button>
+							<button class="button button2" style=" width:100px; height:30px; " id="btn" type="submit" >Zatwierdź</button>
 							
 						</div>
 				</div>	

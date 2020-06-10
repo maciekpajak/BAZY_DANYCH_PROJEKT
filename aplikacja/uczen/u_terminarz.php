@@ -41,8 +41,12 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	<title>Konto ucznia</title>
 	<META http-equiv="content-type" content="text/html; charset=utf-8">
 	<link rel="stylesheet" href="../Styles/styleApp.css" type="text/css" />
-	<link rel="stylesheet" type="text/css" href="../Styles/tooltip.css">
-	<link rel="stylesheet"  type="text/css" href="../Styles/calendar.css" />
+	<link rel="stylesheet" href="../Styles/form.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/table.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/myInput.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/button.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/modal.css" type="text/css" />
+	<link rel="stylesheet" href="../Styles/tooltip.css" type="text/css" />
 	<link rel="Shortcut icon" href="favicon.ico" />
 	
 	<meta name="description" content="opis w google"/>
@@ -89,6 +93,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		</div>
 		</a>	
 		
+		<form action="../wyloguj.php" >
+		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
+		</form>
 				<?php 
 	unset($_SESSION['blad']);
 	
@@ -127,43 +134,34 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		<div id="tresc">
 		<div id="lewy">
 			
-			<B> Terminarz: </B><br/>	
-			
-		<?php
-		include '../calendar.php';
-		 
-		$calendar = new Calendar();
-		 
-		echo $calendar->show();
-		?>
 		<?php
 		    date_default_timezone_set('Europe/Warsaw');
 			$date = date('Y-m-d', time());
 			#$date = "2020-10-10"; //data do testowania
+			echo "<table>";
+			echo "<tr class='header'><th  style='width:25%;'>Data</th>";
+			echo "<th style='width:25%;'>Godzina</th>";
+			echo "<th id='ocena' style='width:25%;'>Przedmiot</th>";
+			echo "<th id='ocena' style='width:25%;'>Typ</th></tr>";
 		    if($result3->num_rows > 0) {
 		        while($row3 = $result3->fetch_assoc()) {
-					
-					if ( $row3['data'] > $date || ( $row3['data'] == $date  && $row3['godz'] > time()))
-					{
-						echo " ";
-						echo $row3['data'];
-						echo " ";
-						echo $row3['godz'];
-						echo " ";
-						$przedmiot= $row3['przedmiot'] . "\n";
-						echo '
-						<div class="tooltip">
-								'.$row3['typ'].'
-								<span class="tooltiptext">
-									'.$przedmiot.' <br>
-									'.$row3['imie'].' '.$row3['nazwisko'].' <br>
-									'.$row3['opis'].'
-								</span>
-						</div>';
-						echo "<br/>";
-					}
+					$przedmiot= $row3['przedmiot'];
+					echo "<td>" . $row3['data'] . "</td>";
+					echo "<td>" . $row3['godz_start'] . "</td>";
+					echo "<td>" . $przedmiot  . "</td>";
+					echo "<td>
+					<div class='tooltip'>
+							".$row3['typ']."
+							<span class='tooltiptext'>
+								Przedmiot: ".$przedmiot." <br>
+								Nauczyciel: ".$row3['imie']." ".$row3['nazwisko']." <br>
+								Opis: ".$row3['opis']."
+							</span>
+					</div></td>";
+					echo "</tr>";
 		        }
 		    }
+			echo "</table>";
 		    
 		?>
 		

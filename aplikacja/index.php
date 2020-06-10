@@ -11,6 +11,7 @@
 	<meta name="keywords" content="słowa po których google szuka"/>
 
     <link rel="stylesheet" href="Styles/styleLogin.css" type="text/css" />
+    <link rel="stylesheet" href="Styles/button.css" type="text/css" />
 
 	<meta http-equiv="X-UA_Compatible" content="IE=edge,chrome=1" />
 	<meta name="author" content="Kowalski, Mielniczek, Pająk" />
@@ -39,7 +40,7 @@
 		Nie pamiętam hasła
 		</a>
 		<br/>
-		<button type="submit">Zaloguj</button>
+		<button class="button button2" style=" width:100px; height:30px; f"  type="submit"  >ZALOGUJ</button>
 		<br/>
 		<?php
 		

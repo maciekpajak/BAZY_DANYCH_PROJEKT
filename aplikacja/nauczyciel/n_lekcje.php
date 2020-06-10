@@ -390,8 +390,8 @@ session_start();
 		</div>
 		
 		
-		<div class="form-popup" id="myForm">
-		  <form onSubmit="edytujTemat()" class="form-container" method="POST" >
+		<div class="modal" id="myForm">
+		  <form onSubmit="edytujTemat()" class="modal-content" method="POST" style="height:300px">
 			<h1>Edytuj temat</h1>
 			<textarea id="textarea_temat" style="width:100%;height:150px;resize: none;" maxlength=100 ></textarea>
 			<button class="button button2" style=" width:100px; height:30px; float: right;" type="button" onclick="closeForm()">Anuluj</button>

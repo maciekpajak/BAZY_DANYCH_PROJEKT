@@ -302,11 +302,11 @@ $_SESSION['przedmiot'] = "matematyka";
 				if($result->num_rows > 0) {
 					$nr = 1;
 					
-					echo "<tr class='header'><th>";
+					echo "<tr class='header'><th style='width:1%;'>";
 					echo "Nr";
-					echo "</th><th>";
+					echo "</th ><th style='width:20%;'>";
 					echo "Imie i nazwisko";
-					echo "</th><th id='ocena' colspan=30>";
+					echo "</th><th id='ocena' colspan=30 style='width:79%;'>";
 					echo "Oceny";
 					
 					echo "</td></tr>";
@@ -382,11 +382,11 @@ $_SESSION['przedmiot'] = "matematyka";
 				if($result->num_rows > 0) {
 					$nr = 1;
 					
-					echo "<tr class='header'><th>";
+					echo "<tr class='header'><th style='width:1%;'>";
 					echo "Nr";
-					echo "</th><th>";
+					echo "</th><th style='width:20%;'>";
 					echo "Imie i nazwisko";
-					echo "</th><th id='frekwencja' colspan=30>";
+					echo "</th><th id='frekwencja' colspan=30 style='width:79%;'>";
 					echo "Frekwencja";
 					
 					echo "</td></tr>";
