@@ -341,9 +341,12 @@ $_SESSION['przedmiot'] = "matematyka";
 								echo "<button class='button button3' style='background-color:$color;'>
 								<div class=\"tooltip\" >
 								".$uczen['stopien']."
-									<span class=\"tooltiptext\">
-									".$uczen['stopien']."<br>".$uczen['waga']."<br>".$uczen['opis']."<br>".$uczen['data']."
-									</span>
+								<span class='tooltiptext'>
+									Ocena: ".$uczen['stopien']." <br>
+									Waga: ".$uczen['waga']." <br>
+									Nauczyciel: ".$uczen['imie']." ".$uczen['nazwisko']." <br>
+									Przedmiot: ".$uczen['przedmiot']." <br>
+									Opis: ".$uczen['opis']."
 								</div></button>";
 								echo "</td>";
 								$uczen = $result4->fetch_assoc();
@@ -472,7 +475,9 @@ $_SESSION['przedmiot'] = "matematyka";
 									<div class=\"tooltip\" >
 									$status
 										<span class=\"tooltiptext\">
-										$przedmiot<br>$godzina
+										Godzina: $godzina<br>
+										Przedmiot: $przedmiot<br>
+										Nauczyciel: $nauczyciel<br>
 										</span>
 									</div></button></td>";
 								}
@@ -506,18 +511,19 @@ $_SESSION['przedmiot'] = "matematyka";
 			</div>	
 			
 			
-		<div class="form-popup" id="myForm">
-		  <form onSubmit="usprawiedliw()" class="form-container" method="POST" >
+		<div class="modal" id="myForm">
+		  <form onSubmit="usprawiedliw()" class="modal-content" method="POST" >
 			<h1>Usprawiedliwienie</h1>
 
-			<p id="form_uczen"></p>
-			<p id="form_status"></p>
-			<p id="form_przedmiot"></p>
-			<p id="form_nauczyciel"></p>
-			<p id="form_godzina"></p>
-			<textarea id="tresc_uspr" style="width:300px;height:150px;resize: none;" maxlength=250 readonly ></textarea>
-			<button id="btn" type="submit" name="uspr"  >Usprawiedliw</button>
-			<button type="button" onclick="closeForm()">Anuluj</button>
+			Uczeń: <p id="form_uczen"  style="display:inline"></p><br>
+			<p id="form_status"  style="display:inline"></p><br>
+			Data: <p id="form_data  style="display:inline"></p><br>
+			Godzina: <p id="form_godzina"  style="display:inline"></p><br>
+			Przedmiot: <p id="form_przedmiot"  style="display:inline"></p><br>
+			Nauczyciel: <p id="form_nauczyciel"  style="display:inline"></p><br>
+			<textarea id="tresc_uspr" style="width:100%;height:150px;resize: none;" maxlength=250 readonly ></textarea>
+			<button class="button button2" style=" width:100px; height:30px; float: right;" type="button" onclick="closeForm()">Anuluj</button>
+			<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit"  >Zatwierdź</button>
 		  </form>
 		</div>	
 			
