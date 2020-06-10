@@ -155,6 +155,19 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 				  });
 				});
 			
+			function usun(id){
+				  
+				$.ajax({
+					url: "./usun_wydarzenie.php",
+					data: {
+						id_term: id
+					}, 
+				});
+				
+				window.alert("Usunięto wydarzenie");
+				setTimeout(function(){ window.location.reload(true); }, 100);
+				
+			  }
 			</script>
 			
 			<?php
@@ -164,8 +177,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 				echo "<th style:'width:10%;'>Typ</th>";
 				echo "<th style:'width:10%;'>Przemiot</th>";
 				echo "<th style:'width:10%;'>Klasa</th>";
-				echo "<th style:'width:30%;'>Opis</th>";
-				echo "<th style:'width:10%;'>Edytuj</th>";
+				echo "<th style:'width:40%;'>Opis</th>";
 				echo "<th style:'width:10%;'>Usuń</th></tr>";
 			date_default_timezone_set('Europe/Warsaw');
 			$date = date('Y-m-d', time());
@@ -178,6 +190,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 					
 					if ( $row3['data'] > $date || ( $row3['data'] == $date  && $row3['godz_start'] > time()))
 					{
+						$id = $row3['terminarz_ID'];
 						echo "<tr><td>" . $row3['data'] . "</td>";
 						echo "<td>" . $row3['godz_start'] . "</td>";
 						echo "</td><td>" . $row3['typ']. "</td>";
@@ -187,12 +200,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 						echo '<textarea style="resize: vertical; max-height: 300px; min-height: 20px;" disabled>' .$row3['opis'].'</textarea>';
 						echo "</td>";
 						echo "<td><button class='button button2' 
-							onClick=''
-							style='display:inline-block;'>
-							Edytuj
-						</button></td>";
-						echo "<td><button class='button button2' 
-							onClick=''
+							onClick='usun(\"".$id."\")'
 							style='display:inline-block;'>
 							Usuń
 						</button></td>";

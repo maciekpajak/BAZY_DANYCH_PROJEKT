@@ -206,8 +206,11 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 						temat: $('#textarea_temat').val()
 					}, 
 				});
-				setTimeout(function(){ window.location.reload(true); }, 1000);
+				
+				
 				document.getElementById("myForm").style.display = "none";
+				window.alert("Zmieniono temat lekcji");
+				setTimeout(function(){ window.location.reload(true); }, 100);
 				
 			  }
 			  
@@ -235,7 +238,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 						typ: $('#form2_typ').val()
 					}, 
 				});
-					
+					window.alert("Zaplanowano " + $('#form2_typ').val());
 				  document.getElementById("myForm2").style.display = "none";
 				}
 				
@@ -329,7 +332,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 			$date = date('Y-m-d', time());
 			#$d=mktime(11, 40, 54, 8, 12, 2014);
 			#$date1 = date('G:i:s', $d);
-			#$date = "2020-09-12"; //data do testowania
+			$date = "2020-09-12"; //data do testowania
 		    if($result3->num_rows > 0) {
 				
 				echo "<table id='Table'>";
@@ -369,7 +372,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 					echo '</td><td>';
 					if($row3['czy_spr_obec'] == 'N' )
 					{
-						if ( $row3['data'] == $date and $row3['godz_start'] <= time() ){
+						if ( $row3['data'] == $date  ){
 						echo "
 						<button  class='button button2'   onClick='sprawdzObecnosc(\"".$id_klasy."\" , \"".$id_lekcji."\" ,\"" . $oddzial_klasy."\")'>
 							Sprawdź obecność
