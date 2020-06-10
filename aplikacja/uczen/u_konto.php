@@ -227,6 +227,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 							<button class="button button2" style=" width:100px; height:30px; " id="btn" type="submit" >Zatwierdź</button>
 							
 						</div>
+						</form>
 				</div>	
 		
 		</div>

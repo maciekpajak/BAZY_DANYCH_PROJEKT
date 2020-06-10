@@ -30,7 +30,7 @@ $_SESSION['przedmiot'] = "matematyka";
 	<link rel="stylesheet" href="../Styles/modal.css" type="text/css" />
 	<link rel="stylesheet" href="../Styles/tooltip.css" type="text/css" />
 	
-	<link rel="stylesheet" type="text/css" href="../Styles/tooltip.css">
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	<link rel="Shortcut icon" href="favicon.ico" />
 
 	<meta http-equiv="X-UA_Compatible" content="IE=edge,chrome=1" />
@@ -131,7 +131,7 @@ $_SESSION['przedmiot'] = "matematyka";
 		?>
 		
 		
-		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+		
 		<script language="javascript" type="text/javascript">
 
 
@@ -159,7 +159,6 @@ $_SESSION['przedmiot'] = "matematyka";
 						id: $id_obecnosci_do_uspr
 						}, 
 				});
-				window.alert("Usprawiedliwienie zostało pomyślnie wysłane");
 				document.getElementById("myForm").style.display = "none";
 				}
 

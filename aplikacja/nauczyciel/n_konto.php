@@ -1,6 +1,32 @@
 <?php
-session_start();
+
+    session_start();
+	
+	if(!isset($_SESSION['uzytkownik_login']) || !isset($_SESSION['haslo']))
+	{
+		session_unset(); 
+		session_destroy();
+		session_start();
+		header('Location: ../index.php');
+	}
+	
+	if(isset($_SESSION['action'])) 
+	{
+		$duration = time() - (int)$_SESSION['action'];
+			if($duration > $_SESSION['timeout']) 
+			{
+				session_destroy();
+				session_start();
+				header('Location: ../index.php');
+			}
+	}
+ 
+	$_SESSION['action'] = time();
 ?>
+
+<script type="text/javascript">
+setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload(); }, 180*1000);
+</script>
 
 
 <!DOCTYPE HTML>
@@ -164,6 +190,7 @@ session_start();
 							<button class="button button2" style=" width:100px; height:30px; " id="btn" type="submit" >Zatwierdź</button>
 							
 						</div>
+						</form>
 				</div>	
 
 		</div>

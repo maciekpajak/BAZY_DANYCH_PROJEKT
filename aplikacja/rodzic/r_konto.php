@@ -229,8 +229,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 							powtórz nowe hasło:<br/>
 							<input type="password" name="p_nowe"><br/>
 							<button class="button button2" style=" width:100px; height:30px; " id="btn" type="submit" >Zatwierdź</button>
-							
+						
 						</div>
+						</form>	
 				</div>	
 		
 		</div>

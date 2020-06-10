@@ -1,6 +1,32 @@
 <?php
-session_start();
+
+    session_start();
+	
+	if(!isset($_SESSION['uzytkownik_login']) || !isset($_SESSION['haslo']))
+	{
+		session_unset(); 
+		session_destroy();
+		session_start();
+		header('Location: ../index.php');
+	}
+	
+	if(isset($_SESSION['action'])) 
+	{
+		$duration = time() - (int)$_SESSION['action'];
+			if($duration > $_SESSION['timeout']) 
+			{
+				session_destroy();
+				session_start();
+				header('Location: ../index.php');
+			}
+	}
+ 
+	$_SESSION['action'] = time();
 ?>
+
+<script type="text/javascript">
+setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload(); }, 180*1000);
+</script>
 
 
 <!DOCTYPE HTML>
@@ -154,7 +180,7 @@ session_start();
 					
 				var element_stopien2 = document.getElementById("select2_stopien");
 				var s2 = element_stopien2.options[element_stopien2.selectedIndex].text;
-				window.alert($oc_id);
+				
 				var element_waga2 = document.getElementById("select2_waga");
 				var w2 = element_waga2.options[element_waga2.selectedIndex].text;
 				 $.ajax({
@@ -166,7 +192,6 @@ session_start();
 						opis: $('#opis_oceny2').val()
 						}, 
 				});
-				window.alert("Ocena została edytowana");
 				document.getElementById("myForm2").style.display = "none";
 				}
 
@@ -187,7 +212,7 @@ session_start();
 					
 				var element_stopien = document.getElementById("select_stopien");
 				var s = element_stopien.options[element_stopien.selectedIndex].text;
-				window.alert(s);
+				
 				var element_waga = document.getElementById("select_waga");
 				var w = element_waga.options[element_waga.selectedIndex].text;
 				 $.ajax({
@@ -200,7 +225,6 @@ session_start();
 						np_id:  $np_id 
 						}, 
 				});
-				window.alert("Ocena została dodana");
 				document.getElementById("myForm").style.display = "none";
 				}
 

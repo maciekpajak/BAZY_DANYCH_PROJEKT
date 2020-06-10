@@ -20,9 +20,9 @@ session_start();
 					
 					if($haslo_L==$haslo)
 					{
-						$sql11="SELECT * FROM uzytkownik WHERE uzytkownik_login='$login'";
+						$sql11="SELECT * FROM uzytkownik WHERE uzytkownik_login='$n_login'";
 						$result11= @$conn->query($sql11);
-		
+						$conn->close();
 						if($result11->num_rows > 0){
 						echo "Login już istnieje.".'<form action="index.php">
 		
@@ -32,9 +32,12 @@ session_start();
 		
 						else
 						{
-						
-						$sql5="update uzytkownik set uzytkownik.uzytkownik_login = '$n_login' where uzytkownik.uzytkownik_login = '$login'";	
-						$result5 = @$conn->query($sql5);
+						require_once "connect.php";
+	
+						$conn=@new mysqli($IP, $username, $password, $DB_name); 
+						$sql5="UPDATE uzytkownik SET uzytkownik_login = '$n_login' WHERE uzytkownik_login = '$login'";	
+						@$conn->query($sql5);
+						$conn->close();
 						echo "Poprawnie zmieniony login".
 								'<form action="index.php">
 		
@@ -45,15 +48,13 @@ session_start();
 					}
 					else
 					{
-						echo "Błąd w zmianie loginu".'<form action="index.php">
-		
-					    <br/>
-					    <button type="submit">Zaloguj się jeszcze raz</button>';
-					}
-						
-				$conn->close();
-					}
-				
+							echo "Błąd w zmianie loginu".'<form action="index.php">
+			
+							<br/>
+							<button type="submit">Zaloguj się jeszcze raz</button>';
+						}
+
+	}
 					
 					
 					
