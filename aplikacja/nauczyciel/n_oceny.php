@@ -277,6 +277,15 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 			<br/><br/>
 			
 			<?php	
+			echo "<table >";
+			echo "<tr class='header'><th style='width:1%;'>";
+			echo "Nr";
+			echo "</th><th style='width:20%;'>";
+			echo "Imie i nazwisko";
+			echo "</th><th id='ocena' colspan=30 style='width:79%;'>";
+			echo "Oceny";
+			
+			echo "</td></tr>";
 			if(isset($_SESSION['klasa_do_pokazu']) and $_SESSION['klasa_do_pokazu'] != 0)
 				{
 					
@@ -295,18 +304,11 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 					
 
 					
-					echo "<table >";
+					
 					if($result->num_rows > 0) {
 						$nr = 1;
 						
-						echo "<tr class='header'><th style='width:1%;'>";
-						echo "Nr";
-						echo "</th><th style='width:20%;'>";
-						echo "Imie i nazwisko";
-						echo "</th><th id='ocena' colspan=30 style='width:79%;'>";
-						echo "Oceny";
 						
-						echo "</td></tr>";
 						
 						$uczen = $result4->fetch_assoc();
 						while($row = $result->fetch_assoc()) {
@@ -369,8 +371,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 							$nr = $nr + 1;
 						}
 					}
-					echo "</table>"; 
+					
 				}
+				echo "</table>"; 
 				?>
 			
 			

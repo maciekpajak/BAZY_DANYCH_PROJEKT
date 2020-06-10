@@ -158,12 +158,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 			</script>
 			
 			<?php
-			date_default_timezone_set('Europe/Warsaw');
-			$date = date('Y-m-d', time());
-			#$date = "2020-10-10"; //data do testowania
-		    if($result3->num_rows > 0) {
-				
-				echo "<table >";
+			echo "<table >";
 				echo "<tr class='header'><th style:'width:10%px;'>Data</th>";
 				echo "<th style:'width:10%;'>Godzina</th>";
 				echo "<th style:'width:10%;'>Typ</th>";
@@ -172,6 +167,12 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 				echo "<th style:'width:30%;'>Opis</th>";
 				echo "<th style:'width:10%;'>Edytuj</th>";
 				echo "<th style:'width:10%;'>Usuń</th></tr>";
+			date_default_timezone_set('Europe/Warsaw');
+			$date = date('Y-m-d', time());
+			#$date = "2020-10-10"; //data do testowania
+		    if($result3->num_rows > 0) {
+				
+				
 						
 		        while($row3 = $result3->fetch_assoc()) {
 					
@@ -199,10 +200,10 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 					}
 					
 		        }
-				echo '</table>';
+				
 		    }
 			
-			
+			echo '</table>';
 			?>
 			
 

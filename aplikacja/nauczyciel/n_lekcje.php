@@ -314,8 +314,8 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 			
 			<div>
 				<form >
-					<input class="myInput"  type="text" class="form-control"  id="myInput" placeholder="Wyszukaj.." style='width: 50%;' >
-				  <select class="myInput" onchange="myFunction()" id="kiedy" style='width: 50%;'>
+					<input class="myInput"  type="text"  id="myInput" placeholder="Wyszukaj.." style='width: 200px;float:right;' ></input><br>
+				  <select class="myInput" onchange="myFunction()" id="kiedy" style='width: 200px;float:right; '>
 				  <option value="all">Wszystkie</option>
 				  <option value="f">Przyszłe</option>
 				  <option value="p">Przeszłe</option>
