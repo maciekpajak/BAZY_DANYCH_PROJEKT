@@ -139,70 +139,53 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		    
 		    if($result3->num_rows > 0) {
 		        
-		        $firstrow = $result3->fetch_assoc();
-				echo "<tr><td>";
-		        echo $firstrow['przedmiot'];
-				if($firstrow['stopien'] == 6) {$color = "rgb(255, 0, 102)";}
-				if($firstrow['stopien'] == 5) {$color = "rgb(153, 0, 0)";}
-				if($firstrow['stopien'] == 4) {$color = "rgb(204, 102, 0)";}
-				if($firstrow['stopien'] == 3) {$color = "rgb(0, 255, 0)";}
-				if($firstrow['stopien'] == 2) {$color = "rgb(255, 255, 0)";}
-				if($firstrow['stopien'] == 1) {$color = "rgb(0, 255, 255)";}
-				if($firstrow['stopien'] == 0) {$color = "rgb(0, 0, 255)";}
-		        echo "</td><td>
-				<button class='button button3' style='background-color:$color;'>
-					<div class='tooltip'>
-							".$firstrow['stopien']."
-								<span class='tooltiptext'>
-									Ocena: ".$firstrow['stopien']." <br>
-									Waga: ".$firstrow['waga']." <br>
-									Nauczyciel: ".$firstrow['imie']." ".$firstrow['nazwisko']." <br>
-									Przedmiot: ".$firstrow['przedmiot']." <br>
-									Opis: ".$firstrow['opis']."
-								</span>
-					</div></button></td>";
-		        $i=0;
-		        while($row3 = $result3->fetch_assoc()) {
+				
+				require_once "../connect.php";
+	
+				$conn=@new mysqli($IP, $username, $password, $DB_name); 
+				$sqlX="SELECT * FROM przedmiot ORDER BY przedmiot_nazwa";
+				$resultX = @$conn->query($sqlX);
+				
+				$conn->close();
+				$row3 = $result3->fetch_assoc();
+				
+		        while($przedmiot = $resultX->fetch_assoc()) {
 					
-					if($row3['przedmiot'] != $firstrow['przedmiot']) {
-		                
-						while( $i < 30 )
-							{
-								echo "<td headers='ocena' style='width:20px;font-size:15px;'></td>";
-								$i = $i + 1;
-							}
-							$i=0;
-		                echo "</tr><tr><td>";
-		                echo $row3['przedmiot'];
-		                //echo "</td><td>";
-		                $firstrow = $row3;
+					echo "</tr><tr>";
+					echo "<td>" . $przedmiot['przedmiot_nazwa'] . "</td>";
+					$i=0;
+					while(isset($row3['przedmiot']) and $przedmiot['przedmiot_nazwa'] == $row3['przedmiot'])
+					{
+						if($row3['stopien'] == 6) {$color = "rgb(255, 0, 102)";}
+						if($row3['stopien'] == 5) {$color = "rgb(153, 0, 0)";}
+						if($row3['stopien'] == 4) {$color = "rgb(204, 102, 0)";}
+						if($row3['stopien'] == 3) {$color = "rgb(0, 255, 0)";}
+						if($row3['stopien'] == 2) {$color = "rgb(255, 255, 0)";}
+						if($row3['stopien'] == 1) {$color = "rgb(0, 255, 255)";}
+						if($row3['stopien'] == 0) {$color = "rgb(0, 0, 255)";}
+						echo "</td><td>
+						<button class='button button3' style='background-color:$color;'>
+						<div class='tooltip'>
+								".$row3['stopien']."
+									<span class='tooltiptext'>
+										Ocena: ".$row3['stopien']." <br>
+										Waga: ".$row3['waga']." <br>
+										Nauczyciel: ".$row3['imie']." ".$row3['nazwisko']." <br>
+										Przedmiot: ".$row3['przedmiot']." <br>
+										Opis: ".$row3['opis']."
+									</span>
+						</div></buttn></td>";
+						$i = $i +1;
+						$row3 = $result3->fetch_assoc();
 					}
-					if($row3['stopien'] == 6) {$color = "rgb(255, 0, 102)";}
-					if($row3['stopien'] == 5) {$color = "rgb(153, 0, 0)";}
-					if($row3['stopien'] == 4) {$color = "rgb(204, 102, 0)";}
-					if($row3['stopien'] == 3) {$color = "rgb(0, 255, 0)";}
-					if($row3['stopien'] == 2) {$color = "rgb(255, 255, 0)";}
-					if($row3['stopien'] == 1) {$color = "rgb(0, 255, 255)";}
-					if($row3['stopien'] == 0) {$color = "rgb(0, 0, 255)";}
-		            echo "</td><td>
-					<button class='button button3' style='background-color:$color;'>
-					<div class='tooltip'>
-							".$row3['stopien']."
-								<span class='tooltiptext'>
-									Ocena: ".$row3['stopien']." <br>
-									Waga: ".$row3['waga']." <br>
-									Nauczyciel: ".$row3['imie']." ".$row3['nazwisko']." <br>
-									Przedmiot: ".$row3['przedmiot']." <br>
-									Opis: ".$row3['opis']."
-								</span>
-					</div></buttn></td>";
-					$i = $i +1;
+					while( $i < 30 )
+					{
+						echo "<td headers='ocena' style='width:20px;font-size:15px;'></td>";
+						$i = $i + 1;
+					}
+						
 		        }
-				while( $i < 30 )
-				{
-					echo "<td headers='ocena' style='width:20px;font-size:15px;'></td>";
-					$i = $i + 1;
-				}
+				
 		    }
 		   
 		   echo "</tr></table>"; 

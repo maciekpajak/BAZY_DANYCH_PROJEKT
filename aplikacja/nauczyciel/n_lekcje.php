@@ -126,9 +126,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		</div></a>
 
 
-		<form action="../wyloguj.php" >
-		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
-		</form>
+		
 		
 		<?php
 		if($dane_nauczyciela['czy_wych']=="Y")
@@ -139,7 +137,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		</div></a>';	
 		
 		?>
-
+<form action="../wyloguj.php" >
+		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
+		</form>
 
 	<div >
 		<div id="tresc">
@@ -249,7 +249,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 			  filter = input.value.toUpperCase();
 			  table = document.getElementById("Table");
 			  tr = table.getElementsByTagName("tr");
-			  var today = new Date();
+			  var today = new Date("2020-09-12");
 				//var today = new Date("2020-09-01T09:00:00"); //data do tesów
 				if(filter == "T")
 				{
@@ -372,7 +372,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 					echo '</td><td>';
 					if($row3['czy_spr_obec'] == 'N' )
 					{
-						if ( $row3['data'] == $date  ){
+						if ( $row3['data'] <= $date  ){
 						echo "
 						<button  class='button button2'   onClick='sprawdzObecnosc(\"".$id_klasy."\" , \"".$id_lekcji."\" ,\"" . $oddzial_klasy."\")'>
 							Sprawdź obecność

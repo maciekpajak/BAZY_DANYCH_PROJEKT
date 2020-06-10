@@ -116,9 +116,7 @@ $_SESSION['przedmiot'] = "matematyka";
 		Terminarz
 		</div></a>
 		
-		<form action="../wyloguj.php" >
-		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
-		</form>
+		
 		
 		<?php
 		if($dane_nauczyciela['czy_wych']=="Y")
@@ -129,7 +127,9 @@ $_SESSION['przedmiot'] = "matematyka";
 		</div></a>';	
 		
 		?>
-		
+		<form action="../wyloguj.php" >
+		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
+		</form>
 		
 		
 		<script language="javascript" type="text/javascript">

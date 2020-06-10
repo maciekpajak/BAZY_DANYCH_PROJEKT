@@ -121,9 +121,6 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		Terminarz
 		</div></a>
 
-		<form action="../wyloguj.php" >
-		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
-		</form>
 		
 		
 		<?php
@@ -135,7 +132,10 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		</div></a>';	
 		
 		?>
-
+<form action="../wyloguj.php" >
+		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
+		</form>
+		
 
 		<div id="tresc">
 			<div id="lewy">

@@ -139,9 +139,6 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		Terminarz
 		</div></a>
 		
-		<form action="../wyloguj.php" >
-		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
-		</form>
 		
 		<?php
 		if($dane_nauczyciela['czy_wych']=="Y")
@@ -152,6 +149,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		</div></a>';	
 		
 		?>
+		<form action="../wyloguj.php" >
+		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
+		</form>
 		
 		
 		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
@@ -192,6 +192,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 						opis: $('#opis_oceny2').val()
 						}, 
 				});
+				window.alert("Ocena została edytowana");
 				document.getElementById("myForm2").style.display = "none";
 				}
 
@@ -225,6 +226,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 						np_id:  $np_id 
 						}, 
 				});
+				window.alert("Ocena została dadana");
 				document.getElementById("myForm").style.display = "none";
 				}
 
@@ -343,9 +345,12 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 									onClick='openForm2(\"".$uczen['ocena_ID']."\" , \"" . $imie ."\", \"" . $nazw."\", \"" . $uczen['stopien'] ."\", \"" . $uczen['waga'] ."\", \"" . $uczen['data'] ."\", \"" . $uczen['opis'] ."\")' > 
 									<div class=\"tooltip\">
 									".$uczen['stopien']."
-										<span class=\"tooltiptext\">
-										".$uczen['stopien']."<br>".$uczen['waga']."<br>".$uczen['opis']."<br>".$uczen['data']."
-										</span>
+										<span class='tooltiptext'>
+											Ocena: ".$uczen['stopien']." <br>
+											Waga: ".$uczen['waga']." <br>
+											Nauczyciel: ".$uczen['imie']." ".$uczen['nazwisko']." <br>
+											Przedmiot: ".$uczen['przedmiot']." <br>
+											Opis: ".$uczen['opis']."
 									</div></button>";
 									echo "</td>";
 									$uczen = $result4->fetch_assoc();

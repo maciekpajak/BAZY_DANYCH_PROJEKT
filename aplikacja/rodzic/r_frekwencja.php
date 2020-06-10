@@ -176,7 +176,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 					echo "<tr>";
 					$i=0;
 					while($row3 = $result3->fetch_assoc())
-					{		
+					{	
 						if ($row3['status']=='obecny'){$status='O';$color = "rgb(153, 255, 153)";}	
 						if($row3['status']=='spóźniony'){$status='S'; $color = "rgb(204, 255, 255)";}
 						if($row3['status']=='nieobecny'){$status='N';$color="rgb(255,102,102)";}
