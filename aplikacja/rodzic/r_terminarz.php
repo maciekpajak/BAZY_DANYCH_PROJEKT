@@ -92,7 +92,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		 Terminarz 
 		</div>
 		</a>	
-		
+		<form action="../wyloguj.php" >
+		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
+		</form>
 				<?php 
 	unset($_SESSION['blad']);
 	
@@ -138,51 +140,74 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		
 		<div id="tresc">
 		<div id="lewy">
+		<form method="POST" >
+				
+			  <select class="myInput" id="cmbMake" name="Make"  onchange="onChangeCmb()" style="float: right;">
+				 <?php
+				 
+				 require_once "../connect.php";
+	
+				$conn=@new mysqli($IP, $username, $password, $DB_name); 
+				
+				if ($conn->connect_errno!=0)
+				{
+					echo "Error: ".$conn->connect_errno;
+				}
+				
+				$result4 = $conn->query("CALL dzieci_rodzica('$dane_rodzica[rodzic_ID]')");
+				$conn->close();
+				 
+				 if(!isset($_SESSION['wybrane_dziecko_id']) )
+				 {echo '<option value = 0 > ---Wybierz ucznia--- </option>';}
+				 while($dzieci = $result4 ->fetch_assoc() )
+					 {
+						if(isset($_SESSION['wybrane_dziecko_id']) and $_SESSION['wybrane_dziecko_id'] == $dzieci['uczen_ID']   )
+					    {echo '<option value="'.$dzieci['uczen_ID'].'" selected>'.$dzieci['imie']. ' ' .$dzieci['nazwisko'].' ' .$dzieci['oddzial'].'</option>';}
+						else
+						{echo '<option value="'.$dzieci['uczen_ID'].'">'.$dzieci['imie']. ' ' .$dzieci['nazwisko'].' ' .$dzieci['oddzial'].'</option>';}
+					 }
+				 ?>
+			</select>
+		</form><br>
 		<?php
+		echo "<table>";
+		echo "<tr class='header'><th  style='width:20%;'>Data</th>";
+		echo "<th style='width:20%;'>Godzina</th>";
+		echo "<th id='ocena' style='width:20%;'>Przedmiot</th>";
+		echo "<th id='ocena' style='width:20%;'>Nauczyciel</th>";
+		echo "<th id='ocena' style='width:20%;'>Typ</th></tr>";
 		if(isset($_SESSION['wybrane_dziecko_id']) and $_SESSION['wybrane_dziecko_id'] != 0   )
 			{
 				
 		    date_default_timezone_set('Europe/Warsaw');
 			$date = date('Y-m-d', time());
 			#$date = "2020-10-10"; //data do testowania
-			echo "<table>";
-			echo "<tr class='header'><th  style='width:25%;'>Data</th>";
-			echo "<th style='width:25%;'>Godzina</th>";
-			echo "<th id='ocena' style='width:25%;'>Przedmiot</th>";
-			echo "<th id='ocena' style='width:25%;'>Typ</th></tr>";
+			
 		    if($result3->num_rows > 0) {
 		        while($row3 = $result3->fetch_assoc()) {
 					$przedmiot= $row3['przedmiot'];
 					echo "<td>" . $row3['data'] . "</td>";
 					echo "<td>" . $row3['godz_start'] . "</td>";
 					echo "<td>" . $przedmiot  . "</td>";
+					echo "<td>" . $row3['imie']." ".$row3['nazwisko']  . "</td>";
 					echo "<td>
 					<div class='tooltip'>
 							".$row3['typ']."
 							<span class='tooltiptext'>
-								Przedmiot: ".$przedmiot." <br>
-								Nauczyciel: ".$row3['imie']." ".$row3['nazwisko']." <br>
 								Opis: ".$row3['opis']."
 							</span>
 					</div></td>";
 					echo "</tr>";
 		        }
 		    }
-			echo "</table>";
-		    
-		    
 		}
+		
+			echo "</table>";
 		?>
 		
 		</div>
 		</div>
 		
-		
-		<form action="../wyloguj.php" >
-
-		<button type="submit">wyloguj</button>
-		</form>
-
         
 		<div id="footer">
 		e-dziennik

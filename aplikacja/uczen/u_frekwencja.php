@@ -150,7 +150,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 						if($row3['czy_uspr']=='Y'){$status .= '*'; $color = "rgb(163, 102, 255)"; }
 						$start= $row3['godz_start'];
 						$koniec = $row3['godz_koniec'];
-							
+						$godzina = $start . "-" . $koniec;
+						$nauczyciel = $row3['imie'] . " " . $row3['nazwisko'] ;
+						$przedmiot = $row3['przedmiot'];
 							
 						if($row3['data']!=$data)
 						{while( $i < 30 )
@@ -167,11 +169,12 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 						echo "</td><td>
 						<button class='button button3' style='background-color:$color;'>
 						<div class='tooltip'>
-						".$status."
-						<span class='tooltiptext'>
-						".$row3['przedmiot']."<br>"
-						.$start."-".$koniec."
-						</span>
+						$status
+							<span class=\"tooltiptext\">
+							Godzina: $godzina<br>
+							Przedmiot: $przedmiot<br>
+							Nauczyciel: $nauczyciel<br>
+							</span>
 						</div></td>";
 							
 						
@@ -192,11 +195,6 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		
 		</div>
 		</div>
-		
-		<form action="../wyloguj.php" >
-
-		<button type="submit">wyloguj</button>
-		</form>
 		
 		
 		<div id="footer">

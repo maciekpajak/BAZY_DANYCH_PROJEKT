@@ -124,11 +124,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		</div>
 		</a>	
 		
-		<a href="r_dane_ucznia.php">
-		<div id="inne">
-		 Dane ucznia
-		</div>
-		</a>
+		<form action="../wyloguj.php" >
+		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
+		</form>
 		
 		
 		
@@ -172,39 +170,7 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 
 	
 	<div >
-	
-	
-	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-	<script language="javascript" type="text/javascript">
 
-				function onChangeCmb() {
-					
-				var element = document.getElementById("cmbMake");
-				var value = element.options[element.selectedIndex].value;
-				 $.ajax({
-					url: "cmbChange.php",
-					data: {
-						id_wysw_ucznia: value
-						}, 
-				});
-				window.alert("Zmianiono ucznia");
-				window.location.reload(true);
-				}
-	</script>
-	
-	
-	<form method="POST" >
-			
-		  <select id="cmbMake" name="Make"  onchange="onChangeCmb()">
-			 <?php
-			 echo '<option value = 0 > ---Wybierz ucznia--- </option>';
-			 while($dzieci = $result3 ->fetch_assoc() )
-				 {
-				   echo '<option value="'.$dzieci['uczen_ID'].'">'.$dzieci['imie']. ' ' .$dzieci['nazwisko'].' ' .$dzieci['oddzial'].'</option>';
-				 }
-			 ?>
-		</select>
-	</form>
 	</div>
 	
 			
@@ -227,45 +193,47 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 			
 			
 			</div>
-			<form action="../zmiana_hasla.php" method="post">
-			<div id="prawy">
-				<B> Zmiana hasła: </B><br/>
-				<div id="zmianahasla">
-					stare hasło:<br/>
-					<input type="password" name="stare"> <br/>
-					nowe hasło:<br/>
-					<input type="password" name="nowe"><br/>
-					powtórz nowe hasło:<br/>
-					<input type="password" name="p_nowe"><br/>
-					<button type="submit">Zatwierdź</button>
-					
+			<div id="prawy">	
+					</div>		
+				<div id="prawy">			
+						
 					</form>
-					
-				</div>
-				<br/><B> Zmiana loginu: </B><br/>
-				<form action="../zmiana_login.php" method="post">
-				<div id="zmianahasla">
-					nowy login:<br/>
-					<input name="nowy_login"><br/>
-					hasło:<br/>
-					<input type="password" name="haslo_L"><br/>
-					<button type="submit">Zatwierdź</button>
-					
+					<B> Zmiana loginu: </B><br/>
+					<form action="../zmiana_login.php" method="post">
+						<div id="zmianahasla">
+							nowy login:<br/>
+							<input name="nowy_login"><br/>
+							hasło:<br/>
+							<input type="password" name="haslo_L"><br/>
+							<button class="button button2" style=" width:100px; height:30px; " id="btn" type="submit" >Zatwierdź</button>
+							
+							
+						</div>
 					</form>
-				</div>
-			</div>
+					</div>
+
+					<div id="prawy">	
+					</div>
+					  <div id="prawy">	
+					</div> 
+					<div id="prawy">
+					
+					<form action="zmiana_hasla.php" method="post">
+				
+						<B> Zmiana hasła: </B><br/>
+						<div id="zmianahasla">
+							stare hasło:<br/>
+							<input type="password" name="stare"> <br/>
+							nowe hasło:<br/>
+							<input type="password" name="nowe"><br/>
+							powtórz nowe hasło:<br/>
+							<input type="password" name="p_nowe"><br/>
+							<button class="button button2" style=" width:100px; height:30px; " id="btn" type="submit" >Zatwierdź</button>
+							
+						</div>
+				</div>	
 		
 		</div>
-		
-		
-		
-		
-		
-		
-		<form action="../wyloguj.php" >
-
-		<button type="submit">wyloguj</button>
-		</form>
 		
 		
 		

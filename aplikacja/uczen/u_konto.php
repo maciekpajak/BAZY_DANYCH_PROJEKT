@@ -189,45 +189,47 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 			</div>
 			
 			</div>
-			<form action="../zmiana_hasla.php" method="post">
-			<div id="prawy">
-				<B> Zmiana hasła: </B><br/>
-				<div id="zmianahasla">
-					stare hasło:<br/>
-					<input type="password" name="stare"> <br/>
-					nowe hasło:<br/>
-					<input type="password" name="nowe"><br/>
-					powtórz nowe hasło:<br/>
-					<input type="password" name="p_nowe"><br/>
-					<button type="submit">Zatwierdź</button>
-					
+			<div id="prawy">	
+					</div>		
+				<div id="prawy">			
+						
 					</form>
-					
-				</div>
-				<br/><B> Zmiana loginu: </B><br/>
-				<form action="../zmiana_login.php" method="post">
-				<div id="zmianahasla">
-					nowy login:<br/>
-					<input name="nowy_login"><br/>
-					hasło:<br/>
-					<input type="password" name="haslo_L"><br/>
-					<button type="submit">Zatwierdź</button>
-					
+					<B> Zmiana loginu: </B><br/>
+					<form action="../zmiana_login.php" method="post">
+						<div id="zmianahasla">
+							nowy login:<br/>
+							<input name="nowy_login"><br/>
+							hasło:<br/>
+							<input type="password" name="haslo_L"><br/>
+							<button class="button button2" style=" width:100px; height:30px; " id="btn" type="submit" >Zatwierdź</button>
+							
+							
+						</div>
 					</form>
-				</div>
-			</div>
+					</div>
+
+					<div id="prawy">	
+					</div>
+					  <div id="prawy">	
+					</div> 
+					<div id="prawy">
+					
+					<form action="zmiana_hasla.php" method="post">
+				
+						<B> Zmiana hasła: </B><br/>
+						<div id="zmianahasla">
+							stare hasło:<br/>
+							<input type="password" name="stare"> <br/>
+							nowe hasło:<br/>
+							<input type="password" name="nowe"><br/>
+							powtórz nowe hasło:<br/>
+							<input type="password" name="p_nowe"><br/>
+							<button class="button button2" style=" width:100px; height:30px; " id="btn" type="submit" >Zatwierdź</button>
+							
+						</div>
+				</div>	
 		
 		</div>
-		
-		
-		
-		
-		
-		
-		<form action="../wyloguj.php" >
-
-		<button type="submit">wyloguj</button>
-		</form>
 		
 		
 		

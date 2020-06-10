@@ -89,7 +89,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		</a>	
 		
 		
-		
+		<form action="../wyloguj.php" >
+		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
+		</form>
 		
 		
 		<?php 
@@ -147,36 +149,41 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 							id_wysw_ucznia: value
 							}, 
 					});
-					window.alert("Zmianiono ucznia");
+					setTimeout(function(){ window.location.reload(true); }, 100);
 					}
 		</script>
 		
 		
-		<form method="POST" >
-				
-			  <select id="cmbMake" name="Make"  onchange="onChangeCmb()">
-				 <?php
-				 echo '<option value = 0 > ---Wybierz ucznia--- </option>';
-				 while($dzieci = $result4 ->fetch_assoc() )
-					 {
-					   echo '<option value="'.$dzieci['uczen_ID'].'">'.$dzieci['imie']. ' ' .$dzieci['nazwisko'].' ' .$dzieci['oddzial'].'</option>';
-					 }
-				 ?>
-			</select>
-		</form>
+		
 	</div>
 	
 		
 		
 		<div id="tresc">
 		<div id="lewy">
-			
+			<form method="POST" >
+				
+			  <select class="myInput" id="cmbMake" name="Make"  onchange="onChangeCmb()" style="float: right;">
+				 <?php
+				 if(!isset($_SESSION['wybrane_dziecko_id']) )
+				 {echo '<option value = 0 > ---Wybierz ucznia--- </option>';}
+				 while($dzieci = $result4 ->fetch_assoc() )
+					 {
+						if(isset($_SESSION['wybrane_dziecko_id']) and $_SESSION['wybrane_dziecko_id'] == $dzieci['uczen_ID']   )
+					    {echo '<option value="'.$dzieci['uczen_ID'].'" selected>'.$dzieci['imie']. ' ' .$dzieci['nazwisko'].' ' .$dzieci['oddzial'].'</option>';}
+						else
+						{echo '<option value="'.$dzieci['uczen_ID'].'">'.$dzieci['imie']. ' ' .$dzieci['nazwisko'].' ' .$dzieci['oddzial'].'</option>';}
+					 }
+				 ?>
+			</select>
+		</form><br>
 		<?php
+		echo "<table >";
+		echo "<tr class='header'><th  style='width:20%;'>Przedmiot</th>";
+		echo "<th colspan=30 id='ocena' style='width:80%;'>Oceny</th></tr>";
 		    if(isset($_SESSION['wybrane_dziecko_id']) and $_SESSION['wybrane_dziecko_id'] != 0   )
 			{
-				echo "<table >";
-				echo "<tr class='header'><th  style='width:20%;'>Przedmiot</th>";
-				echo "<th colspan=30 id='ocena' style='width:80%;'>Oceny</th></tr>";
+				
 				
 				if($result3->num_rows > 0) 
 				{
@@ -195,9 +202,11 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 						<div class='tooltip'>
 								".$firstrow['stopien']."
 								<span class='tooltiptext'>
-									waga: ".$firstrow['waga']." <br>
-									nauczyciel: ".$firstrow['imie']." ".$firstrow['nazwisko']." <br>
-									opis: ".$firstrow['opis']."
+									Ocena: ".$firstrow['stopien']." <br>
+									Waga: ".$firstrow['waga']." <br>
+									Nauczyciel: ".$firstrow['imie']." ".$firstrow['nazwisko']." <br>
+									Przedmiot: ".$firstrow['przedmiot']." <br>
+									Opis: ".$firstrow['opis']."
 								</span>
 						</div></td>";
 					$i=0;
@@ -228,9 +237,11 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 						<div class='tooltip'>
 								".$row3['stopien']."
 								<span class='tooltiptext'>
-									waga: ".$row3['waga']." <br>
-									nauczyciel: ".$row3['imie']." ".$row3['nazwisko']." <br>
-									opis: ".$row3['opis']."
+									Ocena: ".$row3['stopien']." <br>
+									Waga: ".$row3['waga']." <br>
+									Nauczyciel: ".$row3['imie']." ".$row3['nazwisko']." <br>
+									Przedmiot: ".$row3['przedmiot']." <br>
+									Opis: ".$row3['opis']."
 								</span>
 						</div></buttn></td>";
 						$i = $i +1;
@@ -243,18 +254,13 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 				}
 			
 		   
-				echo "</tr></table>"; 
+				
 			}
+			echo "</tr></table>"; 
 		?>
 		
 		</div>
 		</div>
-		
-		<form action="../wyloguj.php" >
-
-		<button type="submit">wyloguj</button>
-		</form>
-		
 		
 		<div id="footer">
 		e-dziennik

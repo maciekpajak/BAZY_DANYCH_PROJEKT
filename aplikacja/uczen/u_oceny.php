@@ -153,11 +153,13 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 				<button class='button button3' style='background-color:$color;'>
 					<div class='tooltip'>
 							".$firstrow['stopien']."
-							<span class='tooltiptext'>
-								waga: ".$firstrow['waga']." <br>
-								nauczyciel: ".$firstrow['imie']." ".$firstrow['nazwisko']." <br>
-								opis: ".$firstrow['opis']."
-							</span>
+								<span class='tooltiptext'>
+									Ocena: ".$firstrow['stopien']." <br>
+									Waga: ".$firstrow['waga']." <br>
+									Nauczyciel: ".$firstrow['imie']." ".$firstrow['nazwisko']." <br>
+									Przedmiot: ".$firstrow['przedmiot']." <br>
+									Opis: ".$firstrow['opis']."
+								</span>
 					</div></button></td>";
 		        $i=0;
 		        while($row3 = $result3->fetch_assoc()) {
@@ -186,11 +188,13 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 					<button class='button button3' style='background-color:$color;'>
 					<div class='tooltip'>
 							".$row3['stopien']."
-							<span class='tooltiptext'>
-								waga: ".$row3['waga']." <br>
-								nauczyciel: ".$row3['imie']." ".$row3['nazwisko']." <br>
-								opis: ".$row3['opis']."
-							</span>
+								<span class='tooltiptext'>
+									Ocena: ".$row3['stopien']." <br>
+									Waga: ".$row3['waga']." <br>
+									Nauczyciel: ".$row3['imie']." ".$row3['nazwisko']." <br>
+									Przedmiot: ".$row3['przedmiot']." <br>
+									Opis: ".$row3['opis']."
+								</span>
 					</div></buttn></td>";
 					$i = $i +1;
 		        }
@@ -206,11 +210,6 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		
 		</div>
 		</div>
-		
-		<form action="../wyloguj.php" >
-
-		<button type="submit">wyloguj</button>
-		</form>
 		
 		
 		<div id="footer">

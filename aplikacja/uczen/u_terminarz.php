@@ -139,22 +139,22 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 			$date = date('Y-m-d', time());
 			#$date = "2020-10-10"; //data do testowania
 			echo "<table>";
-			echo "<tr class='header'><th  style='width:25%;'>Data</th>";
-			echo "<th style='width:25%;'>Godzina</th>";
-			echo "<th id='ocena' style='width:25%;'>Przedmiot</th>";
-			echo "<th id='ocena' style='width:25%;'>Typ</th></tr>";
-		    if($result3->num_rows > 0) {
+			echo "<tr class='header'><th  style='width:20%;'>Data</th>";
+			echo "<th style='width:20%;'>Godzina</th>";
+			echo "<th id='ocena' style='width:20%;'>Przedmiot</th>";
+			echo "<th id='ocena' style='width:20%;'>Nauczyciel</th>";
+			echo "<th id='ocena' style='width:20%;'>Typ</th></tr>";
+		   if($result3->num_rows > 0) {
 		        while($row3 = $result3->fetch_assoc()) {
 					$przedmiot= $row3['przedmiot'];
 					echo "<td>" . $row3['data'] . "</td>";
 					echo "<td>" . $row3['godz_start'] . "</td>";
 					echo "<td>" . $przedmiot  . "</td>";
+					echo "<td>" . $row3['imie']." ".$row3['nazwisko']  . "</td>";
 					echo "<td>
 					<div class='tooltip'>
 							".$row3['typ']."
 							<span class='tooltiptext'>
-								Przedmiot: ".$przedmiot." <br>
-								Nauczyciel: ".$row3['imie']." ".$row3['nazwisko']." <br>
 								Opis: ".$row3['opis']."
 							</span>
 					</div></td>";
@@ -168,12 +168,6 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		</div>
 		</div>
 		
-		
-		<form action="../wyloguj.php" >
-
-		<button type="submit">wyloguj</button>
-		</form>
-
         
 		<div id="footer">
 		e-dziennik

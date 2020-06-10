@@ -89,7 +89,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 		</div>
 		</a>	
 		
-		
+		<form action="../wyloguj.php" >
+		<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit" >WYLOGUJ</button>
+		</form>
 		<?php 
 	unset($_SESSION['blad']);
 	
@@ -133,14 +135,42 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 	
 		<div id="tresc">
 		<div id="lewy">
-			
+			<form method="POST" >
+				
+			  <select class="myInput" id="cmbMake" name="Make"  onchange="onChangeCmb()" style="float: right;">
+				 <?php
+				 
+				 require_once "../connect.php";
+	
+				$conn=@new mysqli($IP, $username, $password, $DB_name); 
+				
+				if ($conn->connect_errno!=0)
+				{
+					echo "Error: ".$conn->connect_errno;
+				}
+				
+				$result4 = $conn->query("CALL dzieci_rodzica('$dane_rodzica[rodzic_ID]')");
+				$conn->close();
+				 
+				 if(!isset($_SESSION['wybrane_dziecko_id']) )
+				 {echo '<option value = 0 > ---Wybierz ucznia--- </option>';}
+				 while($dzieci = $result4 ->fetch_assoc() )
+					 {
+						if(isset($_SESSION['wybrane_dziecko_id']) and $_SESSION['wybrane_dziecko_id'] == $dzieci['uczen_ID']   )
+					    {echo '<option value="'.$dzieci['uczen_ID'].'" selected>'.$dzieci['imie']. ' ' .$dzieci['nazwisko'].' ' .$dzieci['oddzial'].'</option>';}
+						else
+						{echo '<option value="'.$dzieci['uczen_ID'].'">'.$dzieci['imie']. ' ' .$dzieci['nazwisko'].' ' .$dzieci['oddzial'].'</option>';}
+					 }
+				 ?>
+			</select>
+		</form><br>
 		<?php
-		
+		echo "<table>";
+		echo "<tr class='header'><th  style='width:20%;'>Data</th>";
+		echo "<th colspan=30 id='frekwencja' style='width:80%;'>Frekwencja</th></tr>";
 		if(isset($_SESSION['wybrane_dziecko_id']) and $_SESSION['wybrane_dziecko_id'] != 0  )
 			{
-				echo "<table>";
-				echo "<tr class='header'><th  style='width:20%;'>Data</th>";
-				echo "<th colspan=30 id='frekwencja' style='width:80%;'>Frekwencja</th></tr>";
+				
 				if($result3->num_rows > 0) {
 					$data=0;
 					echo "<tr>";
@@ -178,7 +208,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 						<div class=\"tooltip\">
 						$status
 							<span class=\"tooltiptext\">
-							$przedmiot<br>$godzina
+							Godzina: $godzina<br>
+							Przedmiot: $przedmiot<br>
+							Nauczyciel: $nauczyciel<br>
 							</span>
 						</div></button></td>";
 							
@@ -192,8 +224,9 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 					}
 				}	
 			
-				echo "</tr></table>"; 	
+				
 			}
+			echo "</tr></table>"; 	
 			?>
 			
 
@@ -230,20 +263,19 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 				document.getElementById("myForm").style.display = "none";
 				}
 				
-				
 				function onChangeCmb() {
-						
-					var element = document.getElementById("cmbMake");
-					var value = element.options[element.selectedIndex].value;
-					 $.ajax({
-						url: "cmbChange.php",
-						data: {
-							id_wysw_ucznia: value
-							}, 
-					});
-					window.alert("Zmianiono ucznia");
-					}
-		</script>
+					
+				var element = document.getElementById("cmbMake");
+				var value = element.options[element.selectedIndex].value;
+				 $.ajax({
+					url: "cmbChange.php",
+					data: {
+						id_wysw_ucznia: value
+						}, 
+				});
+				setTimeout(function(){ window.location.reload(true); }, 100);
+				}
+	</script>
 		
 		
 		
@@ -254,17 +286,13 @@ setTimeout( function() { alert("Twoja sesja zakończyła się"); location.reload
 			<p id="form_status" style="display:inline"></p><br><br>
 			Przedmiot: <p id="form_przedmiot" style="display:inline"></p><br><br>
 			Nauczyciel: <p id="form_nauczyciel" style="display:inline"></p><br><br>
+			Data: <p id="form_data" style="display:inline"></p><br><br>
 			Godzina: <p id="form_godzina" style="display:inline"></p><br><br>
 			<textarea id="textarea" style="width:100%;height:150px;resize: none;" maxlength=100 placeholder="Treść usprawiedliwienia..." required > </textarea>
 			<button class="button button2" style=" width:100px; height:30px; float: right;" type="button" onclick="closeForm()">Anuluj</button>
 			<button class="button button2" style=" width:100px; height:30px; float: right;" id="btn" type="submit"  >Zatwierdź</button>
 		  </form>
 		</div>
-		
-		<form action="../wyloguj.php" >
-
-		<button type="submit">wyloguj</button>
-		</form>
 		
 		
 		<div id="footer">
